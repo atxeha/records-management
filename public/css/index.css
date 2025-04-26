@@ -1,0 +1,100 @@
+@font-face {
+    font-family: 'Poppins';
+    src: url('../../assets/fonts/Poppins-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    padding: 0 !important;
+    margin: 0 !important;
+    color: #3C374D;
+    font-family: 'Poppins', sans-serif;
+    /* background-color: #3C374D; */
+}
+.sidebar {
+    width: 43px;
+    background-color: #d4d4d4;
+}
+.main-container {
+    display: flex;
+    flex-direction: row;
+}
+.main-content {
+    /* background-color: #388E3C; */
+    height: 100vh;
+    width: 100%;
+}
+.banner {
+    background-color: #928e9c;
+    height: 160px;
+}
+
+.font {
+    font-size: 0.9rem !important;
+}
+
+.dlt-icon {
+    color: #d47070 !important;
+}
+
+.edit-icon {
+    color: #388E3C !important;
+}
+.icon {
+    font-size: 1.6rem;
+}
+.icon-btn {
+    cursor: pointer;
+    border-radius: 5px;
+    color: #3C374D;
+    transition: all 0.1s ease-in;
+}
+.icon-btn:hover, .sidebar-icon.active {
+    box-shadow: 0 0 5px #4e2d2d;
+    transition: all 0.1s ease-in;
+}
+.btns {
+    height: 32px;
+    color: #000000;
+    padding: 0 1rem;
+}
+
+.tooltip-inner {
+    background-color: #c2c1c1 !important;
+    color: #000 !important;
+    font-size: 12px;
+    border-radius: 5px;
+    margin-left: 5px;
+}
+.custom-tooltip {
+    --bs-tooltip-bg: #817e7e;
+    --bs-tooltip-color: #000;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 10px;
+    /* border: 2px solid #f1f1f1; */
+    transition: background-color 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0;
+}
+
+/* Show scrollbar thumb when scrolling */
+.scrolling::-webkit-scrollbar-thumb {
+    background-color: #d6d4e2;
+    opacity: 1;
+}
+
+::-webkit-scrollbar-track {
+    background: #ffffff;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #cbc7dd;
+}

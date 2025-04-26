@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL") // This will be read from .env file
+}
+
+model PurchaseRequest {
+  id          Int      @id @default(autoincrement())
+  prNumber    String
+  requestedBy String
+  department  String
+  purpose     String
+  requestDate DateTime
+  isApproved  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model RequisitionIssueSlip {
+  id           Int      @id @default(autoincrement())
+  risNumber    String
+  preparedBy   String
+  purpose      String
+  preparedDate DateTime
+  createdAt    DateTime @default(now())
+}
+
+model CheckLog {
+  id          Int      @id @default(autoincrement())
+  checkNumber String
+  issuedTo    String
+  amount      Float
+  dateIssued  DateTime
+  createdAt   DateTime @default(now())
+}
+
+model PettyCash {
+  id         Int      @id @default(autoincrement())
+  cashAmount Float
+  purpose    String
+  dateIssued DateTime
+  createdAt  DateTime @default(now())
+}
+
+model Franchise {
+  id            Int      @id @default(autoincrement())
+  franchiseName String
+  issuedBy      String
+  issuedDate    DateTime
+  createdAt     DateTime @default(now())
+}
+
+model Voucher {
+  id            Int      @id @default(autoincrement())
+  voucherNumber String
+  payee         String
+  amount        Float
+  purpose       String
+  accountTitle  String
+  datePrepared  DateTime
+  approvedBy    String
+  createdAt     DateTime @default(now())
+}
+
+model ObligationRequest {
+  id           Int      @id @default(autoincrement())
+  obrNumber    String
+  purpose      String
+  preparedBy   String
+  amount       Float
+  preparedDate DateTime
+  isApproved   Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}

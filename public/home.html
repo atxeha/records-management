@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="Content-Security-Policy" content="
+                default-src 'self';
+                script-src 'self';
+                style-src 'self' 'unsafe-inline';
+                img-src 'self' data:;
+        ">
+
+    <link rel="stylesheet" href="../node_modules/toastify-js/src/toastify.css">
+    
+    <link rel="stylesheet" href="../node_modules/material-icons/iconfont/material-icons.css">
+    
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    
+    <link rel="stylesheet" href="./css/index.css">
+
+    <title>Records Management</title>
+</head>
+<body>
+    <div class="container-fluid main-container p-0">
+        <div class="sidebar d-flex flex-column p-2 gap-3">
+            <i class="sidebar-icon icon-btn icon material-icons" data-bs-toggle="tooltip" data-bs-placement="right"
+                data-bs-custom-class="custom-tooltip" title="Home" id="homeBtn">home
+            </i>
+            <i class="sidebar-icon icon-btn icon material-icons" data-bs-toggle="tooltip" data-bs-placement="right"
+                data-bs-custom-class="custom-tooltip" title="Purchase Request" id="PRBtn">shopping_bag
+            </i>
+            <i class="sidebar-icon icon-btn icon material-icons" data-bs-toggle="tooltip" data-bs-placement="right"
+                data-bs-custom-class="custom-tooltip" title="Requisition Issue Slip" id="RISBtn">receipt
+            </i>
+            <i class="sidebar-icon icon-btn icon material-icons" data-bs-toggle="tooltip" data-bs-placement="right"
+                data-bs-custom-class="custom-tooltip" title="Check Log" id="checkLogBtn">history
+            </i>
+            <i class="sidebar-icon icon-btn icon material-icons" style="margin-left: 1px;" data-bs-toggle="tooltip" data-bs-placement="right"
+                data-bs-custom-class="custom-tooltip" title="Petty Cash" id="pettyCashBtn">payments
+            </i>
+            <i class="sidebar-icon icon-btn icon material-icons" data-bs-toggle="tooltip" data-bs-placement="right"
+                data-bs-custom-class="custom-tooltip" title="Franchise" id="franchiseBtn">assignment
+            </i>
+            <i class="sidebar-icon icon-btn icon material-icons" data-bs-toggle="tooltip" data-bs-placement="right"
+                data-bs-custom-class="custom-tooltip" title="Voucher" id="voucherBtn">confirmation_number
+            </i>
+            <i class="sidebar-icon icon-btn icon material-icons" data-bs-toggle="tooltip" data-bs-placement="right"
+                data-bs-custom-class="custom-tooltip" title="Obligation Request" id="ORBtn">shopping_basket
+            </i>
+        </div>
+        <div class="main-content">
+            <h3 class="title text-center">Records Management</h3>
+            <div class="banner rounded-4 m-3"></div>
+        </div>
+    </div>
+    <script src="./js/tooltip.js"></script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../node_modules/toastify-js/src/toastify.js"></script>
+</body>
+</html>
