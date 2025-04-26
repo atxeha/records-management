@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain, Menu, shell, dialog } from "electron";
 import fs from "fs";
 import path from "path";
 import {
+  createSchedule,
   // addItem,
   // getItems,
   // pullItem,
@@ -57,7 +58,7 @@ app.whenReady().then(() => {
     },
   });
 
-  mainWindow.loadFile(path.join(app.getAppPath(), "public", "home.html"));
+  mainWindow.loadFile(path.join(app.getAppPath(), "public", "main.html"));
 
   // Apply the custom menu
   Menu.setApplicationMenu(menu);
@@ -115,6 +116,26 @@ const menu = Menu.buildFromTemplate([
     ],
   },
 ]);
+
+ipcMain.handle("create-schedule", async (event, data) => {
+  try {
+    await createSchedule(data.description, data.venue, data.date, data.official)
+
+    return {success: true, message: "Schedule set successfully."}
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+})
+
+ipcMain.handle("fetch-schedules", async () => {
+  try {
+    const schedules = await prisma.schedule.findMany();
+
+    return { success: true, message: "Schedule fetched successfully.", data: schedules };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+})
 
 // // Handle adding items
 // ipcMain.handle("add-item", async (event, itemData) => {

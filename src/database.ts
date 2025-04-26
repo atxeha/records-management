@@ -4,6 +4,7 @@ import { app } from "electron";
 import fs from "fs";
 import { PrismaClient } from "@prisma/client";
 import internal from "stream";
+import { scheduler } from "timers/promises";
 
 // Determine database path
 const isDev = !app.isPackaged; // Check if running in development
@@ -47,6 +48,35 @@ console.log("Prisma is using database path:", dbPath);
 console.log("Prisma Client Path:", path.dirname(require.resolve("@prisma/client")));
 
 export { prisma };
+
+export async function createSchedule(
+  description: string,
+  venue: string,
+  date: string,
+  official: string
+) {
+  try {
+    // Append seconds if missing (datetime-local input returns "YYYY-MM-DDTHH:mm")
+    let isoDate = date;
+    if (date.length === 16) {
+      isoDate = date + ":00";
+    }
+
+    const newSchedule = await prisma.schedule.create({
+      data: {
+        description,
+        venue,
+        date: new Date(isoDate),
+        official,
+      },
+    });
+
+    return newSchedule 
+  } catch (err) {
+    console.log((err as Error).message);
+    return (err as Error).message
+  }
+}
 
 // export async function addItem(
 //   item_code: string,

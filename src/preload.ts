@@ -2,13 +2,15 @@ import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("electronAPI", {
   navigate: (page: string) => ipcRenderer.send("navigate", page),
+  createSchedule: (data: any) => ipcRenderer.invoke("create-schedule", data),
+  fetchSchedules: () => ipcRenderer.invoke("fetch-schedules"),
   // addItem: (data: any) => ipcRenderer.invoke("add-item", data),
   // getItems: () => ipcRenderer.invoke("get-items"),
   // pullItem: (data: any) => ipcRenderer.invoke("pull-item", data),
   // getPullItems: (data: any) => ipcRenderer.invoke("get-pull-items", data),
-  // showToast: (message: string, success: boolean) => {
-  //   window.postMessage({ type: "show-toast", message, success });
-  // },
+  showToast: (message: string, success: boolean) => {
+    window.postMessage({ type: "show-toast", message, success });
+  },
   // updateItemQuantity: (data: any) =>
   //   ipcRenderer.invoke("update-item-quantity", data),
   // deleteItem: (item: number) => ipcRenderer.invoke("delete-item", item),

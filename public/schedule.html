@@ -1,0 +1,94 @@
+<div>
+    <h4 class="title text-center p-0 m-0">Schedules</h4>
+
+    <div class="d-flex mx-5 gap-2" id="actions">
+        <span data-bs-toggle="modal" data-bs-target="#addScheduleModal">
+            <i class="icon-sm material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="right"
+                data-bs-custom-class="custom-tooltip" title="Add schedule" id="addScheduleBtn">add
+            </i>
+        </span>
+        <span data-bs-toggle="modal" data-bs-target="#deleteAllScheduleModal">
+            <i class="icon-sm dlt-icon material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="right"
+                data-bs-custom-class="custom-tooltip" title="Delete all" id="deleteAllScheduleBtn">delete_sweep
+            </i>
+        </span>
+        
+    </div>
+
+    <div class="table-responsive mx-4 mt-2 font">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th style="width: 40rem;">Description</th>
+                    <th>Venue</th>
+                    <th>Official</th>
+                    <th>Time</th>
+                    <th style="width: 6rem; padding-left: .6rem;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Schedule Modal -->
+<div class="modal" id="addScheduleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="1"
+    aria-labelledby="addScheduleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="addScheduleModalLabel">Add Schedule</h6>
+            </div>
+            <form method="post" id="addScheduleForm">
+                <div class="modal-body font p-4 pb-2">
+                    <div class="row font mb-4">
+                        <div class="input-field col-6">
+                            <label class="mb-1 ms-2" for="addScheduleDescription">Description</label>
+                            <textarea id="addScheduleDescription" class="search-box form-control rounded-2 font input" rows=6></textarea>
+                        </div>
+                        <div class="input-field col-6">
+                            <label class="mb-1 ms-2" for="addScheduleVenue">Venue</label>
+                            <input type="text" id="addScheduleVenue" class="search-box form-control rounded-2 font input mb-3">
+                        
+                            <label class="mb-1 ms-2" for="addScheduleOfficial">Officials <span class="text-muted small">(meeting with)</span></label>
+                            <input type="text" id="addScheduleOfficial" class="search-box form-control rounded-2 font input mb-3">
+
+                            <label class="mb-1 ms-2" for="addScheduleDate">Date</label>
+                            <input type="datetime-local" id="addScheduleDate" class="search-box form-control rounded-2 font input">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer font">
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
+                            data-bs-dismiss="modal">Back</button>
+                        <button class="button rounded-2 font btn btn-secondary" type="submit">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Delete Schedule Modal -->
+<div class="modal" id="deleteAllScheduleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body font p-4 pb-2">
+                <form method="post" id="deleteItemForm">
+                    <div class="font mb-4">
+                        <p>Are sure to delete all schedules?</p>
+                    </div>
+                    <div class="modal-footer font">
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3" data-bs-dismiss="modal">Back</button>
+                        <button class="button rounded-2 font btn btn-secondary" type="submit">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="./js/logics/addSchedule.js"></script>

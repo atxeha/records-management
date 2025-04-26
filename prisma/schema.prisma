@@ -80,3 +80,13 @@ model ObligationRequest {
   isApproved   Boolean  @default(false)
   createdAt    DateTime @default(now())
 }
+
+model Schedule {
+  id           Int      @id @default(autoincrement())
+  description    String
+  venue      String
+  official String @default("admin")
+  date  DateTime
+  isDone   Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
