@@ -46,7 +46,7 @@ function capitalizeWords(str: string) {
 }
 
 let mainWindow: BrowserWindow | null;
-app.whenReady().then(() => {
+app.whenReady().then(async() => {
   mainWindow = new BrowserWindow({
     width: 1366,
     height: 768,
@@ -58,7 +58,8 @@ app.whenReady().then(() => {
     },
   });
 
-  mainWindow.loadFile(path.join(app.getAppPath(), "public", "main.html"));
+  await mainWindow.loadFile(path.join(app.getAppPath(), "public", "main.html"));
+  mainWindow.maximize();
 
   // Apply the custom menu
   Menu.setApplicationMenu(menu);
@@ -129,11 +130,84 @@ ipcMain.handle("create-schedule", async (event, data) => {
 
 ipcMain.handle("fetch-schedules", async () => {
   try {
-    const schedules = await prisma.schedule.findMany();
+    const schedules = await prisma.schedule.findMany({
+      orderBy: {
+        date: "desc",
+      },
+    });
 
     return { success: true, message: "Schedule fetched successfully.", data: schedules };
   } catch (err) {
     return { success: false, message: (err as Error).message };
+  }
+})
+
+ipcMain.handle("delete-all-schedule", async (event, filter) => {
+  try {
+    if (filter === "today") {
+      const today = new Date();
+      const startOfDay = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+      );
+      const endOfDay = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate() + 1
+      );
+
+      await prisma.schedule.deleteMany({
+        where: {
+          date: {
+            gte: startOfDay,
+            lt: endOfDay,
+          },
+        },
+      });
+      return { success: true, message: `All today's schedules deleted.` };
+    } else {
+      // Delete all schedules
+      await prisma.schedule.deleteMany({});
+      return { success: true, message: "All schedules deleted." };
+    }
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+});
+
+ipcMain.handle("cancel-schedule", async (event, id) => {
+  try {
+    await prisma.schedule.update({
+      where: { id },
+      data: {
+        isCanceled: true,
+      },
+    })
+
+    return { success: true, message: "Canceled successfully." }
+  } catch (err) {
+    return { success: false, message: (err as Error).message}
+  }
+})
+
+ipcMain.handle("reschedule", async (event, id, newDate) => {
+  try {
+    let isoDate = newDate;
+    if (newDate.length === 16) {
+      isoDate = newDate + ":00";
+    }
+
+    await prisma.schedule.update({
+      where: {id},
+      data: {
+        date: new Date(isoDate),
+      },
+    })
+
+    return {success: true, message: "Rescheduled successfully."}
+  } catch (err) {
+    return {success: false, message: (err as Error).message}
   }
 })
 

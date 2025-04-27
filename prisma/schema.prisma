@@ -88,5 +88,6 @@ model Schedule {
   official String @default("admin")
   date  DateTime
   isDone   Boolean  @default(false)
+  isCanceled Boolean @default(false)
   createdAt    DateTime @default(now())
 }

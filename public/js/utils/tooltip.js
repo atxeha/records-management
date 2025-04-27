@@ -12,9 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
              background: event.data.success
                ? "linear-gradient(to right, #28a745, #218838)"
                : "linear-gradient(to right, #dc3545, #c82333)",
-             borderRadius: "10px",
-             padding: "10px 20px",
-             fontSize: "0.9rem",
+             borderRadius: "7px",
+             padding: "8px 12px",
+             fontSize: "0.85rem",
            },
          }).showToast();
        }

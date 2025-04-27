@@ -12,36 +12,48 @@ body {
     font-family: 'Poppins', sans-serif;
     /* background-color: #3C374D; */
 }
+
 .sidebar {
     width: 43px;
     background-color: #d4d4d4;
 }
+
 .main-container {
     display: flex;
     flex-direction: row;
 }
+
 .main-content {
     /* background-color: #388E3C; */
     height: 100vh;
     width: 100%;
 }
+
 .banner {
     height: 45vh;
 }
+
 .schedule {
     background-color: #d4d4d4;
     display: flex;
     flex-direction: column;
 }
+
 .list-group {
     flex-grow: 1;
 }
+
 .sidebar-icon.active {
     box-shadow: 0 0 5px #1f0505;
     /* transition: all 0.1s ease-in; */
 }
+
 .font {
     font-size: 0.9rem !important;
+}
+
+.font-sm {
+    font-size: 0.85rem !important;
 }
 
 .dlt-icon {
@@ -51,19 +63,23 @@ body {
 .edit-icon {
     color: #388E3C !important;
 }
+
 .icon {
     font-size: 1.5rem;
     color: #3C374D;
 }
+
 .icon-sm {
     font-size: 1.4rem !important;
     color: #3C374D;
 }
+
 .icon-btn {
     cursor: pointer;
     border-radius: 5px;
     transition: all 0.1s ease-in;
 }
+
 .icon-btn:hover {
     box-shadow: 0 0 5px #4e2d2d;
     transition: all 0.1s ease-in;
@@ -72,9 +88,11 @@ body {
 .btn-link {
     color: #518de7;
 }
+
 .btn-link-red {
     color: #b63c3c;
 }
+
 .btn-link-red:hover {
     color: #4e0e0e;
 }
@@ -82,19 +100,45 @@ body {
 .input {
     border-color: #3C374D;
 }
+
 .input:focus {
     box-shadow: none;
     border-color: #3C374D;
 }
+
 .button {
-    /* border: 1px solid #979797;
-    background-color: #979797; */
     height: 32px;
-    padding: 0 1rem;
+    padding: 0 .8rem !important;
     color: #ffffff;
 }
+
 .button:hover {
     color: #ffffff;
+}
+
+.table-container {
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 140px);
+    position: relative;
+}
+
+.table thead {
+    position: sticky !important;
+    top: 0;
+    z-index: 2;
+    background-color: #ffffff;
+}
+
+.filter-select {
+    border: none;
+    margin-top: 2px;
+    width: 89px;
+}
+
+.filter-select:focus {
+    border: none;
+    box-shadow: none;
 }
 
 .tooltip-inner {
@@ -104,6 +148,7 @@ body {
     border-radius: 5px;
     margin-left: 4px;
 }
+
 .custom-tooltip {
     --bs-tooltip-bg: transparent;
     --bs-tooltip-color: #000;
@@ -116,14 +161,13 @@ body {
 ::-webkit-scrollbar-thumb {
     background-color: transparent;
     border-radius: 10px;
-    /* border: 2px solid #f1f1f1; */
     transition: background-color 0.3s ease-in-out, opacity 0.3s ease-in-out;
     opacity: 0;
 }
 
 /* Show scrollbar thumb when scrolling */
 .scrolling::-webkit-scrollbar-thumb {
-    background-color: #d6d4e2;
+    background-color: #d4d4d4;
     opacity: 1;
 }
 
@@ -133,5 +177,5 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #cbc7dd;
+    background-color: #c5c2c2;
 }

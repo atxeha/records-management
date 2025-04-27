@@ -3,6 +3,30 @@ document.addEventListener("DOMContentLoaded", async () => {
   const scheduleBtn = document.getElementById("scheduleBtn");
   const viewScheduleBtn = document.getElementById("viewScheduleBtn");
   const homeBtn = document.getElementById("homeBtn");
+  // Removed from here
+
+  function attachScrollListener() {
+    const tableContainer = document.querySelector(".table-container");
+    const tableHead = document.querySelector(".table thead");
+
+    if (tableContainer && tableHead) {
+      tableContainer.addEventListener("scroll", function () {
+        tableContainer.classList.add("scrolling");
+
+        // Remove the class after 1 second if no more scrolling
+        clearTimeout(tableContainer.scrollTimeout);
+        tableContainer.scrollTimeout = setTimeout(() => {
+          tableContainer.classList.remove("scrolling");
+        }, 400);
+
+        if (tableContainer.scrollTop > 0) {
+          tableHead.style.boxShadow = "0 8px 12px rgba(0, 0, 0, 0.1)";
+        } else {
+          tableHead.style.boxShadow = "none";
+        }
+      });
+    }
+  }
 
   function initializeTooltips() {
     var tooltipTriggerList = [].slice.call(
@@ -31,14 +55,65 @@ document.addEventListener("DOMContentLoaded", async () => {
         attachDynamicEventListeners();
         localStorage.setItem("currentPage", page);
 
+        // Attach scroll listener after content load
+        attachScrollListener();
+
         if (page === "schedule.html") {
           // Dynamically import addSchedule.js to attach event listeners
           const addScheduleModule = await import("./logics/addSchedule.js");
           addScheduleModule.initAddSchedule();
 
-          // Dynamically import fetchSchedules.js to fetch and render schedules
-          const fetchSchedulesModule = await import("./logics/fetchSchedules.js");
-          fetchSchedulesModule.fetchAndRenderSchedules();
+          const fetchSchedulesModule = await import(
+            "./logics/fetchSchedules.js"
+          );
+
+          // Retain filter value from localStorage or default to 'all'
+          const filterSelect = document.getElementById("filterSchedule");
+          let currentFilter = "all";
+          if (filterSelect) {
+            const savedFilter = localStorage.getItem("scheduleFilter");
+            if (savedFilter) {
+              currentFilter = savedFilter;
+              filterSelect.value = savedFilter;
+            } else {
+              filterSelect.value = currentFilter;
+            }
+          }
+
+          // Retain status filter value from localStorage or default to 'all'
+          const statusSelect = document.getElementById("filterScheduleStatus");
+          let currentStatus = "all";
+          if (statusSelect) {
+            const savedStatus = localStorage.getItem("scheduleStatusFilter");
+            if (savedStatus) {
+              currentStatus = savedStatus;
+              statusSelect.value = savedStatus;
+            } else {
+              statusSelect.value = currentStatus;
+            }
+          }
+          
+          fetchSchedulesModule.fetchAndRenderSchedules(currentFilter, currentStatus);
+          fetchSchedulesModule.initDeleteAllSchedule();
+          fetchSchedulesModule.initFilterSchedule();
+          fetchSchedulesModule.initFilterScheduleStatus();
+          fetchSchedulesModule.initCancelSchedule();
+          fetchSchedulesModule.initreschedule();
+
+          // Save filter changes to localStorage
+          if (filterSelect) {
+            filterSelect.addEventListener("change", () => {
+              localStorage.setItem("scheduleFilter", filterSelect.value);
+            });
+          }
+
+          // Save status filter changes to localStorage
+          if (statusSelect) {
+            statusSelect.addEventListener("change", () => {
+              localStorage.setItem("scheduleStatusFilter", statusSelect.value);
+            });
+          }
+
         }
       })
       .catch((error) => console.error("Error loading page:", error));
@@ -57,7 +132,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         sidebarIcons.forEach((i) => i.classList.remove("active"));
 
         const scheduleBtn = document.getElementById("scheduleBtn");
-        
+
         if (scheduleBtn) {
           scheduleBtn.classList.add("active");
           localStorage.setItem("activeIconId", "scheduleBtn");
@@ -79,7 +154,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       await loadPage("schedule.html");
     });
   }
-  
+
   if (homeBtn) {
     homeBtn.addEventListener("click", async (e) => {
       e.preventDefault();

@@ -19,12 +19,19 @@ export function initAddSchedule() {
                 official: addScheduleOfficial,
             };
 
+            if (!addScheduleDate || !addScheduleDescription || !addScheduleVenue || !addScheduleOfficial) {
+                window.electronAPI.showToast("All fields required.", false); return;
+            }
+
             try {
                 const response = await window.electronAPI.createSchedule(data);
 
                 if (response.success) {
                     window.electronAPI.showToast(response.message, response.success);
-                    addScheduleModal.hide()
+                    addScheduleModal.hide();
+
+                    const fetchSchedulesModule = await import("./fetchSchedules.js");
+                    fetchSchedulesModule.fetchAndRenderSchedules();
                 } else {
                     window.electronAPI.showToast(response.message, response.success);
                 }
