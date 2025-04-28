@@ -109,6 +109,11 @@ export async function fetchAndRenderSchedules(dateFilter = "all", statusFilter =
       rescheduleIconContainer.setAttribute("data-bs-target", schedule.isDone || schedule.isCanceled ? "#deleteScheduleModal" : "#rescheduleModal")
       tdActions.appendChild(rescheduleIconContainer)
 
+      const doneIconContainer = document.createElement("span");
+      doneIconContainer.setAttribute("data-bs-toggle", "modal")
+      doneIconContainer.setAttribute("data-bs-target", "#doneScheduleModal")
+      tdActions.appendChild(doneIconContainer)
+
       // Cancel icon
       const cancelIcon = document.createElement("i");
       cancelIcon.className =
@@ -145,7 +150,7 @@ export async function fetchAndRenderSchedules(dateFilter = "all", statusFilter =
       doneIcon.textContent = "bookmark";
       doneIcon.id = "doneScheduleBtn";
       doneIcon.style.display = schedule.isDone || schedule.isCanceled ? "none" : "inline-block"
-      tdActions.appendChild(doneIcon);
+      doneIconContainer.appendChild(doneIcon);
 
       tr.appendChild(tdActions);
 
@@ -326,6 +331,57 @@ export function initreschedule() {
       if (!newDate){window.electronAPI.showToast("New date required.", false); return;}
 
       const result = await window.electronAPI.reschedule(parseInt(selectedScheduleId), newDate);
+
+      if (result.success) {
+
+        modal.hide();
+        await fetchAndRenderSchedules(currentFilter, currentStatus);
+        window.electronAPI.showToast(result.message, true);
+
+      } else {
+        window.electronAPI.showToast(result.message, false);
+      }
+    } catch (error) {
+      window.electronAPI.showToast(error.message, false);
+    }
+  });
+}
+
+export function initDoneSchedule() {
+  const rescheduleModal = document.getElementById("doneScheduleModal");
+  const modal = new bootstrap.Modal(rescheduleModal);
+  
+  if (!rescheduleModal) return;
+
+  let selectedScheduleId = null;
+
+  // Delegate click event to cancel icons
+  document.querySelector(".table-responsive table tbody").addEventListener("click", (event) => {
+    if (event.target && event.target.id === "doneScheduleBtn") {
+      const tr = event.target.closest("tr");
+      if (tr && tr.dataset.scheduleId) {
+        selectedScheduleId = tr.dataset.scheduleId
+
+        console.log(selectedScheduleId)
+
+        modal.show();
+      }
+    }
+  });
+
+  const rescheduleForm = rescheduleModal.querySelector("form");
+  if (!rescheduleForm) return;
+
+  rescheduleForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    try {
+      const filterSelect = document.getElementById("filterSchedule");
+      const statusSelect = document.getElementById("filterScheduleStatus");
+      const currentFilter = filterSelect ? filterSelect.value : "all";
+      const currentStatus = statusSelect ? statusSelect.value : "all";
+
+      const result = await window.electronAPI.doneSchedule(parseInt(selectedScheduleId));
 
       if (result.success) {
 

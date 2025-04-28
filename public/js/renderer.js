@@ -97,6 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           fetchSchedulesModule.initFilterScheduleStatus();
           fetchSchedulesModule.initCancelSchedule();
           fetchSchedulesModule.initreschedule();
+          fetchSchedulesModule.initDoneSchedule();
 
           // Save filter changes to localStorage
           if (filterSelect) {

@@ -212,6 +212,21 @@ ipcMain.handle("reschedule", async (event, id, newDate) => {
   }
 })
 
+ipcMain.handle("done-schedule", async (event, id) => {
+  try {
+    await prisma.schedule.update({
+      where: {id},
+      data: {
+        isDone: true,
+      },
+    })
+
+    return { success: true, message: "Marked as done." };
+  } catch (err) {
+    return {success: false, message: (err as Error).message}
+  }
+})
+
 ipcMain.handle("new-purchase-request", async (event, data) => {
   try{
     const newData = await newPurchaseRequest(
