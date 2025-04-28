@@ -1,47 +1,37 @@
 <div>
-    <h5 class="title text-center p-0 m-0 mb-2">Schedules</h5>
+    <h5 class="title text-center p-0 m-0 mb-2">Purchase Requests</h5>
 
-    <div class="d-flex mx-5 gap-2" id="actions">
-        <span data-bs-toggle="modal" data-bs-target="#addScheduleModal">
-            <i class="icon-sm material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="right"
-                data-bs-custom-class="custom-tooltip" title="Add schedule" id="addScheduleBtn">add
+    <div class="d-flex ms-4 ps-2 gap-2 mb-2" id="actions">
+        <span class="me-4">
+            <input type="search" class="form-control rounded-2 font-sm input col-4 search-box" placeholder="Search here" id="purchaseFilter">
+        </span>
+        <span data-bs-toggle="modal" data-bs-target="#addPurchaseModal" class="mt-1">
+            <i class="icon-sm material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
+                data-bs-custom-class="custom-tooltip" title="New purchase request" id="addPurchaseBtn">add
             </i>
         </span>
-        <span data-bs-toggle="modal" data-bs-target="#deleteAllScheduleModal">
-            <i class="icon-sm dlt-icon material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="right"
-                data-bs-custom-class="custom-tooltip" title="Delete all" id="deleteAllScheduleBtn">delete_sweep
+        <span data-bs-toggle="modal" data-bs-target="#deleteAllPurchaseModal" class="mt-1">
+            <i class="icon-sm dlt-icon material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
+                data-bs-custom-class="custom-tooltip" title="Delete all" id="deleteAllPurchaseBtn">delete_sweep
             </i>
         </span>
-        <span>
-            <select id="filterSchedule" class="form-select font-sm filter-select py-0 ps-0 ms-3">
-                <option class="text-center" value="today">Today</option>
-                <option class="text-center" value="all">All</option>
-            </select>
-        </span>
-        <span>
-            <select id="filterScheduleStatus" class="form-select font-sm filter-select py-0 ps-0" style="width: 110px;">
-                <option class="text-center" value="all">All</option>
-                <option class="text-center" value="canceled">Canceled</option>
-                <option class="text-center" value="done">Done</option>
-            </select>
-        </span>
-        
+
     </div>
 
     <div class="table-responsive table-container mx-4 mt-2 font">
-        <table class="table table-hover">
-            <thead>
+        <table class="table table-hover" id="prTable">
+            <thead id="prTableHead">
                 <tr>
-                    <th>No.</th>
-                    <th style="min-width: 30rem;">Description</th>
-                    <th>Status</th>
-                    <th>Venue</th>
-                    <th>With</th>
-                    <th style="min-width: 11rem;">Date & Time</th>
+                    <th>PR No.</th>
+                    <th>Requested by</th>
+                    <th>Department</th>
+                    <th>Purpose</th>
+                    <th>Request Date</th>
+                    <th style="min-width: 11rem;">Status</th>
                     <th style="width: 6rem; padding-left: .6rem;">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="prTableBody">
 
             </tbody>
         </table>
@@ -49,32 +39,39 @@
 </div>
 
 <!-- Add Schedule Modal -->
-<div class="modal" id="addScheduleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="1"
-    aria-labelledby="addScheduleModalLabel" aria-hidden="true">
+<div class="modal" id="addPurchaseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="1"
+    aria-labelledby="addPurchaseModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h6 class="modal-title" id="addScheduleModalLabel">Add Schedule</h6>
+                <h6 class="modal-title" id="addPurchaseModalLabel">New Purchase Request</h6>
             </div>
-            <form method="post" id="addScheduleForm">
+            <form method="post" id="addPurchaseForm">
                 <div class="modal-body font p-4 pb-2">
-                    <div class="row font mb-4">
-                        <div class="input-field col-6">
-                            <label class="mb-1 ms-2" for="addScheduleDescription">Description</label>
-                            <textarea id="addScheduleDescription" class="form-control rounded-2 font textarea" rows=4></textarea>
+                    <div class="row font mb-3">
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="addPurchaseNumber">PR Number</label>
+                            <input type="number" id="addPurchaseNumber" class="form-control rounded-2 font input">
                         </div>
-                        <div class="input-field col-6">
-                            <label class="mb-1 ms-2" for="addScheduleVenue">Venue</label>
-                            <input type="text" id="addScheduleVenue" class="form-control rounded-2 font input mb-3">
-                        
-                            <label class="mb-1 ms-2" for="addScheduleOfficial">Officials <span class="text-muted small">(meeting with)</span></label>
-                            <input type="text" id="addScheduleOfficial" class="form-control rounded-2 font input mb-3">
-
-                            <label class="mb-1 ms-2" for="addScheduleDate">Date</label>
-                            <input type="datetime-local" id="addScheduleDate" class="form-control rounded-2 font input">
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="addPurchaseRequestedBy">Requested by</label>
+                            <input type="text" id="addPurchaseRequestedBy" class="form-control rounded-2 font input mb-3">
+                        </div>
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="addPurchaseRequestedDate">Date</label>
+                            <input type="datetime-local" id="addPurchaseRequestedDate" class="form-control rounded-2 font input mb-3">
                         </div>
                     </div>
-
+                    <div class="row font mb-3">
+                        <div class="input-field col-7">
+                            <label class="mb-1 ms-2" for="addPurchasePurpose">Purpose</label>
+                            <input type="text" id="addPurchasePurpose" class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-5">
+                            <label class="mb-1 ms-2" for="addPurchaseDepartment">Department</label>
+                            <input type="text" id="addPurchaseDepartment" class="form-control rounded-2 font input mb-3">
+                        </div>
+                    </div>
                     <div class="modal-footer font">
                         <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
                             data-bs-dismiss="modal">Back</button>
@@ -96,7 +93,8 @@
                         <p>Are sure to delete displayed schedules?</p>
                     </div>
                     <div class="modal-footer font">
-                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3" data-bs-dismiss="modal">Back</button>
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
+                            data-bs-dismiss="modal">Back</button>
                         <button class="button rounded-2 font btn btn-secondary" type="submit">Delete</button>
                     </div>
                 </form>
@@ -115,7 +113,8 @@
                         <p>Are sure to delete schedule?</p>
                     </div>
                     <div class="modal-footer font">
-                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3" data-bs-dismiss="modal">Back</button>
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
+                            data-bs-dismiss="modal">Back</button>
                         <button class="button rounded-2 font btn btn-secondary" type="submit">Delete</button>
                     </div>
                 </form>
@@ -134,7 +133,8 @@
                         <p>Are sure to cancel this schedule?</p>
                     </div>
                     <div class="modal-footer font">
-                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3" data-bs-dismiss="modal">Back</button>
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
+                            data-bs-dismiss="modal">Back</button>
                         <button class="button rounded-2 font btn btn-secondary" type="submit">Cancel</button>
                     </div>
                 </form>
@@ -161,8 +161,8 @@
                         </div>
                         <div class="input-field col-3 mt-1 pt-4 text-end">
                             <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
-                            data-bs-dismiss="modal">Back</button>
-                        <button class="button rounded-2 font btn btn-secondary" type="submit">Save</button>
+                                data-bs-dismiss="modal">Back</button>
+                            <button class="button rounded-2 font btn btn-secondary" type="submit">Save</button>
                         </div>
                     </div>
 

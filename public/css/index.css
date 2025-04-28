@@ -97,13 +97,23 @@ body {
     color: #4e0e0e;
 }
 
-.input {
+.textarea {
     border-color: #3C374D;
 }
 
-.input:focus {
+.input {
+    border-color: #3C374D;
+    height: 32px;
+}
+
+.input:focus, .textarea:focus {
     box-shadow: none;
     border-color: #3C374D;
+}
+
+.search-box {
+    height: 28px;
+    width: 220px;
 }
 
 .button {

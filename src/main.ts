@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import {
   createSchedule,
+  newPurchaseRequest,
   // addItem,
   // getItems,
   // pullItem,
@@ -208,6 +209,35 @@ ipcMain.handle("reschedule", async (event, id, newDate) => {
     return {success: true, message: "Rescheduled successfully."}
   } catch (err) {
     return {success: false, message: (err as Error).message}
+  }
+})
+
+ipcMain.handle("new-purchase-request", async (event, data) => {
+  try{
+    const newData = await newPurchaseRequest(
+      data.prNumber,
+      data.requestedBy,
+      data.requestedDate,
+      data.purpose,
+      data.department
+    )
+    return {success: true, message: "Purchase Request added.", data: newData}
+  }catch(err){
+    return {success: false, message: (err as Error).message}
+  }
+})
+
+ipcMain.handle("fetch-purchase-requests", async () => {
+  try{
+    const requests = await prisma.purchaseRequest.findMany({
+      orderBy: {
+        requestDate: "desc",
+      },
+    })
+
+    return requests;
+  }catch(err){
+    return (err as Error).message
   }
 })
 

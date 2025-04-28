@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const scheduleBtn = document.getElementById("scheduleBtn");
   const viewScheduleBtn = document.getElementById("viewScheduleBtn");
   const homeBtn = document.getElementById("homeBtn");
-  // Removed from here
+  const prBtn = document.getElementById("PRBtn");
 
   function attachScrollListener() {
     const tableContainer = document.querySelector(".table-container");
@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       tableContainer.addEventListener("scroll", function () {
         tableContainer.classList.add("scrolling");
 
-        // Remove the class after 1 second if no more scrolling
         clearTimeout(tableContainer.scrollTimeout);
         tableContainer.scrollTimeout = setTimeout(() => {
           tableContainer.classList.remove("scrolling");
@@ -80,7 +79,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
           }
 
-          // Retain status filter value from localStorage or default to 'all'
           const statusSelect = document.getElementById("filterScheduleStatus");
           let currentStatus = "all";
           if (statusSelect) {
@@ -107,13 +105,37 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
           }
 
-          // Save status filter changes to localStorage
           if (statusSelect) {
             statusSelect.addEventListener("change", () => {
               localStorage.setItem("scheduleStatusFilter", statusSelect.value);
             });
           }
+        }
 
+        if (page === "purchaseRequest.html") {
+          const prModule = await import("./logics/purchaseRequest.js")
+
+          const purchaseFilter = document.getElementById("purchaseFilter");
+          let currentPurchaseFilter = "";
+          if (purchaseFilter) {
+            const savedFilter = localStorage.getItem("purchaseFilter");
+            if (savedFilter) {
+              currentPurchaseFilter = savedFilter;
+              purchaseFilter.value = savedFilter;
+            } else {
+              purchaseFilter.value = currentPurchaseFilter;
+            }
+          }
+
+          prModule.initNewPurchaseRequest();
+          prModule.initFetchPurchaseRequest(currentPurchaseFilter);
+
+          if (purchaseFilter) {
+            purchaseFilter.addEventListener("input", () => {
+              localStorage.setItem("purchaseFilter", purchaseFilter.value);
+              prModule.initFetchPurchaseRequest(purchaseFilter.value);
+            });
+          }
         }
       })
       .catch((error) => console.error("Error loading page:", error));
@@ -159,6 +181,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     homeBtn.addEventListener("click", async (e) => {
       e.preventDefault();
       await loadPage("home.html");
+    });
+  }
+
+  if (prBtn) {
+    prBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      await loadPage("purchaseRequest.html");
     });
   }
 

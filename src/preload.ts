@@ -7,6 +7,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   deleteAllSchedule: (filter: string) => ipcRenderer.invoke("delete-all-schedule", filter),
   cancelSchedule: (id: number) => ipcRenderer.invoke("cancel-schedule", id),
   reschedule: (id: number, newDate: string) => ipcRenderer.invoke("reschedule", id, newDate),
+  newPurchaseRequest: (data: any) => ipcRenderer.invoke("new-purchase-request", data),
+  fetchPurchaseRequests: () => ipcRenderer.invoke("fetch-purchase-requests"),
   // addItem: (data: any) => ipcRenderer.invoke("add-item", data),
   // getItems: () => ipcRenderer.invoke("get-items"),
   // pullItem: (data: any) => ipcRenderer.invoke("pull-item", data),

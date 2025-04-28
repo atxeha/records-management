@@ -78,6 +78,41 @@ export async function createSchedule(
   }
 }
 
+export async function newPurchaseRequest(
+  prNumber: number,
+  requestedBy: string,
+  requestedDate: string,
+  purpose: string,
+  department: string
+) {
+  try{
+    let isoDate = requestedDate;
+    if (requestedDate.length === 16) {
+      isoDate = requestedDate + ":00";
+    }
+
+    const existingRequest = await prisma.purchaseRequest.findUnique({
+      where: {prNumber},
+    })
+
+    if(existingRequest){throw new Error(`Request '${prNumber}' already exists.`)}
+
+    const newPurchaseRequest = await prisma.purchaseRequest.create({
+      data: {
+        prNumber,
+        requestedBy,
+        requestDate: new Date(isoDate),
+        purpose,
+        department,
+      },
+    })
+
+    return newPurchaseRequest;
+  }catch(err){
+    return (err as Error).message
+  }
+}
+
 // export async function addItem(
 //   item_code: string,
 //   item_name: string,

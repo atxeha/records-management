@@ -28,6 +28,7 @@ export async function fetchAndRenderSchedules(dateFilter = "all", statusFilter =
     }
 
     const tbody = document.querySelector(".table-responsive table tbody");
+    const table = document.querySelector(".table-responsive table");
     if (!tbody) {
       console.error("Schedule table tbody not found");
       return;
@@ -37,8 +38,9 @@ export async function fetchAndRenderSchedules(dateFilter = "all", statusFilter =
     tbody.innerHTML = "";
 
     if (schedules.length === 0) {
+        table.classList.remove("table-hover");
       tbody.innerHTML = `<tr>
-            <td colspan="9" class="text-center text-muted pt-3"><h6>No schedules yet</h6></td>
+            <td colspan="9" class="text-center text-muted pt-3"><h6>No schedules found</h6></td>
             </tr>`;
     }
 
