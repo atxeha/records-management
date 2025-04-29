@@ -83,14 +83,14 @@
     </div>
 </div>
 <!-- Delete All Schedule Modal -->
-<div class="modal" id="deleteAllScheduleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+<div class="modal" id="deleteAllPurchaseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body font p-4 pb-2">
-                <form method="post" id="deleteItemForm">
+                <form method="post" id="deleteAllPrForm">
                     <div class="font mb-4">
-                        <p>Are sure to delete displayed schedules?</p>
+                        <p>Are sure to delete all PRs?</p>
                     </div>
                     <div class="modal-footer font">
                         <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
@@ -103,14 +103,14 @@
     </div>
 </div>
 <!-- Delete Schedule Modal -->
-<div class="modal" id="deleteScheduleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+<div class="modal" id="cancelPRModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body font p-4 pb-2">
-                <form method="post" id="deleteScheduleForm">
+                <form method="post" id="cancelPRForm">
                     <div class="font mb-4">
-                        <p>Are sure to delete schedule?</p>
+                        <p>Are sure to reject this request?</p>
                     </div>
                     <div class="modal-footer font">
                         <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
@@ -139,35 +139,6 @@
                     </div>
                 </form>
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- Reschedule Modal -->
-<div class="modal" id="rescheduleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="1"
-    aria-labelledby="rescheduleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h6 class="modal-title" id="rescheduleModalLabel">Reschedule meeting</h6>
-            </div>
-            <form method="post" id="rescheduleForm">
-                <div class="modal-body font p-4 pb-4">
-                    <div class="row font mb-4 d-flex justify-content-between">
-                        <div class="input-field col-9">
-                            <label class="mb-1 ms-2" for="rescheduleDate">Select New Date</label>
-                            <input type="datetime-local" id="rescheduleDate"
-                                class="form-control rounded-2 font input">
-                        </div>
-                        <div class="input-field col-3 mt-1 pt-4 text-end">
-                            <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
-                                data-bs-dismiss="modal">Back</button>
-                            <button class="button rounded-2 font btn btn-secondary" type="submit">Save</button>
-                        </div>
-                    </div>
-
-                </div>
-            </form>
         </div>
     </div>
 </div>

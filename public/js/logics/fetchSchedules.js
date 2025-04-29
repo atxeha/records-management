@@ -99,21 +99,20 @@ export async function fetchAndRenderSchedules(dateFilter = "all", statusFilter =
       const tdActions = document.createElement("td");
       tdActions.classList.add("p-0");
 
-      const cancelIconContainer = document.createElement("span");
-      cancelIconContainer.setAttribute("data-bs-toggle", "modal")
-      cancelIconContainer.setAttribute("data-bs-target", "#cancelScheduleModal")
-      tdActions.appendChild(cancelIconContainer)
+      let rescheduleIconContainer = document.createElement("span");
 
-      const rescheduleIconContainer = document.createElement("span");
-      rescheduleIconContainer.setAttribute("data-bs-toggle", "modal")
-      rescheduleIconContainer.setAttribute("data-bs-target", schedule.isDone || schedule.isCanceled ? "#deleteScheduleModal" : "#rescheduleModal")
-      tdActions.appendChild(rescheduleIconContainer)
-
-      const doneIconContainer = document.createElement("span");
-      doneIconContainer.setAttribute("data-bs-toggle", "modal")
-      doneIconContainer.setAttribute("data-bs-target", "#doneScheduleModal")
-      tdActions.appendChild(doneIconContainer)
-
+      if(schedule.isDone || schedule.isCanceled) {
+        // Show delete button without modal attributes
+        rescheduleIconContainer.removeAttribute("data-bs-toggle");
+        rescheduleIconContainer.removeAttribute("data-bs-target");
+        tdActions.appendChild(rescheduleIconContainer);
+      } else {
+        // Show reschedule button with modal attributes
+        rescheduleIconContainer.setAttribute("data-bs-toggle", "modal");
+        rescheduleIconContainer.setAttribute("data-bs-target", "#rescheduleModal");
+        tdActions.appendChild(rescheduleIconContainer);
+      }
+      
       // Cancel icon
       const cancelIcon = document.createElement("i");
       cancelIcon.className =
@@ -125,10 +124,10 @@ export async function fetchAndRenderSchedules(dateFilter = "all", statusFilter =
       cancelIcon.textContent = "close";
       cancelIcon.id = "cancelScheduleBtn";
       cancelIcon.dataset.scheduleId = schedule.id; // Add data attribute for schedule id
-      cancelIcon.style.display = schedule.isDone || schedule.isCanceled ? "none" : "inline-block"
-      cancelIconContainer.appendChild(cancelIcon);
+      cancelIcon.style.display = schedule.isDone || schedule.isCanceled ? "none" : "inline-block";
+      tdActions.appendChild(cancelIcon);
 
-      // Reschedule icon
+      // Reschedule or Delete icon
       const rescheduleIcon = document.createElement("i");
       rescheduleIcon.className = `icon-sm material-icons icon-btn mt-2 me-1 ${schedule.isDone || schedule.isCanceled ? 'ms-4 dlt-icon' : ''}`;
       rescheduleIcon.setAttribute("data-bs-toggle", "tooltip");
@@ -138,7 +137,11 @@ export async function fetchAndRenderSchedules(dateFilter = "all", statusFilter =
       rescheduleIcon.textContent = schedule.isDone || schedule.isCanceled ? "delete" : "replay";
       rescheduleIcon.id = schedule.isDone || schedule.isCanceled ? "deleteScheduleBtn" : "rescheduleBtn";
       rescheduleIcon.dataset.scheduleId = schedule.id;
-      rescheduleIconContainer.appendChild(rescheduleIcon);
+      if (schedule.isDone || schedule.isCanceled) {
+        tdActions.appendChild(rescheduleIcon);
+      } else {
+        rescheduleIconContainer.appendChild(rescheduleIcon);
+      }
 
       // Mark as done icon
       const doneIcon = document.createElement("i");
@@ -150,7 +153,7 @@ export async function fetchAndRenderSchedules(dateFilter = "all", statusFilter =
       doneIcon.textContent = "bookmark";
       doneIcon.id = "doneScheduleBtn";
       doneIcon.style.display = schedule.isDone || schedule.isCanceled ? "none" : "inline-block"
-      doneIconContainer.appendChild(doneIcon);
+      tdActions.appendChild(doneIcon);
 
       tr.appendChild(tdActions);
 
@@ -238,58 +241,45 @@ export function initDeleteAllSchedule() {
 }
 
 export function initCancelSchedule() {
-  const cancelScheduleModal = document.getElementById("cancelScheduleModal");
-  const modal = new bootstrap.Modal(cancelScheduleModal);
-  
-  if (!cancelScheduleModal) return;
-
   let selectedScheduleId = null;
 
   // Delegate click event to cancel icons
-  document.querySelector(".table-responsive table tbody").addEventListener("click", (event) => {
+  document.querySelector(".table-responsive table tbody").addEventListener("click", async (event) => {
+    const target = event.target
     if (event.target && event.target.id === "cancelScheduleBtn") {
       const tr = event.target.closest("tr");
       if (tr && tr.dataset.scheduleId) {
         selectedScheduleId = tr.dataset.scheduleId
 
-        modal.show();
+        try {
+          const filterSelect = document.getElementById("filterSchedule");
+          const statusSelect = document.getElementById("filterScheduleStatus");
+          const currentFilter = filterSelect ? filterSelect.value : "all";
+          const currentStatus = statusSelect ? statusSelect.value : "all";
+    
+          // Call electronAPI to cancel schedule by id
+          const result = await window.electronAPI.cancelSchedule(parseInt(selectedScheduleId));
+    
+          if (result.success) {
+            await fetchAndRenderSchedules(currentFilter, currentStatus);
+
+            window.electronAPI.showToast(result.message, true);
+
+            const tooltip = bootstrap.Tooltip.getInstance(target);
+            if (tooltip) {
+              tooltip.hide();
+            }
+    
+          } else {
+            window.electronAPI.showToast(result.message, false);
+          }
+        } catch (error) {
+          window.electronAPI.showToast(error.message, false);
+        }
       }
     }
   });
 
-  const cancelForm = cancelScheduleModal.querySelector("form");
-  if (!cancelForm) return;
-
-  cancelForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    if (!selectedScheduleId) {
-      console.error("No schedule selected for cancellation");
-      return;
-    }
-
-    try {
-      const filterSelect = document.getElementById("filterSchedule");
-      const statusSelect = document.getElementById("filterScheduleStatus");
-      const currentFilter = filterSelect ? filterSelect.value : "all";
-      const currentStatus = statusSelect ? statusSelect.value : "all";
-
-      // Call electronAPI to cancel schedule by id
-      const result = await window.electronAPI.cancelSchedule(parseInt(selectedScheduleId));
-
-      if (result.success) {
-        
-        modal.hide();
-        await fetchAndRenderSchedules(currentFilter, currentStatus);
-        window.electronAPI.showToast(result.message, true);
-
-      } else {
-        window.electronAPI.showToast(result.message, false);
-      }
-    } catch (error) {
-      window.electronAPI.showToast(error.message, false);
-    }
-  });
 }
 
 export function initreschedule() {
@@ -348,52 +338,84 @@ export function initreschedule() {
 }
 
 export function initDoneSchedule() {
-  const rescheduleModal = document.getElementById("doneScheduleModal");
-  const modal = new bootstrap.Modal(rescheduleModal);
-  
-  if (!rescheduleModal) return;
 
   let selectedScheduleId = null;
 
   // Delegate click event to cancel icons
-  document.querySelector(".table-responsive table tbody").addEventListener("click", (event) => {
+  document.querySelector(".table-responsive table tbody").addEventListener("click", async (event) => {
+    const target = event.target
     if (event.target && event.target.id === "doneScheduleBtn") {
+      const tr = event.target.closest("tr");
+      if (tr && tr.dataset.scheduleId) {
+        selectedScheduleId = tr.dataset.scheduleId
+        try {
+          const filterSelect = document.getElementById("filterSchedule");
+          const statusSelect = document.getElementById("filterScheduleStatus");
+          const currentFilter = filterSelect ? filterSelect.value : "all";
+          const currentStatus = statusSelect ? statusSelect.value : "all";
+    
+          const result = await window.electronAPI.doneSchedule(parseInt(selectedScheduleId));
+    
+          if (result.success) {
+            await fetchAndRenderSchedules(currentFilter, currentStatus);
+            window.electronAPI.showToast(result.message, true);
+
+            const tooltip = bootstrap.Tooltip.getInstance(target);
+            if (tooltip) {
+              tooltip.hide();
+            }
+    
+          } else {
+            window.electronAPI.showToast(result.message, false);
+          }
+        } catch (error) {
+          window.electronAPI.showToast(error.message, false);
+        }
+      }
+    }
+  });
+
+}
+
+export function initDeleteSchedule() {
+
+  let selectedScheduleId = null;
+
+  // Delegate click event to cancel icons
+  document.querySelector(".table-responsive table tbody").addEventListener("click", async (event) => {
+    const target = event.target
+    if (event.target && event.target.id === "deleteScheduleBtn") {
       const tr = event.target.closest("tr");
       if (tr && tr.dataset.scheduleId) {
         selectedScheduleId = tr.dataset.scheduleId
 
         console.log(selectedScheduleId)
 
-        modal.show();
+        try {
+          const filterSelect = document.getElementById("filterSchedule");
+          const statusSelect = document.getElementById("filterScheduleStatus");
+          const currentFilter = filterSelect ? filterSelect.value : "all";
+          const currentStatus = statusSelect ? statusSelect.value : "all";
+    
+          const result = await window.electronAPI.deleteSchedule(parseInt(selectedScheduleId));
+    
+          if (result.success) {
+    
+            await fetchAndRenderSchedules(currentFilter, currentStatus);
+            window.electronAPI.showToast(result.message, true);
+
+            const tooltip = bootstrap.Tooltip.getInstance(target);
+            if (tooltip) {
+              tooltip.hide();
+            }
+    
+          } else {
+            window.electronAPI.showToast(result.message, false);
+          }
+        } catch (error) {
+          window.electronAPI.showToast(error.message, false);
+        }
       }
-    }
-  });
-
-  const rescheduleForm = rescheduleModal.querySelector("form");
-  if (!rescheduleForm) return;
-
-  rescheduleForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    try {
-      const filterSelect = document.getElementById("filterSchedule");
-      const statusSelect = document.getElementById("filterScheduleStatus");
-      const currentFilter = filterSelect ? filterSelect.value : "all";
-      const currentStatus = statusSelect ? statusSelect.value : "all";
-
-      const result = await window.electronAPI.doneSchedule(parseInt(selectedScheduleId));
-
-      if (result.success) {
-
-        modal.hide();
-        await fetchAndRenderSchedules(currentFilter, currentStatus);
-        window.electronAPI.showToast(result.message, true);
-
-      } else {
-        window.electronAPI.showToast(result.message, false);
-      }
-    } catch (error) {
-      window.electronAPI.showToast(error.message, false);
     }
   });
 }

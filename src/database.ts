@@ -107,9 +107,9 @@ export async function newPurchaseRequest(
       },
     })
 
-    return newPurchaseRequest;
+    return { success: true, data: newPurchaseRequest };
   }catch(err){
-    return (err as Error).message
+    return { success: false, message: (err as Error).message };
   }
 }
 

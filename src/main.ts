@@ -168,7 +168,6 @@ ipcMain.handle("delete-all-schedule", async (event, filter) => {
       });
       return { success: true, message: `All today's schedules deleted.` };
     } else {
-      // Delete all schedules
       await prisma.schedule.deleteMany({});
       return { success: true, message: "All schedules deleted." };
     }
@@ -186,7 +185,7 @@ ipcMain.handle("cancel-schedule", async (event, id) => {
       },
     })
 
-    return { success: true, message: "Canceled successfully." }
+    return { success: true, message: "Schedule canceled." }
   } catch (err) {
     return { success: false, message: (err as Error).message}
   }
@@ -227,16 +226,31 @@ ipcMain.handle("done-schedule", async (event, id) => {
   }
 })
 
+ipcMain.handle("delete-schedule", async (event, id) => {
+  try {
+    await prisma.schedule.delete({
+      where: {id},
+    })
+
+    return {success: true, message: "Schedule deleted."}
+  } catch (err: any) {
+    return {success: false, message: err.message}
+  }
+})
+
 ipcMain.handle("new-purchase-request", async (event, data) => {
   try{
-    const newData = await newPurchaseRequest(
+    const result = await newPurchaseRequest(
       data.prNumber,
       data.requestedBy,
       data.requestedDate,
       data.purpose,
       data.department
     )
-    return {success: true, message: "Purchase Request added.", data: newData}
+    if (result.success === false) {
+      return { success: false, message: result.message };
+    }
+    return { success: true, message: "Purchase Request added.", data: result.data };
   }catch(err){
     return {success: false, message: (err as Error).message}
   }
@@ -253,6 +267,42 @@ ipcMain.handle("fetch-purchase-requests", async () => {
     return requests;
   }catch(err){
     return (err as Error).message
+  }
+})
+
+ipcMain.handle("approve-reject-pr", async (e, id, status) => {
+  try {
+    const statusObj = await prisma.purchaseRequest.findUnique({
+      where: {id},
+      select: {
+        status: true,
+      },
+    })
+
+    if(statusObj?.status === status) {
+      return { success: false, message: `Request already ${status}.` }
+    }
+
+    await prisma.purchaseRequest.update({
+      where: {id},
+      data: {
+        status: status,
+      },
+    })
+
+    return {success: true, message: `Request ${status}.`}
+  }catch (err: any) {
+    return{success: false, message: err.message}
+  }
+})
+
+ipcMain.handle("delete-all-pr", async(e)=>{
+  try{
+    await prisma.purchaseRequest.deleteMany()
+
+    return{success:true, message: "PRs deleted."}
+  }catch(e: any){
+    return{success: false, message: e.message}
   }
 })
 

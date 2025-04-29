@@ -98,6 +98,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           fetchSchedulesModule.initCancelSchedule();
           fetchSchedulesModule.initreschedule();
           fetchSchedulesModule.initDoneSchedule();
+          fetchSchedulesModule.initDeleteSchedule();
 
           // Save filter changes to localStorage
           if (filterSelect) {
@@ -130,6 +131,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
           prModule.initNewPurchaseRequest();
           prModule.initFetchPurchaseRequest(currentPurchaseFilter);
+          prModule.initCancelPr(currentPurchaseFilter);
+          prModule.initApprovePr(currentPurchaseFilter);
+          prModule.initDeleteAllPr(currentPurchaseFilter);
 
           if (purchaseFilter) {
             purchaseFilter.addEventListener("input", () => {

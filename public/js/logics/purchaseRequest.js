@@ -24,19 +24,20 @@ export function initNewPurchaseRequest() {
         try{
             const response = await window.electronAPI.newPurchaseRequest(data);
 
-            response.success
-              ? window.electronAPI.showToast(response.message, true)
-              : window.electronAPI.showToast(response.message, false);
+            if (response.success){
+              window.electronAPI.showToast(response.message, true)
+              modal.hide()
 
-            modal.hide()
+              initFetchPurchaseRequest()
+            } else {
+              window.electronAPI.showToast(response.message, false);
+            }
 
-            initFetchPurchaseRequest()
         }catch(err){
             window.electronAPI.showToast(err.message, false);
         }
     })
 }
-
 
 export async function initFetchPurchaseRequest(searchQuery = "") {
     try {
@@ -94,19 +95,128 @@ export async function initFetchPurchaseRequest(searchQuery = "") {
                 <td>${item.department}</td>
                 <td>${item.purpose}</td>
                 <td>${formattedDate}</td>
-                <td>${item.isApproved ? 'Approved' : '-- --'}</td>
-                <td class="d-flex">
-                    <i class="edit-icon icon-btn icon-sm material-icons ms-1" data-bs-toggle="tooltip"
-                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Edit">edit</i>
-                    <i class="edit-icon icon-btn icon-sm material-icons ms-1" data-bs-toggle="tooltip"
-                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Edit">edit</i>
-                    <i class="icon-btn icon-sm material-icons ms-1" data-bs-toggle="tooltip"
-                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Edit">thumb_up</i>
+                <td class="${item.status === "approved" ? "edit-icon" : item.status === "rejected" ? "dlt-icon" : ""}">${item.status === 'approved' ? 'Approved' : item.status === "rejected" ? 'Rejected' : 'Pending'}</td>
+                <td class="pb-0">
+                    <i data-purchase-id="${item.id}" class="rejectPr dlt-icon icon-btn icon-sm material-icons me-1" data-bs-toggle="tooltip"
+                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Reject" style="margin-left:2px;">close</i>
+                  
+                    <i data-purchase-id="${item.id}" class="approvePr edit-icon icon-btn icon-sm material-icons" data-bs-toggle="tooltip"
+                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Approve">check</i>
                 </td>
             `;
         tableBody.appendChild(row);
       });
+      var tooltipTriggerList = [].slice.call(
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      );
+  
+      // Dispose existing tooltips to avoid duplicates
+      tooltipTriggerList.forEach((el) => {
+        const tooltipInstance = bootstrap.Tooltip.getInstance(el);
+        if (tooltipInstance) {
+          tooltipInstance.dispose();
+        }
+      });
+  
+      tooltipTriggerList.map(
+        (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+      );
     } catch (error) {
       console.error("Error fetching items:", error);
     }
+}
+
+export function initCancelPr(search) {
+  const tableBody = document.getElementById("prTableBody");
+
+  if (tableBody) {
+    tableBody.addEventListener("click", async (event) => {
+      const target = event.target;
+      if (target.classList.contains("rejectPr")) {
+        event.preventDefault();
+        const id = target.dataset.purchaseId;
+
+        const res = await window.electronAPI.approveRejectPr(parseInt(id), "rejected")
+
+        if(res.success){
+          window.electronAPI.showToast(res.message, true)
+          initFetchPurchaseRequest(search)
+
+          const tooltip = bootstrap.Tooltip.getInstance(target);
+          if (tooltip) {
+            tooltip.hide();
+          }
+        } else {
+          window.electronAPI.showToast(res.message, false)
+          return;
+        }
+      }
+    });
+  } else {
+    console.log("prTableBody not found");
+  }
+}
+
+export function initApprovePr(search) {
+  const tableBody = document.getElementById("prTableBody");
+
+  if (tableBody) {
+    tableBody.addEventListener("click", async (event) => {
+      const target = event.target;
+      if (target.classList.contains("approvePr")) {
+        event.preventDefault();
+        const id = target.dataset.purchaseId;
+
+        const res = await window.electronAPI.approveRejectPr(parseInt(id), "approved")
+
+        if(res.success){
+          window.electronAPI.showToast(res.message, true)
+          initFetchPurchaseRequest(search)
+
+          const tooltip = bootstrap.Tooltip.getInstance(target);
+          if (tooltip) {
+            tooltip.hide();
+          }
+        } else {
+          window.electronAPI.showToast(res.message, false)
+          return;
+        }
+      }
+    });
+  } else {
+    console.log("prTableBody not found");
+  }
+}
+
+export function initDeleteAllPr(search) {
+  const deleteAllForm = document.querySelector("#deleteAllPurchaseModal form");
+  if (!deleteAllForm) return;
+
+  deleteAllForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    try {
+
+      const result = await window.electronAPI.deleteAllPr();
+
+      if (result.success) {
+        // Close modal
+        let deleteAllModal = bootstrap.Modal.getInstance(
+          document.getElementById("deleteAllPurchaseModal")
+        );
+        if (!deleteAllModal) {
+          deleteAllModal = new bootstrap.Modal(document.getElementById("deleteAllPurchaseModal"));
+        }
+        deleteAllModal.hide();
+        // Refresh Purchase list
+        await initFetchPurchaseRequest(search);
+
+        window.electronAPI.showToast(result.message, true);
+      } else {
+        window.electronAPI.showToast(result.message, false);
+      }
+    } catch (error) {
+      window.electronAPI.showToast(error.message, false);
+    }
+  });
 }
