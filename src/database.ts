@@ -80,6 +80,7 @@ export async function createSchedule(
 
 export async function newPurchaseRequest(
   prNumber: number,
+  item: string,
   requestedBy: string,
   requestedDate: string,
   purpose: string,
@@ -100,6 +101,7 @@ export async function newPurchaseRequest(
     const newPurchaseRequest = await prisma.purchaseRequest.create({
       data: {
         prNumber,
+        item,
         requestedBy,
         requestDate: new Date(isoDate),
         purpose,
@@ -134,6 +136,45 @@ export async function newPettyCash(
 
     return { success: true, data: newPettyCash };
   }catch(err){
+    return { success: false, message: (err as Error).message };
+  }
+}
+
+export async function newRis(
+  risNumber: number,
+  item: string,
+  preparedBy: string,
+  purpose: string,
+  issuedTo: string,
+  preparedDate: string,
+) {
+  try {
+    console.log("Requested Date:", preparedDate);
+    let isoDate = preparedDate;
+    if (preparedDate.length === 16) {
+      isoDate = preparedDate + ":00";
+    }
+    console.log("ISO Date:", isoDate);
+
+    const existingRequest = await prisma.requisitionIssueSlip.findUnique({
+      where: { risNumber },
+    })
+
+    if (existingRequest) { throw new Error(`Slip '${risNumber}' already exists.`) }
+
+    const newPurchaseRequest = await prisma.requisitionIssueSlip.create({
+      data: {
+        risNumber,
+        item,
+        preparedBy,
+        purpose,
+        issuedTo,
+        preparedDate: new Date(isoDate),
+      },
+    })
+
+    return { success: true, data: newPurchaseRequest };
+  } catch (err) {
     return { success: false, message: (err as Error).message };
   }
 }

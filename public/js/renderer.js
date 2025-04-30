@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const homeBtn = document.getElementById("homeBtn");
   const prBtn = document.getElementById("PRBtn");
   const pettyCashBtn = document.getElementById("pettyCashBtn");
+  const RISBtn = document.getElementById("RISBtn");
 
   function attachScrollListener() {
     const tableContainer = document.querySelector(".table-container");
@@ -173,6 +174,36 @@ document.addEventListener("DOMContentLoaded", async () => {
                         });
                     }
                 }
+
+                if (page === "requisition.html") {
+                  const risModule = await import("./logics/requisition.js")
+
+                  const filter = document.getElementById("risFilter");
+                  let currentRisFilter = "";
+                  if (filter) {
+                    const savedFilter = localStorage.getItem("risFilter");
+                    if (savedFilter) {
+                      currentRisFilter = savedFilter;
+                      filter.value = savedFilter;
+                    } else {
+                      filter.value = currentRisFilter;
+                    }
+                  }
+
+                  risModule.initNewRis();
+                  risModule.initFetchRis(currentRisFilter);
+                  // risModule.initReleasePc(currentFilter);
+                  // risModule.initDeletePc(currentFilter);
+                  // risModule.initReleaseAllPc(currentFilter);
+                  risModule.initDeleteAllRis();
+
+                  if (filter) {
+                    filter.addEventListener("input", () => {
+                      localStorage.setItem("risFilter", filter.value);
+                      risModule.initFetchRis(filter.value);
+                    });
+                  }
+                }
             })
             .catch((error) => console.error("Error loading page:", error));
     }
@@ -231,6 +262,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     pettyCashBtn.addEventListener("click", async (e) => {
       e.preventDefault();
       await loadPage("pettyCash.html")
+    })
+  }
+
+  if(RISBtn) {
+    RISBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      await loadPage("requisition.html")
     })
   }
 

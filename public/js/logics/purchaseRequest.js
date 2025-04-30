@@ -6,15 +6,17 @@ export function initNewPurchaseRequest() {
         e.preventDefault();
 
         const prNumber = parseInt(document.getElementById("addPurchaseNumber").value.trim());
+        const item = document.getElementById("addPurchaseItem").value.trim();
         const requestedBy = document.getElementById("addPurchaseRequestedBy").value.trim();
         const requestedDate = document.getElementById("addPurchaseRequestedDate").value.trim();
         const purpose = document.getElementById("addPurchasePurpose").value.trim();
         const department =document.getElementById("addPurchaseDepartment").value.trim();
 
-        if(!prNumber || !requestedBy || !requestedDate || !purpose || !department){window.electronAPI.showToast("All fields required.", false); return;}
+        if(!item || !prNumber || !requestedBy || !requestedDate || !purpose || !department){window.electronAPI.showToast("All fields required.", false); return;}
 
         const data = {
             prNumber: prNumber,
+            item: item,
             requestedBy: requestedBy,
             requestedDate: requestedDate,
             purpose: purpose,
@@ -91,6 +93,7 @@ export async function initFetchPurchaseRequest(searchQuery = "") {
 
         row.innerHTML = `
                 <td>${item.prNumber}</td>
+                <td>${item.item}</td>
                 <td>${item.requestedBy}</td>
                 <td>${item.department}</td>
                 <td>${item.purpose}</td>

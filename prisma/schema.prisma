@@ -15,20 +15,23 @@ datasource db {
 
 model PurchaseRequest {
   id          Int      @id @default(autoincrement())
-  prNumber    BigInt @unique
+  prNumber    BigInt   @unique
+  item String @default("asdf")
   requestedBy String
   department  String
   purpose     String
   requestDate DateTime
-  status String  @default("pending")
+  status      String   @default("pending")
   createdAt   DateTime @default(now())
 }
 
 model RequisitionIssueSlip {
   id           Int      @id @default(autoincrement())
-  risNumber    String
+  risNumber    BigInt   @unique
+  item         String
   preparedBy   String
   purpose      String
+  issuedTo     String
   preparedDate DateTime
   createdAt    DateTime @default(now())
 }
@@ -47,7 +50,7 @@ model PettyCash {
   cashAmount Float
   purpose    String
   dateIssued DateTime
-  status String @default("pending")
+  status     String   @default("pending")
   createdAt  DateTime @default(now())
 }
 
@@ -83,12 +86,12 @@ model ObligationRequest {
 }
 
 model Schedule {
-  id           Int      @id @default(autoincrement())
-  description    String
-  venue      String
-  official String @default("admin")
-  date  DateTime
-  isDone   Boolean  @default(false)
-  isCanceled Boolean @default(false)
-  createdAt    DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  description String
+  venue       String
+  official    String   @default("admin")
+  date        DateTime
+  isDone      Boolean  @default(false)
+  isCanceled  Boolean  @default(false)
+  createdAt   DateTime @default(now())
 }

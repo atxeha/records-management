@@ -22,5 +22,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   deleteAllPettyCash: () => ipcRenderer.invoke("delete-all-petty-cash"),
   releasePc: (id: number, status: string) => ipcRenderer.invoke("release-pc", id, status),
   deletePc: (id: number) => ipcRenderer.invoke("delete-pc", id),
+  newRis: (data: any) => ipcRenderer.invoke("new-ris", data),
+  fetchRis: () => ipcRenderer.invoke("fetch-ris"),
+  deleteAllRis: () => ipcRenderer.invoke("delete-all-ris"),
 });
 

@@ -5,7 +5,8 @@ import {
   createSchedule,
   newPurchaseRequest,
   newPettyCash,
-  prisma
+  prisma,
+  newRis
 } from "./database";
 import { execSync } from "child_process";
 
@@ -268,6 +269,7 @@ ipcMain.handle("new-purchase-request", async (event, data) => {
   try{
     const result = await newPurchaseRequest(
       data.prNumber,
+      data.item,
       data.requestedBy,
       data.requestedDate,
       data.purpose,
@@ -443,5 +445,53 @@ ipcMain.handle("delete-pc", async (event, id) => {
     return { success: true, message: "Petty cash deleted." }
   } catch (err: any) {
     return { success: false, message: err.message }
+  }
+})
+
+ipcMain.handle("new-ris", async (event, data) => {
+  try {
+    const result = await newRis(
+      data.risNumber,
+      data.item,
+      data.preparedBy,
+      data.purpose,
+      data.issuedTo,
+      data.preparedDate
+    )
+    if (result.success === false) {
+      return { success: false, message: result.message };
+    }
+    return { success: true, message: "Issue slip added.", data: result.data };
+  } catch (err) {
+    return { success: false, message: (err as Error).message }
+  }
+})
+
+ipcMain.handle("fetch-ris", async () => {
+  try {
+    const pettyCash = await prisma.requisitionIssueSlip.findMany({
+      orderBy: {
+        preparedDate: "desc",
+      },
+    })
+
+    return pettyCash;
+  } catch (err) {
+    return (err as Error).message
+  }
+})
+
+ipcMain.handle("delete-all-ris", async () => {
+  try {
+    const count = await prisma.requisitionIssueSlip.count();
+    if (count === 0) {
+      return { success: false, message: "No records to delete." };
+    }
+
+    await prisma.requisitionIssueSlip.deleteMany();
+
+    return { success: true, message: "All records deleted." };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
   }
 })
