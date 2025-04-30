@@ -47,6 +47,7 @@ model PettyCash {
   cashAmount Float
   purpose    String
   dateIssued DateTime
+  status String @default("pending")
   createdAt  DateTime @default(now())
 }
 

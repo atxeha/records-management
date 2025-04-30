@@ -33,7 +33,7 @@
             <thead>
                 <tr>
                     <th>No.</th>
-                    <th style="min-width: 30rem;">Description</th>
+                    <th>Description</th>
                     <th>Status</th>
                     <th>Venue</th>
                     <th>With</th>
@@ -71,7 +71,7 @@
                             <input type="text" id="addScheduleOfficial" class="form-control rounded-2 font input mb-3">
 
                             <label class="mb-1 ms-2" for="addScheduleDate">Date</label>
-                            <input type="datetime-local" id="addScheduleDate" class="form-control rounded-2 font input">
+                            <input type="datetime-local" id="addScheduleDate" class="form-control rounded-2 font input mb-2">
                         </div>
                     </div>
 
@@ -104,25 +104,6 @@
         </div>
     </div>
 </div>
-<!-- Delete Schedule Modal -->
-<!-- <div class="modal" id="deleteScheduleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body font p-4 pb-2">
-                <form method="post" id="deleteScheduleForm">
-                    <div class="font mb-4">
-                        <p>Are sure to delete schedule?</p>
-                    </div>
-                    <div class="modal-footer font">
-                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3" data-bs-dismiss="modal">Back</button>
-                        <button class="button rounded-2 font btn btn-secondary" type="submit">Delete</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div> -->
 
 <!-- Reschedule Modal -->
 <div class="modal" id="rescheduleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="1"
@@ -149,26 +130,6 @@
 
                 </div>
             </form>
-        </div>
-    </div>
-</div>
-<!-- Cancel Schedule Modal -->
-<div class="modal" id="doneScheduleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body font p-4 pb-2">
-                <form method="post" id="doneScheduleForm">
-                    <div class="font mb-4">
-                        <p>Are sure to mark this schedule as done?</p>
-                    </div>
-                    <div class="modal-footer font">
-                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
-                            data-bs-dismiss="modal">Back</button>
-                        <button class="button rounded-2 font btn btn-secondary" type="submit">Done</button>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
 </div>

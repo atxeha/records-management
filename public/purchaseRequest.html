@@ -3,7 +3,7 @@
 
     <div class="d-flex ms-4 ps-2 gap-2 mb-2" id="actions">
         <span class="me-4">
-            <input type="search" class="form-control rounded-2 font-sm input col-4 search-box" placeholder="Search here" id="purchaseFilter">
+            <input type="search" class="form-control rounded-2 font-sm input col-4 search-box" placeholder="Search by person or date" id="purchaseFilter">
         </span>
         <span data-bs-toggle="modal" data-bs-target="#addPurchaseModal" class="mt-1">
             <i class="icon-sm material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -55,11 +55,11 @@
                         </div>
                         <div class="input-field col-4">
                             <label class="mb-1 ms-2" for="addPurchaseRequestedBy">Requested by</label>
-                            <input type="text" id="addPurchaseRequestedBy" class="form-control rounded-2 font input mb-3">
+                            <input type="text" id="addPurchaseRequestedBy" class="form-control rounded-2 font input">
                         </div>
                         <div class="input-field col-4">
                             <label class="mb-1 ms-2" for="addPurchaseRequestedDate">Date</label>
-                            <input type="datetime-local" id="addPurchaseRequestedDate" class="form-control rounded-2 font input mb-3">
+                            <input type="datetime-local" id="addPurchaseRequestedDate" class="form-control rounded-2 font input">
                         </div>
                     </div>
                     <div class="row font mb-3">
@@ -96,46 +96,6 @@
                         <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
                             data-bs-dismiss="modal">Back</button>
                         <button class="button rounded-2 font btn btn-secondary" type="submit">Delete</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Delete Schedule Modal -->
-<div class="modal" id="cancelPRModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body font p-4 pb-2">
-                <form method="post" id="cancelPRForm">
-                    <div class="font mb-4">
-                        <p>Are sure to reject this request?</p>
-                    </div>
-                    <div class="modal-footer font">
-                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
-                            data-bs-dismiss="modal">Back</button>
-                        <button class="button rounded-2 font btn btn-secondary" type="submit">Delete</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Cancel Schedule Modal -->
-<div class="modal" id="cancelScheduleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body font p-4 pb-2">
-                <form method="post" id="cancelScheduleForm">
-                    <div class="font mb-4">
-                        <p>Are sure to cancel this schedule?</p>
-                    </div>
-                    <div class="modal-footer font">
-                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
-                            data-bs-dismiss="modal">Back</button>
-                        <button class="button rounded-2 font btn btn-secondary" type="submit">Cancel</button>
                     </div>
                 </form>
             </div>

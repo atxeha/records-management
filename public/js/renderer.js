@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const viewScheduleBtn = document.getElementById("viewScheduleBtn");
   const homeBtn = document.getElementById("homeBtn");
   const prBtn = document.getElementById("PRBtn");
+  const pettyCashBtn = document.getElementById("pettyCashBtn");
 
   function attachScrollListener() {
     const tableContainer = document.querySelector(".table-container");
@@ -45,106 +46,136 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
   }
 
-  async function loadPage(page) {
-    await fetch(`./${page}`)
-      .then((response) => response.text())
-      .then(async (data) => {
-        document.getElementById("main-content").innerHTML = data;
-        initializeTooltips();
-        attachDynamicEventListeners();
-        localStorage.setItem("currentPage", page);
+    async function loadPage(page) {
+        await fetch(`./${page}`)
+            .then((response) => response.text())
+            .then(async (data) => {
+                document.getElementById("main-content").innerHTML = data;
+                initializeTooltips();
+                attachDynamicEventListeners();
+                localStorage.setItem("currentPage", page);
 
-        // Attach scroll listener after content load
-        attachScrollListener();
+                // Attach scroll listener after content load
+                attachScrollListener();
 
-        if (page === "schedule.html") {
-          // Dynamically import addSchedule.js to attach event listeners
-          const addScheduleModule = await import("./logics/addSchedule.js");
-          addScheduleModule.initAddSchedule();
+                if (page === "schedule.html") {
+                    // Dynamically import addSchedule.js to attach event listeners
+                    const addScheduleModule = await import("./logics/addSchedule.js");
+                    addScheduleModule.initAddSchedule();
 
-          const fetchSchedulesModule = await import(
-            "./logics/fetchSchedules.js"
-          );
+                    const fetchSchedulesModule = await import(
+                        "./logics/fetchSchedules.js"
+                    );
 
-          // Retain filter value from localStorage or default to 'all'
-          const filterSelect = document.getElementById("filterSchedule");
-          let currentFilter = "all";
-          if (filterSelect) {
-            const savedFilter = localStorage.getItem("scheduleFilter");
-            if (savedFilter) {
-              currentFilter = savedFilter;
-              filterSelect.value = savedFilter;
-            } else {
-              filterSelect.value = currentFilter;
-            }
-          }
+                    // Retain filter value from localStorage or default to 'all'
+                    const filterSelect = document.getElementById("filterSchedule");
+                    let currentFilter = "all";
+                    if (filterSelect) {
+                        const savedFilter = localStorage.getItem("scheduleFilter");
+                        if (savedFilter) {
+                            currentFilter = savedFilter;
+                            filterSelect.value = savedFilter;
+                        } else {
+                            filterSelect.value = currentFilter;
+                        }
+                    }
 
-          const statusSelect = document.getElementById("filterScheduleStatus");
-          let currentStatus = "all";
-          if (statusSelect) {
-            const savedStatus = localStorage.getItem("scheduleStatusFilter");
-            if (savedStatus) {
-              currentStatus = savedStatus;
-              statusSelect.value = savedStatus;
-            } else {
-              statusSelect.value = currentStatus;
-            }
-          }
-          
-          fetchSchedulesModule.fetchAndRenderSchedules(currentFilter, currentStatus);
-          fetchSchedulesModule.initDeleteAllSchedule();
-          fetchSchedulesModule.initFilterSchedule();
-          fetchSchedulesModule.initFilterScheduleStatus();
-          fetchSchedulesModule.initCancelSchedule();
-          fetchSchedulesModule.initreschedule();
-          fetchSchedulesModule.initDoneSchedule();
-          fetchSchedulesModule.initDeleteSchedule();
+                    const statusSelect = document.getElementById("filterScheduleStatus");
+                    let currentStatus = "all";
+                    if (statusSelect) {
+                        const savedStatus = localStorage.getItem("scheduleStatusFilter");
+                        if (savedStatus) {
+                            currentStatus = savedStatus;
+                            statusSelect.value = savedStatus;
+                        } else {
+                            statusSelect.value = currentStatus;
+                        }
+                    }
 
-          // Save filter changes to localStorage
-          if (filterSelect) {
-            filterSelect.addEventListener("change", () => {
-              localStorage.setItem("scheduleFilter", filterSelect.value);
-            });
-          }
+                    fetchSchedulesModule.fetchAndRenderSchedules(currentFilter, currentStatus);
+                    fetchSchedulesModule.initDeleteAllSchedule();
+                    fetchSchedulesModule.initFilterSchedule();
+                    fetchSchedulesModule.initFilterScheduleStatus();
+                    fetchSchedulesModule.initCancelSchedule();
+                    fetchSchedulesModule.initreschedule();
+                    fetchSchedulesModule.initDoneSchedule();
+                    fetchSchedulesModule.initDeleteSchedule();
 
-          if (statusSelect) {
-            statusSelect.addEventListener("change", () => {
-              localStorage.setItem("scheduleStatusFilter", statusSelect.value);
-            });
-          }
-        }
+                    // Save filter changes to localStorage
+                    if (filterSelect) {
+                        filterSelect.addEventListener("change", () => {
+                            localStorage.setItem("scheduleFilter", filterSelect.value);
+                        });
+                    }
 
-        if (page === "purchaseRequest.html") {
-          const prModule = await import("./logics/purchaseRequest.js")
+                    if (statusSelect) {
+                        statusSelect.addEventListener("change", () => {
+                            localStorage.setItem("scheduleStatusFilter", statusSelect.value);
+                        });
+                    }
+                }
 
-          const purchaseFilter = document.getElementById("purchaseFilter");
-          let currentPurchaseFilter = "";
-          if (purchaseFilter) {
-            const savedFilter = localStorage.getItem("purchaseFilter");
-            if (savedFilter) {
-              currentPurchaseFilter = savedFilter;
-              purchaseFilter.value = savedFilter;
-            } else {
-              purchaseFilter.value = currentPurchaseFilter;
-            }
-          }
+                if (page === "purchaseRequest.html") {
+                    const prModule = await import("./logics/purchaseRequest.js")
 
-          prModule.initNewPurchaseRequest();
-          prModule.initFetchPurchaseRequest(currentPurchaseFilter);
-          prModule.initCancelPr(currentPurchaseFilter);
-          prModule.initApprovePr(currentPurchaseFilter);
-          prModule.initDeleteAllPr(currentPurchaseFilter);
+                    const purchaseFilter = document.getElementById("purchaseFilter");
+                    let currentPurchaseFilter = "";
+                    if (purchaseFilter) {
+                        const savedFilter = localStorage.getItem("purchaseFilter");
+                        if (savedFilter) {
+                            currentPurchaseFilter = savedFilter;
+                            purchaseFilter.value = savedFilter;
+                        } else {
+                            purchaseFilter.value = currentPurchaseFilter;
+                        }
+                    }
 
-          if (purchaseFilter) {
-            purchaseFilter.addEventListener("input", () => {
-              localStorage.setItem("purchaseFilter", purchaseFilter.value);
-              prModule.initFetchPurchaseRequest(purchaseFilter.value);
-            });
-          }
-        }
-      })
-      .catch((error) => console.error("Error loading page:", error));
-  }
+                    prModule.initNewPurchaseRequest();
+                    prModule.initFetchPurchaseRequest(currentPurchaseFilter);
+                    prModule.initCancelPr(currentPurchaseFilter);
+                    prModule.initApprovePr(currentPurchaseFilter);
+                    prModule.initDeleteAllPr(currentPurchaseFilter);
+
+                    if (purchaseFilter) {
+                        purchaseFilter.addEventListener("input", () => {
+                            localStorage.setItem("purchaseFilter", purchaseFilter.value);
+                            prModule.initFetchPurchaseRequest(purchaseFilter.value);
+                        });
+                    }
+                }
+
+                if (page === "pettyCash.html") {
+                    const pcModule = await import("./logics/pettyCash.js")
+
+                    const filter = document.getElementById("pettyCashFilter");
+                    let currentFilter = "";
+                    if (filter) {
+                        const savedFilter = localStorage.getItem("pettyCashFilter");
+                        if (savedFilter) {
+                            currentFilter = savedFilter;
+                            filter.value = savedFilter;
+                        } else {
+                            filter.value = currentFilter;
+                        }
+                    }
+
+                    pcModule.initNewPettyCash();
+                    pcModule.initFetchPettyCash(currentFilter);
+                    // pcModule.initCancelPr(currentFilter);
+                    // pcModule.initApprovePr(currentFilter);
+                    pcModule.initReleaseAllPc(currentFilter);
+                    pcModule.initDeleteAllPc();
+
+                    if (filter) {
+                        filter.addEventListener("input", () => {
+                            localStorage.setItem("pettyCashFilter", filter.value);
+                            pcModule.initFetchPettyCash(filter.value);
+                        });
+                    }
+                }
+            })
+            .catch((error) => console.error("Error loading page:", error));
+    }
 
   function attachDynamicEventListeners() {
     const viewScheduleBtn = document.getElementById("viewScheduleBtn");
@@ -194,6 +225,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       e.preventDefault();
       await loadPage("purchaseRequest.html");
     });
+  }
+
+  if(pettyCashBtn) {
+    pettyCashBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      await loadPage("pettyCash.html")
+    })
   }
 
   const currentPage = localStorage.getItem("currentPage");
