@@ -158,6 +158,19 @@ ipcMain.handle("delete-all-schedule", async (event, filter) => {
         today.getDate() + 1
       );
 
+      const count = await prisma.schedule.count({
+        where: {
+          date: {
+            gte: startOfDay,
+            lt: endOfDay,
+          },
+        },
+      });
+
+      if (count === 0) {
+        return { success: false, message: "No schedules to delete for today." };
+      }
+
       await prisma.schedule.deleteMany({
         where: {
           date: {
@@ -168,6 +181,12 @@ ipcMain.handle("delete-all-schedule", async (event, filter) => {
       });
       return { success: true, message: `All today's schedules deleted.` };
     } else {
+      const count = await prisma.schedule.count();
+
+      if (count === 0) {
+        return { success: false, message: "No schedules to delete." };
+      }
+
       await prisma.schedule.deleteMany({});
       return { success: true, message: "All schedules deleted." };
     }
@@ -298,7 +317,12 @@ ipcMain.handle("approve-reject-pr", async (e, id, status) => {
 
 ipcMain.handle("delete-all-pr", async(e)=>{
   try{
-    await prisma.purchaseRequest.deleteMany()
+    const count = await prisma.purchaseRequest.count();
+    if (count === 0) {
+      return { success: false, message: "No purchase requests to delete." };
+    }
+
+    await prisma.purchaseRequest.deleteMany();
 
     return{success:true, message: "PRs deleted."}
   }catch(e: any){
