@@ -2,6 +2,9 @@ import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("electronAPI", {
   navigate: (page: string) => ipcRenderer.send("navigate", page),
+  showToast: (message: string, success: boolean) => {
+    window.postMessage({ type: "show-toast", message, success });
+  },
   createSchedule: (data: any) => ipcRenderer.invoke("create-schedule", data),
   fetchSchedules: () => ipcRenderer.invoke("fetch-schedules"),
   deleteAllSchedule: (filter: string) => ipcRenderer.invoke("delete-all-schedule", filter),
@@ -17,8 +20,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   fetchPettyCash: () => ipcRenderer.invoke("fetch-petty-cash"),
   releaseAllPc: () => ipcRenderer.invoke("release-all-pc"),
   deleteAllPettyCash: () => ipcRenderer.invoke("delete-all-petty-cash"),
-  showToast: (message: string, success: boolean) => {
-    window.postMessage({ type: "show-toast", message, success });
-  },
+  releasePc: (id: number, status: string) => ipcRenderer.invoke("release-pc", id, status),
+  deletePc: (id: number) => ipcRenderer.invoke("delete-pc", id),
 });
 

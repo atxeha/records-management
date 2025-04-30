@@ -158,19 +158,19 @@ export function initDeleteAllPc() {
     e.preventDefault();
 
     try {
-
       const result = await window.electronAPI.deleteAllPettyCash();
 
       if (result.success) {
-        // Close modal
         let deleteAllModal = bootstrap.Modal.getInstance(
           document.getElementById("deleteAllPcModal")
         );
+
         if (!deleteAllModal) {
           deleteAllModal = new bootstrap.Modal(document.getElementById("deleteAllPcModal"));
         }
+
         deleteAllModal.hide();
-        // Refresh Purchase list
+        
         await initFetchPettyCash();
 
         window.electronAPI.showToast(result.message, true);
@@ -181,4 +181,66 @@ export function initDeleteAllPc() {
       window.electronAPI.showToast(error.message, false);
     }
   });
+}
+
+export function initReleasePc(search) {
+  const tableBody = document.getElementById("pcTableBody");
+
+  if (tableBody) {
+    tableBody.addEventListener("click", async (event) => {
+      const target = event.target;
+      if (target.classList.contains("releasePc")) {
+        event.preventDefault();
+        const id = target.dataset.pettyId;
+
+        const res = await window.electronAPI.releasePc(parseInt(id), "released")
+
+        if(res.success){
+          window.electronAPI.showToast(res.message, true)
+          initFetchPettyCash(search)
+
+          const tooltip = bootstrap.Tooltip.getInstance(target);
+          if (tooltip) {
+            tooltip.hide();
+          }
+        } else {
+          window.electronAPI.showToast(res.message, false)
+          return;
+        }
+      }
+    });
+  } else {
+    console.log("pcTableBody not found");
+  }
+}
+
+export function initDeletePc(search) {
+    const tableBody = document.getElementById("pcTableBody");
+
+    if (tableBody) {
+        tableBody.addEventListener("click", async (event) => {
+            const target = event.target;
+            if (target.classList.contains("deletePc")) {
+                event.preventDefault();
+                const id = target.dataset.pettyId;
+
+                const res = await window.electronAPI.deletePc(parseInt(id))
+
+                if (res.success) {
+                    window.electronAPI.showToast(res.message, true)
+                    initFetchPettyCash(search)
+
+                    const tooltip = bootstrap.Tooltip.getInstance(target);
+                    if (tooltip) {
+                        tooltip.hide();
+                    }
+                } else {
+                    window.electronAPI.showToast(res.message, false)
+                    return;
+                }
+            }
+        });
+    } else {
+        console.log("pcTableBody not found");
+    }
 }

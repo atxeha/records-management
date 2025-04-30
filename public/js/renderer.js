@@ -161,8 +161,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                     pcModule.initNewPettyCash();
                     pcModule.initFetchPettyCash(currentFilter);
-                    // pcModule.initCancelPr(currentFilter);
-                    // pcModule.initApprovePr(currentFilter);
+                    pcModule.initReleasePc(currentFilter);
+                    pcModule.initDeletePc(currentFilter);
                     pcModule.initReleaseAllPc(currentFilter);
                     pcModule.initDeleteAllPc();
 

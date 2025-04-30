@@ -5,19 +5,6 @@ import {
   createSchedule,
   newPurchaseRequest,
   newPettyCash,
-  // addItem,
-  // getItems,
-  // pullItem,
-  // getPullItems,
-  // updateItemQuantity,
-  // deleteItem,
-  // editItem,
-  // deleteItemFromTable,
-  // addAddedItem,
-  // addLog,
-  // getLog,
-  // deleteAllLogs,
-  // getAddedItems,
   prisma
 } from "./database";
 import { execSync } from "child_process";
@@ -116,6 +103,26 @@ const menu = Menu.buildFromTemplate([
     ],
   },
 ]);
+
+ipcMain.on("navigate", (event, page) => {
+  const filePath = path.join(app.getAppPath(), "public", page);
+  console.log("Loading file:", filePath);
+
+  if (!fs.existsSync(filePath)) {
+    console.error("File does not exist:", filePath);
+    return;
+  }
+
+  if (mainWindow) {
+    mainWindow.loadFile(filePath);
+  }
+});
+
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
+});
 
 ipcMain.handle("create-schedule", async (event, data) => {
   try {
@@ -401,22 +408,40 @@ ipcMain.handle("delete-all-petty-cash", async () => {
   }
 });
 
-ipcMain.on("navigate", (event, page) => {
-  const filePath = path.join(app.getAppPath(), "public", page);
-  console.log("Loading file:", filePath);
+ipcMain.handle("release-pc", async (e, id, status) => {
+  try {
+    const statusObj = await prisma.pettyCash.findUnique({
+      where: { id },
+      select: {
+        status: true,
+      },
+    })
 
-  if (!fs.existsSync(filePath)) {
-      console.error("File does not exist:", filePath);
-      return;
-  }
+    if (statusObj?.status === status) {
+      return { success: false, message: `Cash already ${status}.` }
+    }
 
-  if (mainWindow) {
-      mainWindow.loadFile(filePath);
-  }
-});
+    await prisma.pettyCash.update({
+      where: { id },
+      data: {
+        status: status,
+      },
+    })
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
+    return { success: true, message: `Cash ${status}.` }
+  } catch (err: any) {
+    return { success: false, message: err.message }
   }
-});
+})
+
+ipcMain.handle("delete-pc", async (event, id) => {
+  try {
+    await prisma.pettyCash.delete({
+      where: { id },
+    })
+
+    return { success: true, message: "Petty cash deleted." }
+  } catch (err: any) {
+    return { success: false, message: err.message }
+  }
+})
