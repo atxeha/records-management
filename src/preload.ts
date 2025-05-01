@@ -25,8 +25,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   newRis: (data: any) => ipcRenderer.invoke("new-ris", data),
   fetchRis: () => ipcRenderer.invoke("fetch-ris"),
   deleteAllRis: () => ipcRenderer.invoke("delete-all-ris"),
-  rejectAllRis: () => ipcRenderer.invoke("reject-all-ris"),
-  approveAllRis: () => ipcRenderer.invoke("approve-all-ris"),
-  approveRejectRis: (id: number, status: string) => ipcRenderer.invoke("approve-reject-ris", id, status),
+  updateAllStatus: (tableName: string, status: string) => ipcRenderer.invoke("update-all-status", tableName, status),
+  approveRejectRis: (id: number, status: string, table: string) => ipcRenderer.invoke("approve-reject-ris", id, status, table),
 });
 

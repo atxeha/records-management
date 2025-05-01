@@ -494,63 +494,44 @@ ipcMain.handle("delete-all-ris", async () => {
   }
 })
 
-ipcMain.handle("reject-all-ris", async () => {
+ipcMain.handle("update-all-status", async (event, tableName, status) => {
   try {
-    const notRejectedCount = await prisma.requisitionIssueSlip.count({
+    const validTables = ["requisitionIssueSlip", "purchaseRequest"];
+
+    if (!validTables.includes(tableName)) {
+      return { success: false, message: "Invalid table name." };
+    }
+
+    const model = (prisma as any)[tableName];
+
+    if (!model) {
+      return { success: false, message: "Invalid table name." };
+    }
+
+    const notCount = await model.count({
       where: {
         status: {
-          not: "rejected",
+          not: status,
         },
       },
     });
 
-    if (notRejectedCount === 0) {
-      return { success: false, message: "All RIS already rejected." };
+    if (notCount === 0) {
+      return { success: false, message: `All ${tableName} already ${status}.` };
     }
 
-    await prisma.requisitionIssueSlip.updateMany({
+    await model.updateMany({
       where: {
         status: {
-          not: "rejected",
+          not: status,
         },
       },
       data: {
-        status: "rejected",
+        status: status,
       },
     });
 
-    return { success: true, message: `${notRejectedCount} RIS records rejected.` };
-  } catch (err) {
-    return { success: false, message: (err as Error).message };
-  }
-});
-
-ipcMain.handle("approve-all-ris", async () => {
-  try {
-    const notApprovedCount = await prisma.requisitionIssueSlip.count({
-      where: {
-        status: {
-          not: "approved",
-        },
-      },
-    });
-
-    if (notApprovedCount === 0) {
-      return { success: false, message: "All RIS already approved." };
-    }
-
-    await prisma.requisitionIssueSlip.updateMany({
-      where: {
-        status: {
-          not: "approved",
-        },
-      },
-      data: {
-        status: "approved",
-      },
-    });
-
-    return { success: true, message: `${notApprovedCount} RIS records approved.` };
+    return { success: true, message: `${notCount} ${tableName} records ${status}.` };
   } catch (err) {
     return { success: false, message: (err as Error).message };
   }

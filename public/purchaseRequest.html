@@ -15,7 +15,16 @@
                 data-bs-custom-class="custom-tooltip" title="Delete all" id="deleteAllPurchaseBtn">delete_sweep
             </i>
         </span>
-
+        <span data-bs-toggle="modal" data-bs-target="#rejectAllPurchaseModal" class="mt-1">
+            <i class="icon-sm dlt-icon material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
+                data-bs-custom-class="custom-tooltip" title="Reject all" id="rejectAllPurchaseBtn">close
+            </i>
+        </span>
+        <span data-bs-toggle="modal" data-bs-target="#approveAllPurchaseModal" class="mt-1">
+            <i class="icon-sm edit-icon material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
+                data-bs-custom-class="custom-tooltip" title="Approve all" id="approveAllPurchaseBtn">check
+            </i>
+        </span>
     </div>
 
     <div class="table-responsive table-container mx-4 mt-2 font">
@@ -101,6 +110,46 @@
                         <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
                             data-bs-dismiss="modal">Back</button>
                         <button class="button rounded-2 font btn btn-secondary" type="submit">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="approveAllPurchaseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body font p-4 pb-2">
+                <form method="post" id="approveAllPurchaseForm">
+                    <div class="font mb-4">
+                        <p>Are sure to approve all Purchase Requests?</p>
+                    </div>
+                    <div class="modal-footer font">
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
+                            data-bs-dismiss="modal">Back</button>
+                        <button class="button rounded-2 font btn btn-secondary" type="submit">Approve</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="rejectAllPurchaseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body font p-4 pb-2">
+                <form method="post" id="rejectAllPurchaseForm">
+                    <div class="font mb-4">
+                        <p>Are sure to reject all Purchase Requests?</p>
+                    </div>
+                    <div class="modal-footer font">
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
+                            data-bs-dismiss="modal">Back</button>
+                        <button class="button rounded-2 font btn btn-secondary" type="submit">Reject</button>
                     </div>
                 </form>
             </div>

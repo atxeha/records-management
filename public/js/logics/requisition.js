@@ -162,30 +162,30 @@ export function initDeleteAllRis() {
   });
 }
 
-export function initRejectAllRis() {
-  const deleteAllForm = document.querySelector("#rejectAllRisModal form");
-  if (!deleteAllForm) return;
+export function initUpdateAllRisStatus(modalId, tableName, status, search) {
+  const form = document.querySelector(`#${modalId} form`);
+  if (!form) return;
 
-  deleteAllForm.addEventListener("submit", async (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     try {
-      const result = await window.electronAPI.rejectAllRis();
+      const result = await window.electronAPI.updateAllStatus(tableName, status);
 
       if (result.success) {
-        let deleteAllModal = bootstrap.Modal.getInstance(
-          document.getElementById("rejectAllRisModal")
+        let modal = bootstrap.Modal.getInstance(
+          document.getElementById(`${modalId}`)
         );
 
-        if (!deleteAllModal) {
-          deleteAllModal = new bootstrap.Modal(
-            document.getElementById("rejectAllRisModal")
+        if (!modal) {
+          modal = new bootstrap.Modal(
+            document.getElementById(`${modalId}`)
           );
         }
 
-        deleteAllModal.hide();
+        modal.hide();
 
-        await initFetchRis();
+        await initFetchRis(search);
 
         window.electronAPI.showToast(result.message, true);
       } else {

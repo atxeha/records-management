@@ -118,6 +118,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 if (page === "purchaseRequest.html") {
                     const prModule = await import("./logics/purchaseRequest.js")
+                     let modalId = "";
 
                     const purchaseFilter = document.getElementById("purchaseFilter");
                     let currentPurchaseFilter = "";
@@ -136,6 +137,29 @@ document.addEventListener("DOMContentLoaded", async () => {
                     prModule.initCancelPr(currentPurchaseFilter);
                     prModule.initApprovePr(currentPurchaseFilter);
                     prModule.initDeleteAllPr(currentPurchaseFilter);
+
+                    document.addEventListener(
+                      "shown.bs.modal",
+                      function (event) {
+                        modalId = event.target.id;
+                        console.log(modalId)
+                        if (modalId === "rejectAllPurchaseModal") {
+                          prModule.initUpdateAllPurchaseStatus(
+                            "rejectAllPurchaseModal",
+                            "purchaseRequest",
+                            "rejected",
+                            currentPurchaseFilter
+                          );
+                        } else if (modalId === "approveAllPurchaseModal") {
+                          prModule.initUpdateAllPurchaseStatus(
+                            "approveAllPurchaseModal",
+                            "purchaseRequest",
+                            "approved",
+                            currentPurchaseFilter
+                          );
+                        }
+                      }
+                    );
 
                     if (purchaseFilter) {
                         purchaseFilter.addEventListener("input", () => {
@@ -178,6 +202,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (page === "requisition.html") {
                   const risModule = await import("./logics/requisition.js")
 
+                  let modalId = "";
+                  
                   const filter = document.getElementById("risFilter");
                   let currentRisFilter = "";
                   if (filter) {
@@ -192,10 +218,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                   risModule.initNewRis();
                   risModule.initFetchRis(currentRisFilter);
-                  risModule.initApproveAllRis(currentRisFilter);
-                  risModule.initRejectAllRis(currentRisFilter);
                   risModule.initApproveRejectRis(currentRisFilter);
                   risModule.initDeleteAllRis();
+
+                  document.addEventListener("shown.bs.modal", function (event) {
+                    modalId = event.target.id;
+                    if (modalId === "rejectAllRisModal") {
+                      risModule.initUpdateAllRisStatus(
+                        "rejectAllRisModal",
+                        "requisitionIssueSlip",
+                        "rejected",
+                        currentRisFilter
+                      );
+                    } else if (modalId === "approveAllRisModal") {
+                      risModule.initUpdateAllRisStatus(
+                        "approveAllRisModal",
+                        "requisitionIssueSlip",
+                        "approved",
+                        currentRisFilter
+                      );
+                    }
+                  });
 
                   if (filter) {
                     filter.addEventListener("input", () => {

@@ -223,3 +223,38 @@ export function initDeleteAllPr(search) {
     }
   });
 }
+
+export function initUpdateAllPurchaseStatus(modalId, tableName, status, search) {
+  const form = document.querySelector(`#${modalId} form`);
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    try {
+      const result = await window.electronAPI.updateAllStatus(tableName, status);
+
+      if (result.success) {
+        let modal = bootstrap.Modal.getInstance(
+          document.getElementById(`${modalId}`)
+        );
+
+        if (!modal) {
+          modal = new bootstrap.Modal(
+            document.getElementById(`${modalId}`)
+          );
+        }
+
+        modal.hide();
+
+        await initFetchPurchaseRequest(search);
+
+        window.electronAPI.showToast(result.message, true);
+      } else {
+        window.electronAPI.showToast(result.message, false);
+      }
+    } catch (error) {
+      window.electronAPI.showToast(error.message, false);
+    }
+  });
+}
