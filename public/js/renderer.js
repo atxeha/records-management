@@ -192,9 +192,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                   risModule.initNewRis();
                   risModule.initFetchRis(currentRisFilter);
-                  // risModule.initReleasePc(currentFilter);
-                  // risModule.initDeletePc(currentFilter);
-                  // risModule.initReleaseAllPc(currentFilter);
+                  risModule.initApproveAllRis(currentRisFilter);
+                  risModule.initRejectAllRis(currentRisFilter);
+                  risModule.initApproveRejectRis(currentRisFilter);
                   risModule.initDeleteAllRis();
 
                   if (filter) {

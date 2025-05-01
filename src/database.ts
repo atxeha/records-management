@@ -73,7 +73,6 @@ export async function createSchedule(
 
     return newSchedule 
   } catch (err) {
-    console.log((err as Error).message);
     return (err as Error).message
   }
 }
@@ -149,12 +148,10 @@ export async function newRis(
   preparedDate: string,
 ) {
   try {
-    console.log("Requested Date:", preparedDate);
     let isoDate = preparedDate;
     if (preparedDate.length === 16) {
       isoDate = preparedDate + ":00";
     }
-    console.log("ISO Date:", isoDate);
 
     const existingRequest = await prisma.requisitionIssueSlip.findUnique({
       where: { risNumber },

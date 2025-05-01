@@ -143,8 +143,6 @@ ipcMain.handle("fetch-schedules", async () => {
       },
     });
 
-    console.log(schedules)
-
     return { success: true, message: "Schedule fetched successfully.", data: schedules };
   } catch (err) {
     return { success: false, message: (err as Error).message };
@@ -495,3 +493,91 @@ ipcMain.handle("delete-all-ris", async () => {
     return { success: false, message: (err as Error).message };
   }
 })
+
+ipcMain.handle("reject-all-ris", async () => {
+  try {
+    const notRejectedCount = await prisma.requisitionIssueSlip.count({
+      where: {
+        status: {
+          not: "rejected",
+        },
+      },
+    });
+
+    if (notRejectedCount === 0) {
+      return { success: false, message: "All RIS already rejected." };
+    }
+
+    await prisma.requisitionIssueSlip.updateMany({
+      where: {
+        status: {
+          not: "rejected",
+        },
+      },
+      data: {
+        status: "rejected",
+      },
+    });
+
+    return { success: true, message: `${notRejectedCount} RIS records rejected.` };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+});
+
+ipcMain.handle("approve-all-ris", async () => {
+  try {
+    const notApprovedCount = await prisma.requisitionIssueSlip.count({
+      where: {
+        status: {
+          not: "approved",
+        },
+      },
+    });
+
+    if (notApprovedCount === 0) {
+      return { success: false, message: "All RIS already approved." };
+    }
+
+    await prisma.requisitionIssueSlip.updateMany({
+      where: {
+        status: {
+          not: "approved",
+        },
+      },
+      data: {
+        status: "approved",
+      },
+    });
+
+    return { success: true, message: `${notApprovedCount} RIS records approved.` };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+});
+
+ipcMain.handle("approve-reject-ris", async (e, id, status) => {
+  try {
+    const statusObj = await prisma.requisitionIssueSlip.findUnique({
+      where: { id },
+      select: {
+        status: true,
+      },
+    });
+
+    if (statusObj?.status === status) {
+      return { success: false, message: `Request already ${status}.` };
+    }
+
+    await prisma.requisitionIssueSlip.update({
+      where: { id },
+      data: {
+        status: status,
+      },
+    });
+
+    return { success: true, message: `Request ${status}.` };
+  } catch (err: any) {
+    return { success: false, message: err.message };
+  }
+});

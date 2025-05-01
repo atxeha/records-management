@@ -33,6 +33,7 @@ model RequisitionIssueSlip {
   purpose      String
   issuedTo     String
   preparedDate DateTime
+  status String @default("pending")
   createdAt    DateTime @default(now())
 }
 

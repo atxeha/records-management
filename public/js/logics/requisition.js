@@ -98,12 +98,13 @@ export async function initFetchRis(searchQuery = "") {
                 <td>${item.issuedTo}</td>
                 <td>${item.purpose}</td>
                 <td>${formattedDate}</td>
+                <td class="${item.status === "approved" ? "edit-icon" : item.status === "rejected" ? "dlt-icon" : ""}">${item.status === "pending" ? "Pending" : item.status === "rejected" ? "Rejected" : "Approved"}</td>
                 <td class="pb-0">
-                    <i data-ris-id="${item.id}" class="deleteRis dlt-icon icon-btn icon-sm material-icons me-1" data-bs-toggle="tooltip"
-                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Delete" style="margin-left:1px;">delete</i>
+                    <i data-ris-id="${item.id}" class="rejectRis dlt-icon icon-btn icon-sm material-icons me-1" data-bs-toggle="tooltip"
+                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Reject" style="margin-left:1px;">close</i>
                   
-                    <i data-ris-id="${item.id}" class="editRis edit-icon icon-btn icon-sm material-icons" data-bs-toggle="tooltip"
-                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Edit">edit</i>
+                    <i data-ris-id="${item.id}" class="approveRis edit-icon icon-btn icon-sm material-icons" data-bs-toggle="tooltip"
+                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Approve">check</i>
                 </td>
             `;
             tableBody.appendChild(row);
@@ -159,4 +160,129 @@ export function initDeleteAllRis() {
       window.electronAPI.showToast(error.message, false);
     }
   });
+}
+
+export function initRejectAllRis() {
+  const deleteAllForm = document.querySelector("#rejectAllRisModal form");
+  if (!deleteAllForm) return;
+
+  deleteAllForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    try {
+      const result = await window.electronAPI.rejectAllRis();
+
+      if (result.success) {
+        let deleteAllModal = bootstrap.Modal.getInstance(
+          document.getElementById("rejectAllRisModal")
+        );
+
+        if (!deleteAllModal) {
+          deleteAllModal = new bootstrap.Modal(
+            document.getElementById("rejectAllRisModal")
+          );
+        }
+
+        deleteAllModal.hide();
+
+        await initFetchRis();
+
+        window.electronAPI.showToast(result.message, true);
+      } else {
+        window.electronAPI.showToast(result.message, false);
+      }
+    } catch (error) {
+      window.electronAPI.showToast(error.message, false);
+    }
+  });
+}
+
+export function initApproveAllRis() {
+  const deleteAllForm = document.querySelector("#approveAllRisModal form");
+  if (!deleteAllForm) return;
+
+  deleteAllForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    try {
+      const result = await window.electronAPI.approveAllRis();
+
+      if (result.success) {
+        let deleteAllModal = bootstrap.Modal.getInstance(
+          document.getElementById("approveAllRisModal")
+        );
+
+        if (!deleteAllModal) {
+          deleteAllModal = new bootstrap.Modal(
+            document.getElementById("approveAllRisModal")
+          );
+        }
+
+        deleteAllModal.hide();
+
+        await initFetchRis();
+
+        window.electronAPI.showToast(result.message, true);
+      } else {
+        window.electronAPI.showToast(result.message, false);
+      }
+    } catch (error) {
+      window.electronAPI.showToast(error.message, false);
+    }
+  });
+}
+
+export function initApproveRejectRis(search) {
+    const tableBody = document.getElementById("risTableBody");
+
+    if (tableBody) {
+        tableBody.addEventListener("click", async (event) => {
+            const target = event.target;
+            if (target.classList.contains("rejectRis")) {
+                event.preventDefault();
+                const id = target.dataset.risId;
+
+                const res = await window.electronAPI.approveRejectRis(
+                    parseInt(id),
+                    "rejected"
+                );
+
+                if (res.success) {
+                    window.electronAPI.showToast(res.message, true);
+                    initFetchRis(search);
+
+                    const tooltip = bootstrap.Tooltip.getInstance(target);
+                    if (tooltip) {
+                    tooltip.hide();
+                    }
+                } else {
+                    window.electronAPI.showToast(res.message, false);
+                    return;
+                }
+            } else if (target.classList.contains("approveRis")) {
+                event.preventDefault();
+                const id = target.dataset.risId;
+
+                const res = await window.electronAPI.approveRejectRis(
+                    parseInt(id),
+                    "approved"
+                );
+
+                if (res.success) {
+                    window.electronAPI.showToast(res.message, true);
+                    initFetchRis(search);
+
+                    const tooltip = bootstrap.Tooltip.getInstance(target);
+                    if (tooltip) {
+                    tooltip.hide();
+                    }
+                } else {
+                    window.electronAPI.showToast(res.message, false);
+                    return;
+                }
+            }
+        });
+    } else {
+    console.log("risTableBody not found");
+    }
 }
