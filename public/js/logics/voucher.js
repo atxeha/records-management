@@ -1,36 +1,36 @@
-export function initNewRis() {
-    const newRisForm = document.getElementById("newRisForm");
-    const modal = new bootstrap.Modal(document.getElementById("newRisModal"))
+export function initNewVoucher() {
+    const newVoucherForm = document.getElementById("newVoucherForm");
+    const modal = new bootstrap.Modal(document.getElementById("newVoucherModal"))
 
-    newRisForm.addEventListener("submit", async (e) => {
+    newVoucherForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const risNumber = parseInt(document.getElementById("newRisNumber").value.trim());
-        const item = document.getElementById("newRisItem").value.trim();
-        const issuedFrom = document.getElementById("newRisBy").value.trim();
-        const purpose = document.getElementById("newRisPurpose").value.trim();
-        const issuedTo = document.getElementById("newRisTo").value.trim();
-        const date = document.getElementById("newRisDate").value.trim();
+        const voucherNumber = parseInt(document.getElementById("newVoucherNumber").value.trim());
+        const payee = document.getElementById("newVoucherPayee").value.trim();
+        const amount = parseInt(document.getElementById("newVoucherAmount").value.trim());
+        const purpose = document.getElementById("newVoucherPurpose").value.trim();
+        const accountTitle = document.getElementById("newVoucherTitle").value.trim();
+        const date = document.getElementById("newVoucherDate").value.trim();
 
-        if(!risNumber || !item || !issuedFrom || !purpose || !issuedTo || !date){window.electronAPI.showToast("All fields required.", false); return;}
+        if(!voucherNumber || !payee || !amount || !purpose || !accountTitle || !date){window.electronAPI.showToast("All fields required.", false); return;}
           
         const data = {
-            risNumber: risNumber,
-            item: item,
-            preparedBy: issuedFrom,
+            voucherNumber: voucherNumber,
+            payee: payee,
+            amount: amount,
             purpose: purpose,
-            issuedTo: issuedTo,
-            preparedDate: date,
+            accountTitle: accountTitle,
+            datePrepared: date,
         }
 
         try{
-            const response = await window.electronAPI.newRis(data);
+            const response = await window.electronAPI.newVoucher(data);
 
             if (response.success){
               window.electronAPI.showToast(response.message, true)
               modal.hide()
 
-              initFetchRis()
+              initFetchVoucher()
             } else {
               window.electronAPI.showToast(response.message, false);
             }
@@ -41,21 +41,21 @@ export function initNewRis() {
     })
 }
 
-export async function initFetchRis(searchQuery = "") {
+export async function initFetchVoucher(searchQuery = "") {
     try {
-        const items = await window.electronAPI.fetchRisVoucher("requisitionIssueSlip");
+        const items = await window.electronAPI.fetchRisVoucher("voucher");
 
-        const tableBody = document.getElementById("risTableBody");
-        const pulledTable = document.getElementById("risTable");
+        const tableBody = document.getElementById("voucherTableBody");
+        const pulledTable = document.getElementById("voucherTable");
 
         tableBody.innerHTML = "";
 
         const filteredItems = items.filter((item) => {
-            const itemCodeMatch = item.issuedTo
+            const itemCodeMatch = item.payee
                 .toLowerCase()
                 .includes(searchQuery.toLowerCase());
 
-            const itemDate = new Date(item.preparedDate).toLocaleString(undefined, {
+            const itemDate = new Date(item.datePrepared).toLocaleString(undefined, {
                 year: "numeric",
                 month: "2-digit",
                 day: "2-digit",
@@ -81,7 +81,7 @@ export async function initFetchRis(searchQuery = "") {
         filteredItems.forEach((item, index) => {
             const row = document.createElement("tr");
 
-            const formattedDate = new Date(item.preparedDate)
+            const formattedDate = new Date(item.datePrepared)
                 .toLocaleString(undefined, {
                     year: "numeric",
                     month: "2-digit",
@@ -92,18 +92,18 @@ export async function initFetchRis(searchQuery = "") {
                 })
 
             row.innerHTML = `
-                <td>${item.risNumber}</td>
-                <td>${item.item}</td>
-                <td>${item.preparedBy}</td>
-                <td>${item.issuedTo}</td>
+                <td>${item.voucherNumber}</td>
+                <td>${item.payee}</td>
+                <td>${item.amount}</td>
                 <td>${item.purpose}</td>
+                <td>${item.accountTitle}</td>
                 <td>${formattedDate}</td>
                 <td class="${item.status === "approved" ? "edit-icon" : item.status === "rejected" ? "dlt-icon" : ""}">${item.status === "pending" ? "Pending" : item.status === "rejected" ? "Rejected" : "Approved"}</td>
                 <td class="pb-0">
-                    <i data-ris-id="${item.id}" class="rejectRis dlt-icon icon-btn icon-sm material-icons me-1" data-bs-toggle="tooltip"
+                    <i data-voucher-id="${item.id}" class="rejectVoucher dlt-icon icon-btn icon-sm material-icons me-1" data-bs-toggle="tooltip"
                         data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Reject" style="margin-left:1px;">close</i>
                   
-                    <i data-ris-id="${item.id}" class="approveRis edit-icon icon-btn icon-sm material-icons" data-bs-toggle="tooltip"
+                    <i data-voucher-id="${item.id}" class="approveVoucher edit-icon icon-btn icon-sm material-icons" data-bs-toggle="tooltip"
                         data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Approve">check</i>
                 </td>
             `;
@@ -129,28 +129,74 @@ export async function initFetchRis(searchQuery = "") {
     }
 }
 
-export function initDeleteAllRis() {
-  const deleteAllForm = document.querySelector("#deleteAllRisModal form");
+export function initUpdateAllVoucherStatus(modalId, tableName, status, search) {
+  const form = document.querySelector(`#${modalId} form`);
+    if (!form) return;
+  
+    // Remove existing submit listeners to prevent duplicates
+    form.removeEventListener("submit", form._submitHandler);
+  
+    // Define the submit handler
+    const submitHandler = async (e) => {
+      e.preventDefault();
+  
+      try {
+        const result = await window.electronAPI.updateAllStatus(
+          tableName,
+          status
+        );
+  
+        if (result.success) {
+          let modal = bootstrap.Modal.getInstance(
+            document.getElementById(`${modalId}`)
+          );
+  
+          if (!modal) {
+            modal = new bootstrap.Modal(document.getElementById(`${modalId}`));
+          }
+  
+          modal.hide();
+  
+          await initFetchVoucher(search);
+  
+          window.electronAPI.showToast(result.message, true);
+        } else {
+          window.electronAPI.showToast(result.message, false);
+        }
+      } catch (error) {
+        window.electronAPI.showToast(error.message, false);
+      }
+    };
+  
+    // Store the handler on the form element for future removal
+    form._submitHandler = submitHandler;
+  
+    // Add the submit event listener
+    form.addEventListener("submit", submitHandler);
+}
+
+export function initDeleteAllVoucher() {
+  const deleteAllForm = document.querySelector("#deleteAllVoucherModal form");
   if (!deleteAllForm) return;
 
   deleteAllForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     try {
-      const result = await window.electronAPI.deleteAllRecords("requisitionIssueSlip");
+      const result = await window.electronAPI.deleteAllRecords("voucher");
 
       if (result.success) {
         let deleteAllModal = bootstrap.Modal.getInstance(
-          document.getElementById("deleteAllRisModal")
+          document.getElementById("deleteAllVoucherModal")
         );
 
         if (!deleteAllModal) {
-          deleteAllModal = new bootstrap.Modal(document.getElementById("deleteAllRisModal"));
+          deleteAllModal = new bootstrap.Modal(document.getElementById("deleteAllVoucherModal"));
         }
 
         deleteAllModal.hide();
         
-        await initFetchRis();
+        await initFetchVoucher();
 
         window.electronAPI.showToast(result.message, true);
       } else {
@@ -162,71 +208,25 @@ export function initDeleteAllRis() {
   });
 }
 
-export function initUpdateAllRisStatus(modalId, tableName, status, search) {
-  const form = document.querySelector(`#${modalId} form`);
-  if (!form) return;
-
-  // Remove existing submit listeners to prevent duplicates
-  form.removeEventListener("submit", form._submitHandler);
-
-  // Define the submit handler
-  const submitHandler = async (e) => {
-    e.preventDefault();
-
-    try {
-      const result = await window.electronAPI.updateAllStatus(
-        tableName,
-        status
-      );
-
-      if (result.success) {
-        let modal = bootstrap.Modal.getInstance(
-          document.getElementById(`${modalId}`)
-        );
-
-        if (!modal) {
-          modal = new bootstrap.Modal(document.getElementById(`${modalId}`));
-        }
-
-        modal.hide();
-
-        await initFetchRis(search);
-
-        window.electronAPI.showToast(result.message, true);
-      } else {
-        window.electronAPI.showToast(result.message, false);
-      }
-    } catch (error) {
-      window.electronAPI.showToast(error.message, false);
-    }
-  };
-
-  // Store the handler on the form element for future removal
-  form._submitHandler = submitHandler;
-
-  // Add the submit event listener
-  form.addEventListener("submit", submitHandler);
-}
-
-export function initApproveRejectRis(search) {
-    const tableBody = document.getElementById("risTableBody");
+export function initApproveRejectVoucher(search) {
+    const tableBody = document.getElementById("voucherTableBody");
 
     if (tableBody) {
         tableBody.addEventListener("click", async (event) => {
             const target = event.target;
-            if (target.classList.contains("rejectRis")) {
+            if (target.classList.contains("rejectVoucher")) {
                 event.preventDefault();
-                const id = target.dataset.risId;
+                const id = target.dataset.voucherId;
 
                 const res = await window.electronAPI.approveReject(
                     parseInt(id),
                     "rejected",
-                    "requisitionIssueSlip"
+                    "voucher"
                 );
 
                 if (res.success) {
                     window.electronAPI.showToast(res.message, true);
-                    initFetchRis(search);
+                    initFetchVoucher(search);
 
                     const tooltip = bootstrap.Tooltip.getInstance(target);
                     if (tooltip) {
@@ -236,19 +236,19 @@ export function initApproveRejectRis(search) {
                     window.electronAPI.showToast(res.message, false);
                     return;
                 }
-            } else if (target.classList.contains("approveRis")) {
+            } else if (target.classList.contains("approveVoucher")) {
                 event.preventDefault();
-                const id = target.dataset.risId;
+                const id = target.dataset.voucherId;
 
                 const res = await window.electronAPI.approveReject(
                     parseInt(id),
                     "approved",
-                    "requisitionIssueSlip"
+                    "voucher"
                 );
 
                 if (res.success) {
                     window.electronAPI.showToast(res.message, true);
-                    initFetchRis(search);
+                    initFetchVoucher(search);
 
                     const tooltip = bootstrap.Tooltip.getInstance(target);
                     if (tooltip) {

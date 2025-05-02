@@ -59,19 +59,20 @@ model Franchise {
   id            Int      @id @default(autoincrement())
   franchiseName String
   issuedBy      String
+  issuedTo      String
   issuedDate    DateTime
   createdAt     DateTime @default(now())
 }
 
 model Voucher {
   id            Int      @id @default(autoincrement())
-  voucherNumber String
+  voucherNumber BigInt @unique
   payee         String
   amount        Float
   purpose       String
   accountTitle  String
   datePrepared  DateTime
-  approvedBy    String
+  status    String @default("pending")
   createdAt     DateTime @default(now())
 }
 
@@ -81,8 +82,9 @@ model ObligationRequest {
   purpose      String
   preparedBy   String
   amount       Float
+  department String
   preparedDate DateTime
-  isApproved   Boolean  @default(false)
+  status  String  @default("pending")
   createdAt    DateTime @default(now())
 }
 

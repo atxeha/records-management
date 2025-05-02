@@ -158,7 +158,7 @@ export function initDeleteAllPc() {
     e.preventDefault();
 
     try {
-      const result = await window.electronAPI.deleteAllPettyCash();
+      const result = await window.electronAPI.deleteAllRecords("pettyCash");
 
       if (result.success) {
         let deleteAllModal = bootstrap.Modal.getInstance(

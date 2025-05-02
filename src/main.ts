@@ -1,3 +1,4 @@
+
 import { app, BrowserWindow, ipcMain, Menu, shell, dialog } from "electron";
 import fs from "fs";
 import path from "path";
@@ -6,7 +7,8 @@ import {
   newPurchaseRequest,
   newPettyCash,
   prisma,
-  newRis
+  newRis,
+  newVoucher
 } from "./database";
 import { execSync } from "child_process";
 
@@ -322,21 +324,6 @@ ipcMain.handle("approve-reject-pr", async (e, id, status) => {
   }
 })
 
-ipcMain.handle("delete-all-pr", async(e)=>{
-  try{
-    const count = await prisma.purchaseRequest.count();
-    if (count === 0) {
-      return { success: false, message: "No purchase requests to delete." };
-    }
-
-    await prisma.purchaseRequest.deleteMany();
-
-    return{success:true, message: "PRs deleted."}
-  }catch(e: any){
-    return{success: false, message: e.message}
-  }
-})
-
 ipcMain.handle("new-petty-cash", async (event, data) => {
   try{
     const result = await newPettyCash(
@@ -388,21 +375,6 @@ ipcMain.handle("release-all-pc", async () => {
     });
 
     return { success: true, message: "All cash have been released." };
-  } catch (err) {
-    return { success: false, message: (err as Error).message };
-  }
-});
-
-ipcMain.handle("delete-all-petty-cash", async () => {
-  try {
-    const count = await prisma.pettyCash.count();
-    if (count === 0) {
-      return { success: false, message: "No petty cash records to delete." };
-    }
-
-    await prisma.pettyCash.deleteMany();
-
-    return { success: true, message: "All petty cash records deleted." };
   } catch (err) {
     return { success: false, message: (err as Error).message };
   }
@@ -465,28 +437,51 @@ ipcMain.handle("new-ris", async (event, data) => {
   }
 })
 
-ipcMain.handle("fetch-ris", async () => {
+ipcMain.handle("fetch-ris-voucher", async (event, tableName) => {
   try {
-    const pettyCash = await prisma.requisitionIssueSlip.findMany({
-      orderBy: {
-        preparedDate: "desc",
-      },
-    })
-
-    return pettyCash;
+    if (tableName === "requisitionIssueSlip") {
+      const risData = await prisma.requisitionIssueSlip.findMany({
+        orderBy: {
+          preparedDate: "desc",
+        },
+      });
+      return risData;
+    } else if (tableName === "voucher") {
+      const voucherData = await prisma.voucher.findMany({
+        orderBy: {
+          datePrepared: "desc",
+        },
+      });
+      return voucherData;
+    } else {
+      return { success: false, message: "Invalid table name." };
+    }
   } catch (err) {
-    return (err as Error).message
+    return (err as Error).message;
   }
 })
 
-ipcMain.handle("delete-all-ris", async () => {
+ipcMain.handle("delete-all-records", async (event, tableName) => {
   try {
-    const count = await prisma.requisitionIssueSlip.count();
+    const validTables = ["requisitionIssueSlip", "purchaseRequest", "voucher", "pettyCash", "schedule"];
+
+    if (!validTables.includes(tableName)) {
+      return { success: false, message: "Invalid table name." };
+    }
+
+    const model = (prisma as any)[tableName];
+
+    if (!model) {
+      return { success: false, message: "Invalid table name." };
+    }
+
+    const count = await model.count();
+
     if (count === 0) {
       return { success: false, message: "No records to delete." };
     }
 
-    await prisma.requisitionIssueSlip.deleteMany();
+    await model.deleteMany();
 
     return { success: true, message: "All records deleted." };
   } catch (err) {
@@ -496,7 +491,7 @@ ipcMain.handle("delete-all-ris", async () => {
 
 ipcMain.handle("update-all-status", async (event, tableName, status) => {
   try {
-    const validTables = ["requisitionIssueSlip", "purchaseRequest"];
+    const validTables = ["requisitionIssueSlip", "purchaseRequest", "voucher"];
 
     if (!validTables.includes(tableName)) {
       return { success: false, message: "Invalid table name." };
@@ -537,9 +532,21 @@ ipcMain.handle("update-all-status", async (event, tableName, status) => {
   }
 });
 
-ipcMain.handle("approve-reject-ris", async (e, id, status) => {
+ipcMain.handle("approve-reject", async (e, id, status, tableName) => {
   try {
-    const statusObj = await prisma.requisitionIssueSlip.findUnique({
+    const validTables = ["requisitionIssueSlip", "purchaseRequest", "voucher"];
+
+    if (!validTables.includes(tableName)) {
+      return { success: false, message: "Invalid table name." };
+    }
+
+    const model = (prisma as any)[tableName];
+
+    if (!model) {
+      return { success: false, message: "Invalid table name." };
+    }
+
+    const statusObj = await model.findUnique({
       where: { id },
       select: {
         status: true,
@@ -550,7 +557,7 @@ ipcMain.handle("approve-reject-ris", async (e, id, status) => {
       return { success: false, message: `Request already ${status}.` };
     }
 
-    await prisma.requisitionIssueSlip.update({
+    await model.update({
       where: { id },
       data: {
         status: status,
@@ -560,5 +567,24 @@ ipcMain.handle("approve-reject-ris", async (e, id, status) => {
     return { success: true, message: `Request ${status}.` };
   } catch (err: any) {
     return { success: false, message: err.message };
+  }
+});
+
+ipcMain.handle("new-voucher", async (event, data) => {
+  try {
+    const result = await newVoucher(
+      data.voucherNumber,
+      data.payee,
+      data.amount,
+      data.purpose,
+      data.accountTitle,
+      data.datePrepared
+    );
+    if (result.success === false) {
+      return { success: false, message: result.message };
+    }
+    return { success: true, message: "Voucher added.", data: result.data };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
   }
 });

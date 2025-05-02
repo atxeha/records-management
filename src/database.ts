@@ -175,3 +175,40 @@ export async function newRis(
     return { success: false, message: (err as Error).message };
   }
 }
+
+export async function newVoucher(
+  voucherNumber: number,
+  payee: string,
+  amount: number,
+  purpose: string,
+  accountTitle: string,
+  datePrepared: string,
+) {
+  try {
+    let isoDate = datePrepared;
+    if (datePrepared.length === 16) {
+      isoDate = datePrepared + ":00";
+    }
+
+    const existingRequest = await prisma.voucher.findUnique({
+      where: { voucherNumber },
+    })
+
+    if (existingRequest) { throw new Error(`Voucher '${voucherNumber}' already exists.`) }
+
+    const newVoucher = await prisma.voucher.create({
+      data: {
+        voucherNumber,
+        payee,
+        amount,
+        purpose,
+        accountTitle,
+        datePrepared: new Date(isoDate),
+      },
+    })
+
+    return { success: true, data: newVoucher };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+}

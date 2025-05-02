@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const prBtn = document.getElementById("PRBtn");
   const pettyCashBtn = document.getElementById("pettyCashBtn");
   const RISBtn = document.getElementById("RISBtn");
+  const voucherBtn = document.getElementById("voucherBtn");
 
   function attachScrollListener() {
     const tableContainer = document.querySelector(".table-container");
@@ -134,8 +135,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                     prModule.initNewPurchaseRequest();
                     prModule.initFetchPurchaseRequest(currentPurchaseFilter);
-                    prModule.initCancelPr(currentPurchaseFilter);
-                    prModule.initApprovePr(currentPurchaseFilter);
+                    prModule.initRejectApprovePr(currentPurchaseFilter);
                     prModule.initDeleteAllPr(currentPurchaseFilter);
 
                     document.addEventListener(
@@ -247,6 +247,55 @@ document.addEventListener("DOMContentLoaded", async () => {
                     });
                   }
                 }
+
+                if (page === "voucher.html") {
+                  const voucherModule = await import("./logics/voucher.js");
+
+                  let modalId = "";
+
+                  const filter = document.getElementById("voucherFilter");
+                  let voucherFilter = "";
+                  if (filter) {
+                    const savedFilter = localStorage.getItem("voucherFilter");
+                    if (savedFilter) {
+                      voucherFilter = savedFilter;
+                      filter.value = savedFilter;
+                    } else {
+                      filter.value = voucherFilter;
+                    }
+                  }
+
+                  voucherModule.initNewVoucher();
+                  voucherModule.initFetchVoucher(voucherFilter);
+                  voucherModule.initApproveRejectVoucher(voucherFilter);
+                  voucherModule.initDeleteAllVoucher();
+
+                  document.addEventListener("shown.bs.modal", function (event) {
+                    modalId = event.target.id;
+                    if (modalId === "rejectAllVoucherModal") {
+                      voucherModule.initUpdateAllVoucherStatus(
+                        "rejectAllVoucherModal",
+                        "voucher",
+                        "rejected",
+                        voucherFilter
+                      );
+                    } else if (modalId === "approveAllVoucherModal") {
+                      voucherModule.initUpdateAllVoucherStatus(
+                        "approveAllVoucherModal",
+                        "voucher",
+                        "approved",
+                        voucherFilter
+                      );
+                    }
+                  });
+
+                  if (filter) {
+                    filter.addEventListener("input", () => {
+                      localStorage.setItem("voucherFilter", filter.value);
+                      voucherModule.initFetchVoucher(filter.value);
+                    });
+                  }
+                }
             })
             .catch((error) => console.error("Error loading page:", error));
     }
@@ -312,6 +361,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     RISBtn.addEventListener("click", async (e) => {
       e.preventDefault();
       await loadPage("requisition.html")
+    })
+  }
+
+  if(voucherBtn) {
+    voucherBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      await loadPage("voucher.html")
     })
   }
 

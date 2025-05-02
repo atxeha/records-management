@@ -129,7 +129,7 @@ export async function initFetchPurchaseRequest(searchQuery = "") {
     }
 }
 
-export function initCancelPr(search) {
+export function initRejectApprovePr(search) {
   const tableBody = document.getElementById("prTableBody");
 
   if (tableBody) {
@@ -139,7 +139,7 @@ export function initCancelPr(search) {
         event.preventDefault();
         const id = target.dataset.purchaseId;
 
-        const res = await window.electronAPI.approveRejectPr(parseInt(id), "rejected")
+        const res = await window.electronAPI.approveReject(parseInt(id), "rejected", "purchaseRequest")
 
         if(res.success){
           window.electronAPI.showToast(res.message, true)
@@ -153,24 +153,11 @@ export function initCancelPr(search) {
           window.electronAPI.showToast(res.message, false)
           return;
         }
-      }
-    });
-  } else {
-    console.log("prTableBody not found");
-  }
-}
-
-export function initApprovePr(search) {
-  const tableBody = document.getElementById("prTableBody");
-
-  if (tableBody) {
-    tableBody.addEventListener("click", async (event) => {
-      const target = event.target;
-      if (target.classList.contains("approvePr")) {
+      } else if (target.classList.contains("approvePr")) {
         event.preventDefault();
         const id = target.dataset.purchaseId;
 
-        const res = await window.electronAPI.approveRejectPr(parseInt(id), "approved")
+        const res = await window.electronAPI.approveReject(parseInt(id), "approved", "purchaseRequest")
 
         if(res.success){
           window.electronAPI.showToast(res.message, true)
@@ -200,7 +187,7 @@ export function initDeleteAllPr(search) {
 
     try {
 
-      const result = await window.electronAPI.deleteAllPr();
+      const result = await window.electronAPI.deleteAllRecords("purchaseRequest");
 
       if (result.success) {
         // Close modal
@@ -226,35 +213,46 @@ export function initDeleteAllPr(search) {
 
 export function initUpdateAllPurchaseStatus(modalId, tableName, status, search) {
   const form = document.querySelector(`#${modalId} form`);
-  if (!form) return;
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    try {
-      const result = await window.electronAPI.updateAllStatus(tableName, status);
-
-      if (result.success) {
-        let modal = bootstrap.Modal.getInstance(
-          document.getElementById(`${modalId}`)
+    if (!form) return;
+  
+    // Remove existing submit listeners to prevent duplicates
+    form.removeEventListener("submit", form._submitHandler);
+  
+    // Define the submit handler
+    const submitHandler = async (e) => {
+      e.preventDefault();
+  
+      try {
+        const result = await window.electronAPI.updateAllStatus(
+          tableName,
+          status
         );
-
-        if (!modal) {
-          modal = new bootstrap.Modal(
+  
+        if (result.success) {
+          let modal = bootstrap.Modal.getInstance(
             document.getElementById(`${modalId}`)
           );
+  
+          if (!modal) {
+            modal = new bootstrap.Modal(document.getElementById(`${modalId}`));
+          }
+  
+          modal.hide();
+  
+          await initFetchPurchaseRequest(search);
+  
+          window.electronAPI.showToast(result.message, true);
+        } else {
+          window.electronAPI.showToast(result.message, false);
         }
-
-        modal.hide();
-
-        await initFetchPurchaseRequest(search);
-
-        window.electronAPI.showToast(result.message, true);
-      } else {
-        window.electronAPI.showToast(result.message, false);
+      } catch (error) {
+        window.electronAPI.showToast(error.message, false);
       }
-    } catch (error) {
-      window.electronAPI.showToast(error.message, false);
-    }
-  });
+    };
+  
+    // Store the handler on the form element for future removal
+    form._submitHandler = submitHandler;
+  
+    // Add the submit event listener
+    form.addEventListener("submit", submitHandler);
 }
