@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const pettyCashBtn = document.getElementById("pettyCashBtn");
   const RISBtn = document.getElementById("RISBtn");
   const voucherBtn = document.getElementById("voucherBtn");
+  const franchiseBtn = document.getElementById("franchiseBtn");
 
   function attachScrollListener() {
     const tableContainer = document.querySelector(".table-container");
@@ -296,6 +297,57 @@ document.addEventListener("DOMContentLoaded", async () => {
                     });
                   }
                 }
+                if (page === "franchise.html") {
+                  const franchiseModule = await import("./logics/franchise.js");
+
+                  let modalId = "";
+
+                  const filter = document.getElementById("franchiseFilter");
+                  let franchiseFilter = "";
+                  if (filter) {
+                    const savedFilter = localStorage.getItem("franchiseFilter");
+                    if (savedFilter) {
+                      franchiseFilter = savedFilter;
+                      filter.value = savedFilter;
+                    } else {
+                      filter.value = franchiseFilter;
+                    }
+                  }
+
+                  franchiseModule.initNewFranchise();
+                  franchiseModule.initEditFranchise();
+                  franchiseModule.initFetchFranchise(franchiseFilter);
+                  // franchiseModule.initApproveRejectfranchise(franchiseFilter);
+                  franchiseModule.initDeleteAllFranchise();
+                  franchiseModule.initDeleteFranchise(franchiseFilter);
+                  franchiseModule.initPopulateFranchise();
+
+                  // document.addEventListener("shown.bs.modal", function (event) {
+                  //   modalId = event.target.id;
+                  //   if (modalId === "rejectAllVoucherModal") {
+                  //     voucherModule.initUpdateAllVoucherStatus(
+                  //       "rejectAllVoucherModal",
+                  //       "voucher",
+                  //       "rejected",
+                  //       voucherFilter
+                  //     );
+                  //   } else if (modalId === "approveAllVoucherModal") {
+                  //     voucherModule.initUpdateAllVoucherStatus(
+                  //       "approveAllVoucherModal",
+                  //       "voucher",
+                  //       "approved",
+                  //       voucherFilter
+                  //     );
+                  //   }
+                  // });
+
+                  if (filter) {
+                    filter.addEventListener("input", () => {
+                      localStorage.setItem("franchiseFilter", filter.value);
+                      franchiseModule.initFetchFranchise(filter.value);
+                    });
+                  }
+                }
             })
             .catch((error) => console.error("Error loading page:", error));
     }
@@ -368,6 +420,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     voucherBtn.addEventListener("click", async (e) => {
       e.preventDefault();
       await loadPage("voucher.html")
+    })
+  }
+
+  if(franchiseBtn) {
+    franchiseBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      await loadPage("franchise.html")
     })
   }
 

@@ -8,7 +8,8 @@ import {
   newPettyCash,
   prisma,
   newRis,
-  newVoucher
+  newVoucher,
+  newFranchise
 } from "./database";
 import { execSync } from "child_process";
 
@@ -453,6 +454,13 @@ ipcMain.handle("fetch-ris-voucher", async (event, tableName) => {
         },
       });
       return voucherData;
+    } else if (tableName === "franchise") {
+      const franchiseData = await prisma.franchise.findMany({
+        orderBy: {
+          startDate: "desc",
+        },
+      });
+      return franchiseData;
     } else {
       return { success: false, message: "Invalid table name." };
     }
@@ -463,7 +471,7 @@ ipcMain.handle("fetch-ris-voucher", async (event, tableName) => {
 
 ipcMain.handle("delete-all-records", async (event, tableName) => {
   try {
-    const validTables = ["requisitionIssueSlip", "purchaseRequest", "voucher", "pettyCash", "schedule"];
+    const validTables = ["requisitionIssueSlip", "purchaseRequest", "voucher", "pettyCash", "schedule", "franchise"];
 
     if (!validTables.includes(tableName)) {
       return { success: false, message: "Invalid table name." };
@@ -583,8 +591,70 @@ ipcMain.handle("new-voucher", async (event, data) => {
     if (result.success === false) {
       return { success: false, message: result.message };
     }
-    return { success: true, message: "Voucher added.", data: result.data };
+    return { success: true, message: "New Voucher added.", data: result.data };
   } catch (err) {
     return { success: false, message: (err as Error).message };
+  }
+});
+
+ipcMain.handle("new-franchise", async (event, data) => {
+  try {
+    const result = await newFranchise(
+      data.franchiseCode,
+      data.franchiseName,
+      data.issuedBy,
+      data.issuedTo,
+      data.startDate,
+      data.endDate
+    );
+    if (result.success === false) {
+      return { success: false, message: result.message };
+    }
+    return { success: true, message: "New Franchise added.", data: result.data };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+});
+
+ipcMain.handle("delete-franchise", async (event, id) => {
+  try {
+    await prisma.franchise.delete({
+      where: { id },
+    });
+
+    return { success: true, message: "Franchise deleted." };
+  } catch (err: any) {
+    return { success: false, message: err.message };
+  }
+});
+
+ipcMain.handle("edit-franchise", async (_event, data) => {
+  const {
+    id,
+    franchiseCode,
+    franchiseName,
+    issuedBy,
+    issuedTo,
+    startDate,
+    endDate,
+  } = data;
+
+  try {
+    const updatedFranchise = await prisma.franchise.update({
+      where: { id: Number(id) },
+      data: {
+        franchiseCode: BigInt(franchiseCode),
+        franchiseName,
+        issuedBy,
+        issuedTo,
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
+      },
+    });
+
+    return { success: true, message: "Franchise updated successfully.", data: updatedFranchise };
+  } catch (err) {
+    console.error("Edit franchise error:", err);
+    return { success: false, message: "Failed to update franchise." };
   }
 });

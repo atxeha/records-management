@@ -212,3 +212,43 @@ export async function newVoucher(
     return { success: false, message: (err as Error).message };
   }
 }
+
+export async function newFranchise(
+  franchiseCode: number,
+  franchiseName: string,
+  issuedTo: string,
+  issuedBy: string,
+  startDate: string,
+  endDate: string,
+) {
+  try {
+    let newStartDate = startDate;
+    let newEndDate = endDate;
+
+    if (startDate.length === 16 && endDate.length === 16) {
+      newStartDate = startDate + ":00";
+      newEndDate = endDate + ":00";
+    }
+
+    const existingRequest = await prisma.franchise.findUnique({
+      where: { franchiseCode },
+    })
+
+    if (existingRequest) { throw new Error(`Franchise '${franchiseCode}' already exists.`) }
+
+    const newVoucher = await prisma.franchise.create({
+      data: {
+        franchiseCode,
+        franchiseName,
+        issuedTo,
+        issuedBy,
+        startDate: new Date(newStartDate),
+        endDate: new Date(newEndDate),
+      },
+    });
+
+    return { success: true, data: newVoucher };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+}

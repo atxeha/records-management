@@ -1,0 +1,164 @@
+<div>
+    <h5 class="title text-center p-0 m-0 mb-2">Franchises</h5>
+
+    <div class="d-flex ms-4 ps-2 gap-2 mb-2" id="actions">
+        <span class="me-4">
+            <input type="search" class="form-control rounded-2 font-sm input col-4 search-box"
+                placeholder="Search franchise name" id="franchiseFilter">
+        </span>
+        <span data-bs-toggle="modal" data-bs-target="#newFranchiseModal" class="mt-1">
+            <i class="icon-sm material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
+                data-bs-custom-class="custom-tooltip" title="New franchise" id="newFranchiseBtn">add
+            </i>
+        </span>
+        <span data-bs-toggle="modal" data-bs-target="#deleteAllFranchiseModal" class="mt-1">
+            <i class="icon-sm dlt-icon material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
+                data-bs-custom-class="custom-tooltip" title="Delete all" id="deleteAllFranchiseBtn">delete_sweep
+            </i>
+        </span>
+    </div>
+
+    <div class="table-responsive table-container mx-4 mt-2 font">
+        <table class="table table-hover" id="franchiseTable">
+            <thead id="franchiseTableHead">
+                <tr>
+                    <th>Seq.</th>
+                    <th>Code</th>
+                    <th>Franchise</th>
+                    <th>Issued By</th>
+                    <th>Issued To</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th style="width: 6rem; padding-left: .6rem;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="franchiseTableBody">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal" id="newFranchiseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="1"
+    aria-labelledby="newFranchiseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="newFranchiseModalLabel">New Franchise</h6>
+            </div>
+            <form method="post" id="newFranchiseForm">
+                <div class="modal-body font p-4 pb-2">
+
+                    <div class="row font mb-3">
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="newFranchiseCode">Franchise Code</label>
+                            <input type="number" id="newFranchiseCode" class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="newFranchiseName">Franchise Name</label>
+                            <input type="text" id="newFranchiseName" class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="newFranchiseIssuedBy">Issued By</label>
+                            <input type="text" id="newFranchiseIssuedBy" class="form-control rounded-2 font input">
+                        </div>
+                    </div>
+
+                    <div class="row font mb-3">
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="newFranchiseIssuedTo">Issued To</label>
+                            <input type="text" id="newFranchiseIssuedTo" class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="newFranchiseStartDate">Start Date</label>
+                            <input type="datetime-local" id="newFranchiseStartDate" class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="newFranchiseEndDate">End Date</label>
+                            <input type="datetime-local" id="newFranchiseEndDate" class="form-control rounded-2 font input">
+                        </div>
+                    </div>
+                    <div class="modal-footer font">
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
+                            data-bs-dismiss="modal">Back</button>
+                        <button class="button rounded-2 font btn btn-secondary" type="submit">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete All Schedule Modal -->
+<div class="modal" id="deleteAllFranchiseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body font p-4 pb-2">
+                <form method="post" id="deleteAllFranchiseForm">
+                    <div class="font mb-4">
+                        <p>Are sure to delete all Issue Slips?</p>
+                    </div>
+                    <div class="modal-footer font">
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
+                            data-bs-dismiss="modal">Back</button>
+                        <button class="button rounded-2 font btn btn-secondary" type="submit">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="editFranchiseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="1"
+    aria-labelledby="editFranchiseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="editFranchiseModalLabel">Edit Franchise</h6>
+            </div>
+            <form method="post" id="editFranchiseForm">
+                <input type="hidden" id="editFranchiseId">
+                <div class="modal-body font p-4 pb-2">
+
+                    <div class="row font mb-3">
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="editFranchiseCode">Franchise Code</label>
+                            <input type="number" id="editFranchiseCode" class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="editFranchiseName">Franchise Name</label>
+                            <input type="text" id="editFranchiseName" class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="editFranchiseIssuedBy">Issued By</label>
+                            <input type="text" id="editFranchiseIssuedBy" class="form-control rounded-2 font input">
+                        </div>
+                    </div>
+
+                    <div class="row font mb-3">
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="editFranchiseIssuedTo">Issued To</label>
+                            <input type="text" id="editFranchiseIssuedTo" class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="editFranchiseStartDate">Start Date</label>
+                            <input type="datetime-local" id="editFranchiseStartDate"
+                                class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="editFranchiseEndDate">End Date</label>
+                            <input type="datetime-local" id="editFranchiseEndDate"
+                                class="form-control rounded-2 font input">
+                        </div>
+                    </div>
+                    <div class="modal-footer font">
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
+                            data-bs-dismiss="modal">Back</button>
+                        <button class="button rounded-2 font btn btn-secondary" type="submit">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

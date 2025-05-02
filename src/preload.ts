@@ -26,5 +26,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   approveReject: (id: number, status: string, tableName: string) => ipcRenderer.invoke("approve-reject", id, status, tableName),
   newVoucher: (data: any) => ipcRenderer.invoke("new-voucher", data),
   deleteAllRecords: (tableName: string) => ipcRenderer.invoke("delete-all-records", tableName),
+  newFranchise: (data: any) => ipcRenderer.invoke("new-franchise", data),
+  deleteFranchise: (id: number) => ipcRenderer.invoke("delete-franchise", id),
+  editFranchise: (data: any) => ipcRenderer.invoke("edit-franchise", data),
 });
 
