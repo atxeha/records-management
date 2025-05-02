@@ -92,6 +92,7 @@ export async function initFetchRis(searchQuery = "") {
                 })
 
             row.innerHTML = `
+                <td>${index + 1}</td>
                 <td>${item.risNumber}</td>
                 <td>${item.item}</td>
                 <td>${item.preparedBy}</td>

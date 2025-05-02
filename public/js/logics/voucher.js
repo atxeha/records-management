@@ -92,6 +92,7 @@ export async function initFetchVoucher(searchQuery = "") {
                 })
 
             row.innerHTML = `
+                <td>${index + 1}</td>
                 <td>${item.voucherNumber}</td>
                 <td>${item.payee}</td>
                 <td>${item.amount}</td>

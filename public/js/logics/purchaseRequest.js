@@ -92,6 +92,7 @@ export async function initFetchPurchaseRequest(searchQuery = "") {
           })
 
         row.innerHTML = `
+                <td>${index + 1}</td>
                 <td>${item.prNumber}</td>
                 <td>${item.item}</td>
                 <td>${item.requestedBy}</td>
