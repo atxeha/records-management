@@ -57,10 +57,12 @@ model PettyCash {
 
 model Franchise {
   id            Int      @id @default(autoincrement())
+  franchiseCode BigInt @unique
   franchiseName String
   issuedBy      String
   issuedTo      String
-  issuedDate    DateTime
+  startDate DateTime
+  endDate DateTime
   createdAt     DateTime @default(now())
 }
 

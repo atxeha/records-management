@@ -58,20 +58,6 @@ export async function fetchAndRenderSchedules(dateFilter = "all", statusFilter =
       tdDescription.textContent = schedule.description;
       tr.appendChild(tdDescription);
 
-      const tdStatus = document.createElement("td");
-      // tdStatus.textContent = schedule.isDone && !schedule.isCanceled ? "Done" : "Canceled";
-      if (schedule.isDone && !schedule.isCanceled) {
-        tdStatus.textContent = "Done"
-        tdStatus.classList.add("edit-icon")
-      } else if (schedule.isCanceled) {
-        tdStatus.textContent = "Canceled"
-        tdStatus.classList.add("dlt-icon")
-      } else {
-        tdStatus.textContent = "Waiting";
-      }
-
-      tr.appendChild(tdStatus);
-
       // Venue
       const tdVenue = document.createElement("td");
       tdVenue.textContent = schedule.venue;
@@ -94,6 +80,19 @@ export async function fetchAndRenderSchedules(dateFilter = "all", statusFilter =
         hour12: true,
       });
       tr.appendChild(tdTime);
+
+      const tdStatus = document.createElement("td");
+      // tdStatus.textContent = schedule.isDone && !schedule.isCanceled ? "Done" : "Canceled";
+      if (schedule.isDone && !schedule.isCanceled) {
+        tdStatus.textContent = "Done";
+        tdStatus.classList.add("edit-icon");
+      } else if (schedule.isCanceled) {
+        tdStatus.textContent = "Canceled";
+        tdStatus.classList.add("dlt-icon");
+      } else {
+        tdStatus.textContent = "Waiting";
+      }
+      tr.appendChild(tdStatus);
 
       // Actions
       const tdActions = document.createElement("td");
