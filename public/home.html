@@ -1,7 +1,54 @@
 <h4 class="title text-center p-0 m-0">Records Management</h4>
 
-<div class="banner rounded-4 m-3 row">
-    <div class="col-8">
+<div class="banner rounded-4 m-3 me-4 mt-4 row">
+    <div class="col-8 pe-3">
+        <div class="card-container rounded-4 pic">
+            <div class="card rounded-3 d-flex flex-column">
+                <div class="d-flex justify-content-between">
+                    <p class="text-center p-1 font">PURCHASE REQUEST</p>
+                        <i id="viewPrBtn" class="icon-xs material-icons p-1 icon-btn-2">arrow_outward</i>
+                </div>
+                <div class="d-flex justify-content-center pb-1 mt-2">
+                    <h4 class="me-2">100</h4> <span class="text-small mt-1">pending PRs</span>
+                </div>
+            </div>
+            <div class="card rounded-3 d-flex flex-column">
+                <div class="d-flex justify-content-between">
+                    <p class="text-center p-1 font">REQUISITION ISSUE SLIP</p>
+                    <i id="viewPrBtn" class="icon-xs material-icons p-1 icon-btn-2">arrow_outward</i>
+                </div>
+                <div class="d-flex justify-content-center pb-1">
+                    <h4 class="me-2">100</h4> <span class="text-small mt-1">pending slips</span>
+                </div>
+            </div>
+            <div class="card rounded-3 d-flex flex-column">
+                <div class="d-flex justify-content-between">
+                    <p class="text-center p-1 font">PETTY CASH</p>
+                    <i id="viewPrBtn" class="icon-xs material-icons p-1 icon-btn-2">arrow_outward</i>
+                </div>
+                <div class="d-flex justify-content-center pb-1">
+                    <h4 class="me-2">100</h4> <span class="text-small mt-1">unreleased cash</span>
+                </div>
+            </div>
+            <div class="card rounded-3 d-flex flex-column">
+                <div class="d-flex justify-content-between">
+                    <p class="text-center p-1 font">FRANCHISE</p>
+                        <i id="viewPrBtn" class="icon-xs material-icons p-1 icon-btn-2">arrow_outward</i>
+                </div>
+                <div class="d-flex justify-content-center pb-1">
+                    <h4 class="me-2">100</h4> <span class="text-small mt-1">pending franchise</span>
+                </div>
+            </div>
+            <div class="card rounded-3 d-flex flex-column">
+                <div class="d-flex justify-content-between">
+                    <p class="text-center p-1 font">OBLIGATION REQUEST</p>
+                    <i id="viewPrBtn" class="icon-xs material-icons p-1 icon-btn-2">arrow_outward</i>
+                </div>
+                <div class="d-flex justify-content-center pb-1">
+                    <h4 class="me-2">100</h4> <span class="text-small mt-1">pending ORs</span>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="col-4 rounded-4 schedule">
         <h6 class="text-center text-black fw-bold d-flex justify-content-center gap-2">
@@ -11,51 +58,8 @@
             </span>
         </h6>
 
-        <div class="list-group font rounded-3">
-            <!-- Header -->
-            <div class="list-group-item d-flex fw-bold bg-light justify-content-between">
-                <div class="col-6">Description</div>
-                <div class="col-4">Venue</div>
-                <div class="col-2">Time</div>
-            </div>
-
-            <!-- Rows -->
-            <div class="list-group-item d-flex justify-content-between">
-                <div class="col-6">John Doe</div>
-                <div class="col-4">Sales</div>
-                <div class="col-2">Active</div>
-            </div>
-
-            <div class="list-group-item d-flex justify-content-between">
-                <div class="col-6">Jane Smith</div>
-                <div class="col-4">IT</div>
-                <div class="col-2">Inactive</div>
-            </div>
-            
-            <div class="list-group-item d-flex justify-content-between">
-                <div class="col-6">John Doe</div>
-                <div class="col-4">Sales</div>
-                <div class="col-2">Active</div>
-            </div>
-
-            <div class="list-group-item d-flex justify-content-between">
-                <div class="col-6">Jane Smith</div>
-                <div class="col-4">IT</div>
-                <div class="col-2">Inactive</div>
-            </div>
-            
-            <div class="list-group-item d-flex justify-content-between">
-                <div class="col-6">Jane Smith</div>
-                <div class="col-4">IT</div>
-                <div class="col-2">Inactive</div>
-            </div>
-            
-            <div class="list-group-item d-flex justify-content-between">
-                <div class="col-6">Jane Smith</div>
-                <div class="col-4">IT</div>
-                <div class="col-2">Inactive</div>
-            </div>
-
+        <div id="scheduleListContainer" class="list-group list-group-container font rounded-3">
+            <!-- Schedule list will be dynamically populated here -->
         </div>
 
         <div>
@@ -63,4 +67,8 @@
         </div>
 
     </div>
+</div>
+<div class="home-down ms-4 ps-1 pt-3 me-4 pe-1" style="height: 45vh;">
+    <h4>Quote of the day:</h4>
+    <h5>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veniam, modi autem? Atque voluptatibus dicta optio voluptate facilis suscipit officia obcaecati, sunt nesciunt debitis architecto, maxime praesentium molestias quidem, minus doloremque.</h5>
 </div>

@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   },
   createSchedule: (data: any) => ipcRenderer.invoke("create-schedule", data),
   fetchSchedules: () => ipcRenderer.invoke("fetch-schedules"),
+  fetchTodaysSchedules: () => ipcRenderer.invoke("fetch-todays-schedules"),
   deleteAllSchedule: (filter: string) => ipcRenderer.invoke("delete-all-schedule", filter),
   cancelSchedule: (id: number) => ipcRenderer.invoke("cancel-schedule", id),
   reschedule: (id: number, newDate: string) => ipcRenderer.invoke("reschedule", id, newDate),
@@ -30,5 +31,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   deleteFranchise: (id: number) => ipcRenderer.invoke("delete-franchise", id),
   editFranchise: (data: any) => ipcRenderer.invoke("edit-franchise", data),
   newObligation: (data: any) => ipcRenderer.invoke("new-obligation", data),
+  fetchQoute: () => ipcRenderer.invoke("fetch-qoute"),
 });
 

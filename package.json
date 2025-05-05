@@ -1,6 +1,6 @@
 {
   "name": "records-management",
-  "version": "1.0",
+  "version": "1.0.0",
   "main": "dist/main.js",
   "scripts": {
     "start": "npx tsc && electron .",

@@ -62,6 +62,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 // Attach scroll listener after content load
                 attachScrollListener();
 
+                if (page === "home.html") {
+                  const fetchTodaysSchedules = await import("./logics/populateSchedules.js")
+
+                  fetchTodaysSchedules.sampleUsage();
+                }
+
                 if (page === "schedule.html") {
                     // Dynamically import addSchedule.js to attach event listeners
                     const addScheduleModule = await import("./logics/addSchedule.js");
@@ -387,6 +393,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function attachDynamicEventListeners() {
     const viewScheduleBtn = document.getElementById("viewScheduleBtn");
+    const viewPrBtn = document.getElementById("viewPrBtn");
     if (viewScheduleBtn) {
       viewScheduleBtn.addEventListener("click", async (e) => {
         e.preventDefault();
@@ -402,6 +409,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (scheduleBtn) {
           scheduleBtn.classList.add("active");
           localStorage.setItem("activeIconId", "scheduleBtn");
+        }
+      });
+    }
+    if (viewPrBtn) {
+      viewPrBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        await loadPage("purchaseRequest.html");
+
+        // Update active sidebar icon to scheduleBtn
+        const sidebarIcons = document.querySelectorAll(".sidebar-icon");
+        sidebarIcons.forEach((i) => i.classList.remove("active"));
+
+        const scheduleBtn = document.getElementById("PRBtn");
+
+        if (scheduleBtn) {
+          scheduleBtn.classList.add("active");
+          localStorage.setItem("activeIconId", "PRBtn");
         }
       });
     }

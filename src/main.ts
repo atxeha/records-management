@@ -153,6 +153,38 @@ ipcMain.handle("fetch-schedules", async () => {
   }
 })
 
+ipcMain.handle("fetch-todays-schedules", async () => {
+  try {
+    const today = new Date();
+    const startOfDay = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+    const endOfDay = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 1
+    );
+
+    const schedules = await prisma.schedule.findMany({
+      where: {
+        date: {
+          gte: startOfDay,
+          lt: endOfDay,
+        },
+      },
+      orderBy: {
+        date: "desc",
+      },
+    });
+
+    return { success: true, message: "Today's schedules fetched successfully.", data: schedules };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+})
+
 ipcMain.handle("delete-all-schedule", async (event, filter) => {
   try {
     if (filter === "today") {
@@ -690,6 +722,16 @@ ipcMain.handle("new-obligation", async (event, data) => {
       return { success: false, message: result.message };
     }
     return { success: true, message: "Obligation Request added.", data: result.data };
+  } catch (err) {
+    return { success: false, message: (err as Error).message }
+  }
+})
+
+ipcMain.handle("fetch-qoute", async () => {
+  try {
+    const result = await prisma.qoute.findMany()
+
+    return result;
   } catch (err) {
     return { success: false, message: (err as Error).message }
   }
