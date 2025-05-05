@@ -1,0 +1,215 @@
+<div>
+    <h5 class="title text-center p-0 m-0 mb-2">Obligation Requests</h5>
+
+    <div class="d-flex ms-4 ps-2 gap-2 mb-2" id="actions">
+        <span class="me-4">
+            <input type="search" class="form-control rounded-2 font-sm input col-4 search-box"
+                placeholder="Search obligation name" id="obligationFilter">
+        </span>
+        <span data-bs-toggle="modal" data-bs-target="#newObligationModal" class="mt-1">
+            <i class="icon-sm material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
+                data-bs-custom-class="custom-tooltip" title="New obligation" id="newObligationBtn">add
+            </i>
+        </span>
+        <span data-bs-toggle="modal" data-bs-target="#deleteAllObligationModal" class="mt-1">
+            <i class="icon-sm dlt-icon material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
+                data-bs-custom-class="custom-tooltip" title="Delete all" id="deleteAllObligationBtn">delete_sweep
+            </i>
+        </span>
+        <span data-bs-toggle="modal" data-bs-target="#rejectAllObligationModal" class="mt-1">
+            <i class="icon-sm dlt-icon material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
+                data-bs-custom-class="custom-tooltip" title="Reject all" id="rejectAllObligationBtn">close
+            </i>
+        </span>
+        <span data-bs-toggle="modal" data-bs-target="#approveAllObligationModal" class="mt-1">
+            <i class="icon-sm edit-icon material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
+                data-bs-custom-class="custom-tooltip" title="Approve all" id="approveAllObligationBtn">check
+            </i>
+        </span>
+    </div>
+
+    <div class="table-responsive table-container mx-4 mt-2 font">
+        <table class="table table-hover" id="obligationTable">
+            <thead id="obligationTableHead">
+                <tr>
+                    <th>Seq.</th>
+                    <th>Title</th>
+                    <th>Purpose</th>
+                    <th>Department</th>
+                    <th>Amount</th>
+                    <th>Fund Source</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th style="width: 6rem; padding-left: .6rem;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="obligationTableBody">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal" id="newObligationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="1"
+    aria-labelledby="newObligationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="newObligationModalLabel">New Obligation</h6>
+            </div>
+            <form method="post" id="newObligationForm">
+                <div class="modal-body font p-4 pb-2">
+
+                    <div class="row font mb-3">
+                        <div class="input-field col-3">
+                            <label class="mb-1 ms-2" for="newObligationTitle">Title</label>
+                            <input type="text" id="newObligationTitle" class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-5">
+                            <label class="mb-1 ms-2" for="newObligationDepartment">Department</label>
+                            <input type="text" id="newObligationDepartment" class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="newObligationDate">Date Issued</label>
+                            <input type="datetime-local" id="newObligationDate" class="form-control rounded-2 font input">
+                        </div>
+                    </div>
+                    
+                    <div class="row font mb-3">
+                        <div class="input-field col-6">
+                            <label class="mb-1 ms-2" for="newObligationPurpose">Purpose</label>
+                            <textarea id="newObligationPurpose" class="form-control rounded-2 font textarea" rows=4
+                                style="height: 105px;"></textarea>
+                        </div>
+                        <div class="input-field col-6">
+                            <label class="mb-1 ms-2" for="newObligationAmount">Amount</label>
+                            <input type="number" id="newObligationAmount" class="form-control rounded-2 font input mb-3">
+                    
+                            <label class="mb-1 ms-2" for="newObligationFund">Fund Source</label>
+                            <input type="text" id="newObligationFund" class="form-control rounded-2 font input mb-3">
+                        </div>
+                    </div>
+                    <div class="modal-footer font">
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
+                            data-bs-dismiss="modal">Back</button>
+                        <button class="button rounded-2 font btn btn-secondary" type="submit">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete All Schedule Modal -->
+<div class="modal" id="deleteAllObligationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body font p-4 pb-2">
+                <form method="post" id="deleteAllObligationForm">
+                    <div class="font mb-4">
+                        <p>Are sure to delete all Issue Slips?</p>
+                    </div>
+                    <div class="modal-footer font">
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
+                            data-bs-dismiss="modal">Back</button>
+                        <button class="button rounded-2 font btn btn-secondary" type="submit">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="editObligationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="1"
+    aria-labelledby="editObligationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="editObligationModalLabel">Edit Obligation</h6>
+            </div>
+            <form method="post" id="editObligationForm">
+                <input type="hidden" id="editObligationId">
+                <div class="modal-body font p-4 pb-2">
+
+                    <div class="row font mb-3">
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="editObligationCode">Obligation Code</label>
+                            <input type="number" id="editObligationCode" class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="editObligationName">Obligation Name</label>
+                            <input type="text" id="editObligationName" class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="editObligationIssuedBy">Issued By</label>
+                            <input type="text" id="editObligationIssuedBy" class="form-control rounded-2 font input">
+                        </div>
+                    </div>
+
+                    <div class="row font mb-3">
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="editObligationIssuedTo">Issued To</label>
+                            <input type="text" id="editObligationIssuedTo" class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="editObligationStartDate">Start Date</label>
+                            <input type="datetime-local" id="editObligationStartDate"
+                                class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="editObligationEndDate">End Date</label>
+                            <input type="datetime-local" id="editObligationEndDate"
+                                class="form-control rounded-2 font input">
+                        </div>
+                    </div>
+                    <div class="modal-footer font">
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
+                            data-bs-dismiss="modal">Back</button>
+                        <button class="button rounded-2 font btn btn-secondary" type="submit">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="approveAllObligationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body font p-4 pb-2">
+                <form method="post" id="approveAllObligationForm">
+                    <div class="font mb-4">
+                        <p>Are sure to approve all Obligation Requests?</p>
+                    </div>
+                    <div class="modal-footer font">
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
+                            data-bs-dismiss="modal">Back</button>
+                        <button class="button rounded-2 font btn btn-secondary" type="submit">Approve</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="rejectAllObligationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body font p-4 pb-2">
+                <form method="post" id="rejectAllObligationForm">
+                    <div class="font mb-4">
+                        <p>Are sure to reject all Obligation Requests?</p>
+                    </div>
+                    <div class="modal-footer font">
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
+                            data-bs-dismiss="modal">Back</button>
+                        <button class="button rounded-2 font btn btn-secondary" type="submit">Reject</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

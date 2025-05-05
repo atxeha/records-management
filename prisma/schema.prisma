@@ -80,10 +80,11 @@ model Voucher {
 
 model ObligationRequest {
   id           Int      @id @default(autoincrement())
-  obrNumber    String
+  title    String
   purpose      String
-  preparedBy   String
+  preparedBy   String @default("Admin")
   amount       Float
+  fundSource       String
   department String
   preparedDate DateTime
   status  String  @default("pending")

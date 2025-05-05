@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const RISBtn = document.getElementById("RISBtn");
   const voucherBtn = document.getElementById("voucherBtn");
   const franchiseBtn = document.getElementById("franchiseBtn");
+  const ORBtn = document.getElementById("ORBtn");
 
   function attachScrollListener() {
     const tableContainer = document.querySelector(".table-container");
@@ -299,9 +300,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
                 if (page === "franchise.html") {
                   const franchiseModule = await import("./logics/franchise.js");
-
-                  let modalId = "";
-
+                  
                   const filter = document.getElementById("franchiseFilter");
                   let franchiseFilter = "";
                   if (filter) {
@@ -317,34 +316,68 @@ document.addEventListener("DOMContentLoaded", async () => {
                   franchiseModule.initNewFranchise();
                   franchiseModule.initEditFranchise();
                   franchiseModule.initFetchFranchise(franchiseFilter);
-                  // franchiseModule.initApproveRejectfranchise(franchiseFilter);
                   franchiseModule.initDeleteAllFranchise();
                   franchiseModule.initDeleteFranchise(franchiseFilter);
                   franchiseModule.initPopulateFranchise();
-
-                  // document.addEventListener("shown.bs.modal", function (event) {
-                  //   modalId = event.target.id;
-                  //   if (modalId === "rejectAllVoucherModal") {
-                  //     voucherModule.initUpdateAllVoucherStatus(
-                  //       "rejectAllVoucherModal",
-                  //       "voucher",
-                  //       "rejected",
-                  //       voucherFilter
-                  //     );
-                  //   } else if (modalId === "approveAllVoucherModal") {
-                  //     voucherModule.initUpdateAllVoucherStatus(
-                  //       "approveAllVoucherModal",
-                  //       "voucher",
-                  //       "approved",
-                  //       voucherFilter
-                  //     );
-                  //   }
-                  // });
 
                   if (filter) {
                     filter.addEventListener("input", () => {
                       localStorage.setItem("franchiseFilter", filter.value);
                       franchiseModule.initFetchFranchise(filter.value);
+                    });
+                  }
+                }
+                if (page === "obligation.html") {
+                  const orModule = await import("./logics/obligation.js");
+
+                  let modalId = "";
+                  
+                  const filter = document.getElementById("obligationFilter");
+                  let obligationFilter = "";
+                  if (filter) {
+                    const savedFilter = localStorage.getItem("obligationFilter");
+                    if (savedFilter) {
+                      obligationFilter = savedFilter;
+                      filter.value = savedFilter;
+                    } else {
+                      filter.value = obligationFilter;
+                    }
+                  }
+
+                  orModule.initNewOr();
+                  orModule.initRejectApproveOr(obligationFilter)
+                  orModule.initFetchOr(obligationFilter);
+                  orModule.initDeleteAllOr();
+                  // orModule.initDeleteFranchise(obligationFilter);
+                  // orModule.initPopulateFranchise();
+
+                  document.addEventListener(
+                    "shown.bs.modal",
+                    function (event) {
+                      modalId = event.target.id;
+                      console.log(modalId)
+                      if (modalId === "rejectAllObligationModal") {
+                        orModule.initUpdateAllObligationStatus(
+                          "rejectAllObligationModal",
+                          "obligationRequest",
+                          "rejected",
+                          obligationFilter
+                        );
+                      } else if (modalId === "approveAllObligationModal") {
+                        orModule.initUpdateAllObligationStatus(
+                          "approveAllObligationModal",
+                          "obligationRequest",
+                          "approved",
+                          obligationFilter
+                        );
+                      }
+                    }
+                  );
+
+                  if (filter) {
+                    filter.addEventListener("input", () => {
+                      localStorage.setItem("obligationFilter", filter.value);
+                      orModule.initFetchOr(filter.value);
                     });
                   }
                 }
@@ -427,6 +460,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     franchiseBtn.addEventListener("click", async (e) => {
       e.preventDefault();
       await loadPage("franchise.html")
+    })
+  }
+
+  if(ORBtn) {
+    ORBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      await loadPage("obligation.html")
     })
   }
 

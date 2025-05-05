@@ -29,5 +29,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   newFranchise: (data: any) => ipcRenderer.invoke("new-franchise", data),
   deleteFranchise: (id: number) => ipcRenderer.invoke("delete-franchise", id),
   editFranchise: (data: any) => ipcRenderer.invoke("edit-franchise", data),
+  newObligation: (data: any) => ipcRenderer.invoke("new-obligation", data),
 });
 

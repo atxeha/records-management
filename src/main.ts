@@ -9,7 +9,8 @@ import {
   prisma,
   newRis,
   newVoucher,
-  newFranchise
+  newFranchise,
+  newObligationRequest
 } from "./database";
 import { execSync } from "child_process";
 
@@ -439,39 +440,54 @@ ipcMain.handle("new-ris", async (event, data) => {
 })
 
 ipcMain.handle("fetch-ris-voucher", async (event, tableName) => {
-  try {
-    if (tableName === "requisitionIssueSlip") {
-      const risData = await prisma.requisitionIssueSlip.findMany({
-        orderBy: {
-          preparedDate: "desc",
-        },
-      });
-      return risData;
-    } else if (tableName === "voucher") {
-      const voucherData = await prisma.voucher.findMany({
-        orderBy: {
-          datePrepared: "desc",
-        },
-      });
-      return voucherData;
-    } else if (tableName === "franchise") {
-      const franchiseData = await prisma.franchise.findMany({
-        orderBy: {
-          startDate: "desc",
-        },
-      });
-      return franchiseData;
-    } else {
-      return { success: false, message: "Invalid table name." };
+    try {
+        if (tableName === "requisitionIssueSlip") {
+            const risData = await prisma.requisitionIssueSlip.findMany({
+                orderBy: {
+                    preparedDate: "desc",
+                },
+            });
+
+            return risData;
+
+        } else if (tableName === "voucher") {
+            const voucherData = await prisma.voucher.findMany({
+                orderBy: {
+                    datePrepared: "desc",
+                },
+            });
+
+            return voucherData;
+
+        } else if (tableName === "franchise") {
+            const franchiseData = await prisma.franchise.findMany({
+                orderBy: {
+                    startDate: "desc",
+                },
+            });
+
+            return franchiseData;
+
+        } else if (tableName === "obligationRequest") {
+            const orData = await prisma.obligationRequest.findMany({
+                orderBy: {
+                    preparedDate: "desc",
+                },
+            });
+
+            return orData;
+
+        } else {
+            return { success: false, message: "Invalid table name." };
+        }
+    } catch (err) {
+        return (err as Error).message;
     }
-  } catch (err) {
-    return (err as Error).message;
-  }
 })
 
 ipcMain.handle("delete-all-records", async (event, tableName) => {
   try {
-    const validTables = ["requisitionIssueSlip", "purchaseRequest", "voucher", "pettyCash", "schedule", "franchise"];
+    const validTables = ["requisitionIssueSlip", "purchaseRequest", "voucher", "pettyCash", "schedule", "franchise", "obligationRequest"];
 
     if (!validTables.includes(tableName)) {
       return { success: false, message: "Invalid table name." };
@@ -499,7 +515,7 @@ ipcMain.handle("delete-all-records", async (event, tableName) => {
 
 ipcMain.handle("update-all-status", async (event, tableName, status) => {
   try {
-    const validTables = ["requisitionIssueSlip", "purchaseRequest", "voucher"];
+    const validTables = ["requisitionIssueSlip", "purchaseRequest", "voucher", "pettyCash", "schedule", "franchise", "obligationRequest"];
 
     if (!validTables.includes(tableName)) {
       return { success: false, message: "Invalid table name." };
@@ -542,7 +558,7 @@ ipcMain.handle("update-all-status", async (event, tableName, status) => {
 
 ipcMain.handle("approve-reject", async (e, id, status, tableName) => {
   try {
-    const validTables = ["requisitionIssueSlip", "purchaseRequest", "voucher"];
+    const validTables = ["requisitionIssueSlip", "purchaseRequest", "voucher", "obligationRequest"];
 
     if (!validTables.includes(tableName)) {
       return { success: false, message: "Invalid table name." };
@@ -658,3 +674,23 @@ ipcMain.handle("edit-franchise", async (_event, data) => {
     return { success: false, message: "Failed to update franchise." };
   }
 });
+
+ipcMain.handle("new-obligation", async (event, data) => {
+  try {
+    const result = await newObligationRequest(
+      data.title,
+      data.purpose,
+      data.amount,
+      data.fundSource,
+      data.department,
+      data.preparedDate,
+      data.status
+    )
+    if (result.success === false) {
+      return { success: false, message: result.message };
+    }
+    return { success: true, message: "Obligation Request added.", data: result.data };
+  } catch (err) {
+    return { success: false, message: (err as Error).message }
+  }
+})

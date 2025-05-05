@@ -252,3 +252,36 @@ export async function newFranchise(
     return { success: false, message: (err as Error).message };
   }
 }
+
+export async function newObligationRequest(
+  title: string,
+  purpose: string,
+  amount: number,
+  fundSource: string,
+  department: string,
+  preparedDate: string,
+  status: string
+) {
+  try {
+    let isoDate = preparedDate;
+    if (preparedDate.length === 16) {
+      isoDate = preparedDate + ":00";
+    }
+
+    const newPurchaseRequest = await prisma.obligationRequest.create({
+      data: {
+        title,
+        purpose,
+        amount,
+        fundSource,
+        department,
+        preparedDate: new Date(isoDate),
+        status,
+      },
+    })
+
+    return { success: true, data: newPurchaseRequest };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+  }
+}
