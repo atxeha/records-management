@@ -63,8 +63,14 @@ body {
     flex-direction: column;
 }
 
+.table-container-2 {
+    max-height: 39vh;
+    overflow-y: scroll;
+        scrollbar-width: none;
+}
+
 .list-group-container {
-    max-height: 45vh;
+    max-height: 33vh;
     overflow-y: scroll;
     scrollbar-width: none;
     /* Firefox */

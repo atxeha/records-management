@@ -66,13 +66,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 // Attach scroll listener after content load
                 attachScrollListener();
 
-if (page === "home.html") {
-  const fetchTodaysSchedules = await import("./logics/populateSchedules.js")
-  const homeModule = await import("./logics/home.js")
+                if (page === "home.html") {
+                  const fetchTodaysSchedules = await import("./logics/populateSchedules.js")
+                  const homeModule = await import("./logics/home.js")
 
-  fetchTodaysSchedules.sampleUsage();
-  homeModule.initCount();
-}
+                  fetchTodaysSchedules.sampleUsage();
+                  homeModule.initCount();
+                  homeModule.initFetchFranchise()
+                }
 
                 if (page === "schedule.html") {
                     // Dynamically import addSchedule.js to attach event listeners
@@ -404,6 +405,7 @@ if (page === "home.html") {
     const viewPcBtn = document.getElementById("viewPcBtn");
     const viewVBtn = document.getElementById("viewVBtn");
     const viewOrBtn = document.getElementById("viewOrBtn");
+    const viewFranchiseBtn = document.getElementById("viewFranchiseBtn");
     if (viewScheduleBtn) {
       viewScheduleBtn.addEventListener("click", async (e) => {
         e.preventDefault();
@@ -509,6 +511,24 @@ if (page === "home.html") {
         if (orBtn) {
           orBtn.classList.add("active");
           localStorage.setItem("activeIconId", "ORBtn");
+        }
+      });
+    }
+    if (viewFranchiseBtn) {
+      viewFranchiseBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        await loadPage("franchise.html");
+
+        // Update active sidebar icon to scheduleBtn
+        const sidebarIcons = document.querySelectorAll(".sidebar-icon");
+        sidebarIcons.forEach((i) => i.classList.remove("active"));
+
+        const franchiseBtn = document.getElementById("franchiseBtn");
+
+        if (franchiseBtn) {
+          franchiseBtn.classList.add("active");
+          localStorage.setItem("activeIconId", "franchiseBtn");
         }
       });
     }
