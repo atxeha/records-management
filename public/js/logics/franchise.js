@@ -40,7 +40,7 @@ export function initNewFranchise() {
 
       if (response.success) {
         window.electronAPI.showToast(response.message, true);
-        // modal.hide();
+        modal.hide();
 
         initFetchFranchise();
       } else {
