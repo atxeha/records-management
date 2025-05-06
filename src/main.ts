@@ -173,6 +173,8 @@ ipcMain.handle("fetch-todays-schedules", async () => {
           gte: startOfDay,
           lt: endOfDay,
         },
+        isDone: false,
+        isCanceled: false,
       },
       orderBy: {
         date: "desc",
@@ -736,3 +738,50 @@ ipcMain.handle("fetch-qoute", async () => {
     return { success: false, message: (err as Error).message }
   }
 })
+
+ipcMain.handle("count-record", async (event, tableName) => {
+    try {
+        if (tableName === "purchaseRequest") {
+            const count = await prisma.purchaseRequest.count({
+                where: {
+                    status: "pending",
+                },
+            });
+            return { success: true, count };
+
+        } else if (tableName === "obligationRequest") {
+            const count = await prisma.obligationRequest.count({
+                where: {
+                    status: "pending",
+                },
+            });
+            return { success: true, count };
+
+        } else if (tableName === "requisitionIssueSlip") {
+            const count = await prisma.requisitionIssueSlip.count({
+                where: {
+                    status: "pending",
+                },
+            });
+            return { success: true, count };
+        } else if (tableName === "pettyCash") {
+            const count = await prisma.pettyCash.count({
+                where: {
+                    status: "pending",
+                },
+            });
+            return { success: true, count };
+
+        } else if (tableName === "voucher") {
+            const count = await prisma.voucher.count({
+                where: {
+                    status: "pending",
+                },
+            });
+            return { success: true, count };
+        }
+
+    } catch (err) {
+        return { success: false, message: (err as Error).message };
+    }
+});

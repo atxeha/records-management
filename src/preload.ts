@@ -32,5 +32,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   editFranchise: (data: any) => ipcRenderer.invoke("edit-franchise", data),
   newObligation: (data: any) => ipcRenderer.invoke("new-obligation", data),
   fetchQoute: () => ipcRenderer.invoke("fetch-qoute"),
+  countRecord: (tableName: string) => ipcRenderer.invoke("count-record", tableName),
 });
 

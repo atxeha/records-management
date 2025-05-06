@@ -6,7 +6,6 @@
 export function populateScheduleList(schedules, containerSelector) {
   const container = document.querySelector(containerSelector);
   if (!container) {
-    console.error("Container element not found:", containerSelector);
     return;
   }
 
@@ -22,6 +21,14 @@ export function populateScheduleList(schedules, containerSelector) {
     <div class="col-3">Time</div>
   `;
   container.appendChild(header);
+
+  if (schedules.length === 0) {
+    const noScheduleDiv = document.createElement("div");
+    noScheduleDiv.className = "list-group-item text-center text-muted";
+    noScheduleDiv.textContent = "No schedule for today";
+    container.appendChild(noScheduleDiv);
+    return;
+  }
 
   // Create rows for each schedule
   schedules.forEach(schedule => {

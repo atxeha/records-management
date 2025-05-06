@@ -33,6 +33,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function initializeTooltips() {
+    // Remove all existing tooltip DOM elements
+    document.querySelectorAll('.tooltip').forEach(t => t.remove());
+
     var tooltipTriggerList = [].slice.call(
       document.querySelectorAll('[data-bs-toggle="tooltip"]')
     );
@@ -50,6 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
   }
 
+
     async function loadPage(page) {
         await fetch(`./${page}`)
             .then((response) => response.text())
@@ -62,11 +66,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 // Attach scroll listener after content load
                 attachScrollListener();
 
-                if (page === "home.html") {
-                  const fetchTodaysSchedules = await import("./logics/populateSchedules.js")
+if (page === "home.html") {
+  const fetchTodaysSchedules = await import("./logics/populateSchedules.js")
+  const homeModule = await import("./logics/home.js")
 
-                  fetchTodaysSchedules.sampleUsage();
-                }
+  fetchTodaysSchedules.sampleUsage();
+  homeModule.initCount();
+}
 
                 if (page === "schedule.html") {
                     // Dynamically import addSchedule.js to attach event listeners
@@ -394,6 +400,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   function attachDynamicEventListeners() {
     const viewScheduleBtn = document.getElementById("viewScheduleBtn");
     const viewPrBtn = document.getElementById("viewPrBtn");
+    const viewRisBtn = document.getElementById("viewRisBtn");
+    const viewPcBtn = document.getElementById("viewPcBtn");
+    const viewVBtn = document.getElementById("viewVBtn");
+    const viewOrBtn = document.getElementById("viewOrBtn");
     if (viewScheduleBtn) {
       viewScheduleBtn.addEventListener("click", async (e) => {
         e.preventDefault();
@@ -427,6 +437,78 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (scheduleBtn) {
           scheduleBtn.classList.add("active");
           localStorage.setItem("activeIconId", "PRBtn");
+        }
+      });
+    }
+    if (viewRisBtn) {
+      viewRisBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        await loadPage("requisition.html");
+
+        // Update active sidebar icon to scheduleBtn
+        const sidebarIcons = document.querySelectorAll(".sidebar-icon");
+        sidebarIcons.forEach((i) => i.classList.remove("active"));
+
+        const risBtn = document.getElementById("RISBtn");
+
+        if (risBtn) {
+          risBtn.classList.add("active");
+          localStorage.setItem("activeIconId", "RISBtn");
+        }
+      });
+    }
+    if (viewPcBtn) {
+      viewPcBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        await loadPage("pettyCash.html");
+
+        // Update active sidebar icon to scheduleBtn
+        const sidebarIcons = document.querySelectorAll(".sidebar-icon");
+        sidebarIcons.forEach((i) => i.classList.remove("active"));
+
+        const pcBtn = document.getElementById("pettyCashBtn");
+
+        if (pcBtn) {
+          pcBtn.classList.add("active");
+          localStorage.setItem("activeIconId", "pettyCashBtn");
+        }
+      });
+    }
+    if (viewVBtn) {
+      viewVBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        await loadPage("voucher.html");
+
+        // Update active sidebar icon to scheduleBtn
+        const sidebarIcons = document.querySelectorAll(".sidebar-icon");
+        sidebarIcons.forEach((i) => i.classList.remove("active"));
+
+        const voucherBtn = document.getElementById("voucherBtn");
+
+        if (voucherBtn) {
+          voucherBtn.classList.add("active");
+          localStorage.setItem("activeIconId", "voucherBtn");
+        }
+      });
+    }
+    if (viewOrBtn) {
+      viewOrBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        await loadPage("obligation.html");
+
+        // Update active sidebar icon to scheduleBtn
+        const sidebarIcons = document.querySelectorAll(".sidebar-icon");
+        sidebarIcons.forEach((i) => i.classList.remove("active"));
+
+        const orBtn = document.getElementById("ORBtn");
+
+        if (orBtn) {
+          orBtn.classList.add("active");
+          localStorage.setItem("activeIconId", "ORBtn");
         }
       });
     }
