@@ -14,13 +14,8 @@ const dbFileName = "inventory.db";
 const dbPath = isDev
   ? path.join(__dirname, "..", "db", dbFileName) // Development: Use `db/`
   : path.join(app.getPath("userData"), dbFileName); // Production: Use `userData/`
-
-  isDev ? console.log("Database Path:", dbPath)
-  : console.log("Database Path (Production):", dbPath);
   
 process.env.DATABASE_URL = `file:${dbPath}`;
-
-console.log(dbPath)
 
 // Ensure the database file exists in production
 if (!isDev && !fs.existsSync(dbPath)) {
@@ -28,9 +23,7 @@ if (!isDev && !fs.existsSync(dbPath)) {
     // Copy the DB from the `app.asar` to `userData`
     const appDbPath = path.join(process.resourcesPath, dbFileName);
     fs.copyFileSync(appDbPath, dbPath);
-    console.log("Database copied to:", dbPath);
   } catch (err) {
-    console.error("Database copy error:", err);
   }
 }
 
@@ -43,11 +36,15 @@ const prisma = new PrismaClient({
   },
 });
 
-// Debugging output
-console.log("Prisma is using database path:", dbPath);
-console.log("Prisma Client Path:", path.dirname(require.resolve("@prisma/client")));
-
 export { prisma };
+
+function isoDate(date: string) {
+  let newIsoDate = ""
+  if (date.length === 16) {
+    newIsoDate = date + ":00";
+  }
+  return new Date(newIsoDate);
+}
 
 export async function createSchedule(
   description: string,
@@ -78,39 +75,26 @@ export async function createSchedule(
 }
 
 export async function newPurchaseRequest(
-  prNumber: number,
-  item: string,
-  requestedBy: string,
-  requestedDate: string,
+  receivedBy: string,
+  receivedOn: string,
   purpose: string,
   department: string
 ) {
   try{
-    let isoDate = requestedDate;
-    if (requestedDate.length === 16) {
-      isoDate = requestedDate + ":00";
-    }
-
-    const existingRequest = await prisma.purchaseRequest.findUnique({
-      where: {prNumber},
-    })
-
-    if(existingRequest){throw new Error(`Request '${prNumber}' already exists.`)}
+    const receivedOnIso = isoDate(receivedOn)
 
     const newPurchaseRequest = await prisma.purchaseRequest.create({
       data: {
-        prNumber,
-        item,
-        requestedBy,
-        requestDate: new Date(isoDate),
+        receivedBy,
+        receivedOn: new Date(receivedOnIso),
         purpose,
         department,
       },
-    })
+    });
 
     return { success: true, data: newPurchaseRequest };
   }catch(err){
-    return { success: false, message: (err as Error).message };
+    return { success: false, message: `${(err as Error).message}` };
   }
 }
 

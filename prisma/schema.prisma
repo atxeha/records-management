@@ -15,12 +15,11 @@ datasource db {
 
 model PurchaseRequest {
   id          Int      @id @default(autoincrement())
-  prNumber    BigInt   @unique
-  item String @default("asdf")
-  requestedBy String
+  receivedBy String
   department  String
   purpose     String
-  requestDate DateTime
+  receivedOn DateTime
+  releasedOn DateTime?
   status      String   @default("pending")
   createdAt   DateTime @default(now())
 }
@@ -33,6 +32,7 @@ model RequisitionIssueSlip {
   purpose      String
   issuedTo     String
   preparedDate DateTime
+  releasedOn DateTime?
   status String @default("pending")
   createdAt    DateTime @default(now())
 }
@@ -74,6 +74,7 @@ model Voucher {
   purpose       String
   accountTitle  String
   datePrepared  DateTime
+  releasedOn DateTime?
   status    String @default("pending")
   createdAt     DateTime @default(now())
 }
@@ -87,6 +88,7 @@ model ObligationRequest {
   fundSource       String
   department String
   preparedDate DateTime
+  releasedOn DateTime?
   status  String  @default("pending")
   createdAt    DateTime @default(now())
 }

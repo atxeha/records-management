@@ -22,7 +22,7 @@
         </span>
         <span data-bs-toggle="modal" data-bs-target="#approveAllPurchaseModal" class="mt-1">
             <i class="icon-sm edit-icon material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
-                data-bs-custom-class="custom-tooltip" title="Approve all" id="approveAllPurchaseBtn">check
+                data-bs-custom-class="custom-tooltip" title="Release all" id="approveAllPurchaseBtn">check
             </i>
         </span>
     </div>
@@ -31,13 +31,12 @@
         <table class="table table-hover" id="prTable">
             <thead id="prTableHead">
                 <tr>
-                    <th>Seq.</th>
-                    <th>PR No.</th>
-                    <th>Item</th>
-                    <th>Requested by</th>
-                    <th>Department</th>
+                    <th></th>
                     <th>Purpose</th>
-                    <th>Request Date</th>
+                    <th>Department</th>
+                    <th>Received by</th>
+                    <th>Received on</th>
+                    <th>Released on</th>
                     <th style="min-width: 11rem;">Status</th>
                     <th style="width: 6rem; padding-left: .6rem;">Actions</th>
                 </tr>
@@ -60,31 +59,19 @@
             <form method="post" id="addPurchaseForm">
                 <div class="modal-body font p-4 pb-2">
                     <div class="row font mb-3">
-                        <div class="input-field col-4">
-                            <label class="mb-1 ms-2" for="addPurchaseNumber">PR Number</label>
-                            <input type="number" id="addPurchaseNumber" class="form-control rounded-2 font input">
+                        <div class="input-field col-7">
+                            <label class="mb-1 ms-2" for="purpose">Purpose</label>
+                            <textarea id="purpose" class="form-control rounded-2 font textarea" rows="4" style="height: 105px;"></textarea>
                         </div>
-                        <div class="input-field col-4">
-                            <label class="mb-1 ms-2" for="addPurchaseRequestedBy">Requested by</label>
-                            <input type="text" id="addPurchaseRequestedBy" class="form-control rounded-2 font input">
-                        </div>
-                        <div class="input-field col-4">
-                            <label class="mb-1 ms-2" for="addPurchaseRequestedDate">Date</label>
-                            <input type="datetime-local" id="addPurchaseRequestedDate" class="form-control rounded-2 font input">
-                        </div>
-                    </div>
-                    <div class="row font mb-3">
-                        <div class="input-field col-4">
-                            <label class="mb-1 ms-2" for="addPurchasePurpose">Purpose</label>
-                            <input type="text" id="addPurchasePurpose" class="form-control rounded-2 font input">
-                        </div>
-                        <div class="input-field col-4">
-                            <label class="mb-1 ms-2" for="addPurchaseDepartment">Department</label>
-                            <input type="text" id="addPurchaseDepartment" class="form-control rounded-2 font input mb-3">
-                        </div>
-                        <div class="input-field col-4">
-                            <label class="mb-1 ms-2" for="addPurchaseItem">Item</label>
-                            <input type="text" id="addPurchaseItem" class="form-control rounded-2 font input mb-3">
+                        <div class="input-field col-5">
+                            <label class="mb-1 ms-2" for="department">Department</label>
+                            <input type="text" id="department" class="form-control rounded-2 font input mb-3">
+
+                            <label class="mb-1 ms-2" for="receivedBy">Received by</label>
+                            <input type="text" id="receivedBy" class="form-control rounded-2 font input mb-3">
+
+                            <label class="mb-1 ms-2" for="receivedOn">Received on</label>
+                            <input type="datetime-local" id="receivedOn" class="form-control rounded-2 font input">
                         </div>
                     </div>
                     <div class="modal-footer font">

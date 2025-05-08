@@ -5,20 +5,16 @@ export function initNewPurchaseRequest() {
     addPurchaseForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const prNumber = parseInt(document.getElementById("addPurchaseNumber").value.trim());
-        const item = document.getElementById("addPurchaseItem").value.trim();
-        const requestedBy = document.getElementById("addPurchaseRequestedBy").value.trim();
-        const requestedDate = document.getElementById("addPurchaseRequestedDate").value.trim();
-        const purpose = document.getElementById("addPurchasePurpose").value.trim();
-        const department =document.getElementById("addPurchaseDepartment").value.trim();
+        const receivedBy = document.getElementById("receivedBy").value.trim();
+        const receivedOn = document.getElementById("receivedOn").value.trim();
+        const purpose = document.getElementById("purpose").value.trim();
+        const department =document.getElementById("department").value.trim();
 
-        if(!item || !prNumber || !requestedBy || !requestedDate || !purpose || !department){window.electronAPI.showToast("All fields required.", false); return;}
+        if(!receivedBy || !receivedOn || !purpose || !department){window.electronAPI.showToast("All fields required.", false); return;}
 
         const data = {
-            prNumber: prNumber,
-            item: item,
-            requestedBy: requestedBy,
-            requestedDate: requestedDate,
+            receivedBy: receivedBy,
+            receivedOn: receivedOn,
             purpose: purpose,
             department: department,
         }
@@ -51,7 +47,7 @@ export async function initFetchPurchaseRequest(searchQuery = "") {
       tableBody.innerHTML = "";
 
       const filteredItems = items.filter((item) => {
-        const itemCodeMatch = item.requestedBy
+        const itemCodeMatch = item.department
           .toLowerCase()
           .includes(searchQuery.toLowerCase());
 
@@ -81,7 +77,16 @@ export async function initFetchPurchaseRequest(searchQuery = "") {
       filteredItems.forEach((item, index) => {
         const row = document.createElement("tr");
 
-        const formattedDate = new Date(item.requestDate)
+        const formattedReceivedOn = new Date(item.receivedOn)
+          .toLocaleString(undefined, {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          })
+        const formattedReleasedOn = new Date(item.releasedOn)
           .toLocaleString(undefined, {
             year: "numeric",
             month: "2-digit",
@@ -93,19 +98,18 @@ export async function initFetchPurchaseRequest(searchQuery = "") {
 
         row.innerHTML = `
                 <td>${index + 1}</td>
-                <td>${item.prNumber}</td>
-                <td>${item.item}</td>
-                <td>${item.requestedBy}</td>
-                <td>${item.department}</td>
                 <td>${item.purpose}</td>
-                <td>${formattedDate}</td>
-                <td class="${item.status === "approved" ? "edit-icon" : item.status === "rejected" ? "dlt-icon" : ""}">${item.status === 'approved' ? 'Approved' : item.status === "rejected" ? 'Rejected' : 'Pending'}</td>
+                <td>${item.department}</td>
+                <td>${item.receivedBy}</td>
+                <td>${formattedReceivedOn}</td>
+                <td>${item.releasedOn ? formattedReleasedOn : "-- --"}</td>
+                <td class="${item.status === "approved" ? "edit-icon" : item.status === "rejected" ? "dlt-icon" : ""}">${item.status === 'approved' ? 'Released' : item.status === "rejected" ? 'Rejected' : 'Unsigned'}</td>
                 <td class="pb-0">
                     <i data-purchase-id="${item.id}" class="rejectPr dlt-icon icon-btn icon-sm material-icons me-1" data-bs-toggle="tooltip"
                         data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Reject" style="margin-left:2px;">close</i>
                   
                     <i data-purchase-id="${item.id}" class="approvePr edit-icon icon-btn icon-sm material-icons" data-bs-toggle="tooltip"
-                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Approve">check</i>
+                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Release">check</i>
                 </td>
             `;
         tableBody.appendChild(row);

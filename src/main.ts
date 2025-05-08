@@ -12,30 +12,6 @@ import {
   newFranchise,
   newObligationRequest
 } from "./database";
-import { execSync } from "child_process";
-
-const isDev = !app.isPackaged;
-
-if (!isDev) {
-  try {
-    console.log("Running Prisma Migration...");
-    const output = execSync("npx prisma migrate deploy", {
-      stdio: "pipe",
-      encoding: "utf-8",
-    });
-    console.log("Migration Output:\n", output);
-  } catch (error: any) {
-    console.error("Migration Error:\n", error.message);
-  }
-}
-
-function capitalizeWords(str: string) {
-  return str
-      .toLowerCase()
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-}
 
 let mainWindow: BrowserWindow | null;
 app.whenReady().then(async() => {
@@ -58,40 +34,7 @@ app.whenReady().then(async() => {
 
 const menu = Menu.buildFromTemplate([
   {
-    label: "File",
-    submenu: [
-      {
-        label: "Exit",
-        role: "quit",
-      },
-    ],
-  },
-  {
-    label: "Edit",
-    submenu: [
-      { label: "Undo", role: "undo" },
-      { label: "Redo", role: "redo" },
-      { type: "separator" },
-      { label: "Cut", role: "cut" },
-      { label: "Copy", role: "copy" },
-      { label: "Paste", role: "paste" },
-    ],
-  },
-  {
-    label: "View",
-    submenu: [
-      {
-        label: "Reload",
-        role: "reload",
-      },
-      {
-        label: "Toggle DevTools",
-        role: "toggleDevTools",
-      },
-    ],
-  },
-  {
-    label: "Help",
+    label: "About",
     submenu: [
       {
         label: "Developer",
@@ -99,29 +42,9 @@ const menu = Menu.buildFromTemplate([
           shell.openExternal("https://www.facebook.com/a1yag/");
         },
       },
-      {
-        label: "About",
-        click: () => {
-          console.log("About clicked!");
-        },
-      },
     ],
   },
 ]);
-
-ipcMain.on("navigate", (event, page) => {
-  const filePath = path.join(app.getAppPath(), "public", page);
-  console.log("Loading file:", filePath);
-
-  if (!fs.existsSync(filePath)) {
-    console.error("File does not exist:", filePath);
-    return;
-  }
-
-  if (mainWindow) {
-    mainWindow.loadFile(filePath);
-  }
-});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
@@ -304,10 +227,8 @@ ipcMain.handle("delete-schedule", async (event, id) => {
 ipcMain.handle("new-purchase-request", async (event, data) => {
   try{
     const result = await newPurchaseRequest(
-      data.prNumber,
-      data.item,
-      data.requestedBy,
-      data.requestedDate,
+      data.receivedBy,
+      data.receivedOn,
       data.purpose,
       data.department
     )
@@ -324,7 +245,7 @@ ipcMain.handle("fetch-purchase-requests", async () => {
   try{
     const requests = await prisma.purchaseRequest.findMany({
       orderBy: {
-        requestDate: "desc",
+        receivedOn: "asc",
       },
     })
 
@@ -347,14 +268,17 @@ ipcMain.handle("approve-reject-pr", async (e, id, status) => {
       return { success: false, message: `Request already ${status}.` }
     }
 
-    await prisma.purchaseRequest.update({
+    const result = await prisma.purchaseRequest.update({
       where: {id},
       data: {
         status: status,
+        releasedOn: new Date(),
       },
     })
 
-    return {success: true, message: `Request ${status}.`}
+    console.log(result);
+
+    return {success: true, message: `Request ${status}. ${result}`}
   }catch (err: any) {
     return{success: false, message: err.message}
   }
@@ -573,7 +497,8 @@ ipcMain.handle("update-all-status", async (event, tableName, status) => {
       return { success: false, message: `All ${tableName} already ${status}.` };
     }
 
-    await model.updateMany({
+    if (status === "rejected") {
+      await model.updateMany({
       where: {
         status: {
           not: status,
@@ -583,6 +508,20 @@ ipcMain.handle("update-all-status", async (event, tableName, status) => {
         status: status,
       },
     });
+    } else {
+      await model.updateMany({
+        where: {
+          status: {
+            not: status,
+          },
+        },
+        data: {
+          status: status,
+          releasedOn: new Date(),
+        },
+      });
+    }
+    
 
     return { success: true, message: `${notCount} ${tableName} records ${status}.` };
   } catch (err) {
@@ -615,12 +554,22 @@ ipcMain.handle("approve-reject", async (e, id, status, tableName) => {
       return { success: false, message: `Request already ${status}.` };
     }
 
-    await model.update({
-      where: { id },
-      data: {
-        status: status,
-      },
-    });
+    if (status === "rejected") {
+      await model.update({
+        where: { id },
+        data: {
+          status: status,
+        },
+      });
+    } else {
+      await model.update({
+        where: { id },
+        data: {
+          status: status,
+          releasedOn: new Date(),
+        },
+      });
+    }
 
     return { success: true, message: `Request ${status}.` };
   } catch (err: any) {
