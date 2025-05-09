@@ -94,6 +94,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                   module.showPassword()
                   module.populateFields()
                   module.toggleTheme()
+                  module.addStaff()
                 }
 
                 if (page === "schedule.html") {

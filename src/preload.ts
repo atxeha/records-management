@@ -36,5 +36,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   autoLogin: () => ipcRenderer.invoke("auto-login"),
   logout: (username: string) => ipcRenderer.invoke("logout", username),
   updateAccount: (data: any) => ipcRenderer.invoke("update-account", data),
+  addStaff: (data: any) => ipcRenderer.invoke("add-staff", data),
 });
 

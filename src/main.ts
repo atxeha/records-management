@@ -796,3 +796,36 @@ ipcMain.handle("update-account", async (event, data) => {
     return { success: false, message: (err as Error).message };
   }
 })
+
+ipcMain.handle("add-staff", async (event, data) => {
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { username: data.username },
+    });
+
+    const existingUserEmail = await prisma.user.findUnique({
+      where: { email: data.email },
+    });
+
+    if (existingUser) {
+      return { success: false, message: "Username already exists." };
+    }
+
+    if (existingUserEmail) {
+      return { success: false, message: "Email already exists." };
+    }
+    
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const createdStaff = await prisma.user.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        username: data.username,
+        password: hashedPassword,
+      },
+    });
+    return { success: true, message: "Staff added successfully.", data: createdStaff };
+  } catch (err) {
+    return { success: false, message: (err as Error).message };
+    }
+})

@@ -109,3 +109,36 @@ export function toggleTheme() {
         theme.textContent === "dark_mode" ? theme.textContent = "light_mode" : theme.textContent = "dark_mode";
     })
 }
+
+export function addStaff(){
+    const form = document.getElementById("addStaffForm");
+    const modal = new bootstrap.Modal(document.getElementById("addStaffModal"));
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const staffName = document.getElementById("staffName");
+        const staffEmail = document.getElementById("staffEmail");
+        const staffUsername = document.getElementById("staffUser");
+        const staffPassword = document.getElementById("staffPass");
+
+        const data = {
+            name: staffName.value.trim(),
+            email: staffEmail.value.trim(),
+            username: staffUsername.value.trim(),
+            password: staffPassword.value.trim(),
+        }
+
+        try {
+            const res = await window.electronAPI.addStaff(data);
+
+            if (res.success) {
+                window.electronAPI.showToast(res.message, true);
+                modal.hide();
+            } else {
+                window.electronAPI.showToast(res.message, false);
+            }
+        } catch (error) {
+            window.electronAPI.showToast(error.message, false);
+        }
+    })
+}
