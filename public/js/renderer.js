@@ -181,7 +181,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                       "shown.bs.modal",
                       function (event) {
                         modalId = event.target.id;
-                        console.log(modalId)
                         if (modalId === "rejectAllPurchaseModal") {
                           prModule.initUpdateAllPurchaseStatus(
                             "rejectAllPurchaseModal",
@@ -390,7 +389,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     "shown.bs.modal",
                     function (event) {
                       modalId = event.target.id;
-                      console.log(modalId)
                       if (modalId === "rejectAllObligationModal") {
                         orModule.initUpdateAllObligationStatus(
                           "rejectAllObligationModal",
@@ -417,7 +415,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                   }
                 }
             })
-            .catch((error) => console.error("Error loading page:", error));
     }
 
   function attachDynamicEventListeners() {

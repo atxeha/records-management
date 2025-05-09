@@ -5,16 +5,20 @@ export function initNewPettyCash() {
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
+        const receivedBy = document.getElementById("receivedBy").value.trim();
         const purpose = document.getElementById("newPettyPurpose").value.trim();
-        const cashAmount = parseInt(document.getElementById("newPettyAmount").value.trim());
-        const dateIssued = document.getElementById("newPettyDate").value.trim();
+        const department = document.getElementById("newPettyDepartment").value.trim();
+        const amount = parseInt(document.getElementById("newPettyAmount").value.trim());
+        const receivedOn = document.getElementById("receivedOn").value.trim();
 
-        if(!cashAmount || !dateIssued || !purpose){window.electronAPI.showToast("All fields required.", false); return;}
+        if(!amount || !receivedOn || !purpose || !receivedBy || !department){window.electronAPI.showToast("All fields required.", false); return;}
 
         const data = {
-            purpose: purpose,
-            cashAmount: cashAmount,
-            dateIssued:dateIssued,
+          receivedBy: receivedBy,
+          purpose: purpose,
+          department: department,
+            amount: amount,
+            receivedOn:receivedOn,
         }
 
         try{
@@ -46,7 +50,7 @@ export async function initFetchPettyCash(searchQuery = "") {
 
         const filteredItems = items.filter((item) => {
 
-            const itemDate = new Date(item.dateIssued).toLocaleString(undefined, {
+            const itemDate = new Date(item.receivedOn).toLocaleString(undefined, {
                 year: "numeric",
                 month: "2-digit",
                 day: "2-digit",
@@ -72,21 +76,33 @@ export async function initFetchPettyCash(searchQuery = "") {
         filteredItems.forEach((item, index) => {
             const row = document.createElement("tr");
 
-            const formattedDate = new Date(item.dateIssued)
-                .toLocaleString(undefined, {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "numeric",
-                    minute: "2-digit",
-                    hour12: true,
-                })
+            const formattedReceivedOn = new Date(item.receivedOn)
+            .toLocaleString(undefined, {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            })
+          const formattedReleasedOn = new Date(item.releasedOn)
+            .toLocaleString(undefined, {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            })
 
             row.innerHTML = `
                 <td>${index + 1}</td>
                 <td>${item.purpose}</td>
-                <td>${item.cashAmount}</td>
-                <td>${formattedDate}</td>
+                <td>${item.department}</td>
+                <td>${item.amount}</td>
+                <td>${item.receivedBy}</td>
+                <td>${formattedReceivedOn}</td>
+                <td>${item.releasedOn ? formattedReleasedOn : "-- --"}</td>
                 <td class="${item.status === "released" ? "edit-icon" : "dlt-icon"}">${item.status === 'released' ? 'Released' : 'Pending'}</td>
                 <td class="pb-0">
                     <i data-petty-id="${item.id}" class="deletePc dlt-icon icon-btn icon-sm material-icons " data-bs-toggle="tooltip"
@@ -114,7 +130,6 @@ export async function initFetchPettyCash(searchQuery = "") {
             (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
         );
     } catch (error) {
-        console.error("Error fetching items:", error);
     }
 }
 export function initReleaseAllPc(search) {
@@ -209,8 +224,6 @@ export function initReleasePc(search) {
         }
       }
     });
-  } else {
-    console.log("pcTableBody not found");
   }
 }
 
@@ -240,7 +253,5 @@ export function initDeletePc(search) {
                 }
             }
         });
-    } else {
-        console.log("pcTableBody not found");
     }
 }

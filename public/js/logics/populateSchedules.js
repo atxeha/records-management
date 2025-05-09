@@ -69,10 +69,7 @@ export async function sampleUsage() {
     const response = await window.electronAPI.fetchTodaysSchedules();
     if (response.success) {
       populateScheduleList(response.data, "#scheduleListContainer");
-    } else {
-      console.error("Failed to fetch today's schedules:", response.message);
     }
   } catch (error) {
-    console.error("Error fetching today's schedules:", error);
   }
 }

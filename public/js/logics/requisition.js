@@ -133,7 +133,6 @@ export async function initFetchRis(searchQuery = "") {
             (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
         );
     } catch (error) {
-        console.error("Error fetching items:", error);
     }
 }
 
@@ -268,7 +267,5 @@ export function initApproveRejectRis(search) {
                 }
             }
         });
-    } else {
-    console.log("risTableBody not found");
     }
 }

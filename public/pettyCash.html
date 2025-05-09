@@ -27,9 +27,12 @@
             <thead id="pcTableHead">
                 <tr>
                     <th></th>
-                    <th>Amount</th>
                     <th>Purpose</th>
-                    <th>Date Issued</th>
+                    <th>Department</th>
+                    <th>Amount</th>
+                    <th>Received by</th>
+                    <th>Received on</th>
+                    <th>Released on</th>
                     <th>Status</th>
                     <th style="width: 6rem; padding-left: .6rem;">Actions</th>
                 </tr>
@@ -51,24 +54,27 @@
             <form method="post" id="newPettyForm">
                 <div class="modal-body font p-4 pb-2">
                     <div class="row font mb-3">
-                        <div class="input-field col-12">
+                        <div class="input-field col-7">
                             <label class="mb-1 ms-2" for="newPettyPurpose">Purpose</label>
-                            <textarea id="newPettyPurpose" class="form-control rounded-2 font textarea" rows=2></textarea>
+                            <textarea id="newPettyPurpose" class="form-control rounded-2 font textarea mb-3" rows="4"
+                                style="height: 105px;"></textarea>
+            
+                            <label class="mb-1 ms-2" for="newPettyDepartment">Department</label>
+                            <input type="text" id="newPettyDepartment" class="form-control rounded-2 font input mb-3">
                         </div>
-                    </div>
-                    <div class="row font mb-3">
-                        <div class="input-field col-6">
+                        <div class="input-field col-5">
                             <label class="mb-1 ms-2" for="newPettyAmount">Amount</label>
-                            <input type="number" id="newPettyAmount" class="form-control rounded-2 font input">
-                        </div>
-                        <div class="input-field col-6">
-                            <label class="mb-1 ms-2" for="newPettyDate">Date Issued</label>
-                            <input type="datetime-local" id="newPettyDate" class="form-control rounded-2 font input mb-3">
+                            <input type="number" id="newPettyAmount" class="form-control rounded-2 font input mb-3">
+            
+                            <label class="mb-1 ms-2" for="receivedBy">Received by</label>
+                            <input type="text" id="receivedBy" class="form-control rounded-2 font input mb-3">
+            
+                            <label class="mb-1 ms-2" for="receivedOn">Received on</label>
+                            <input type="datetime-local" id="receivedOn" class="form-control rounded-2 font input">
                         </div>
                     </div>
                     <div class="modal-footer font">
-                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
-                            data-bs-dismiss="modal">Back</button>
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3" data-bs-dismiss="modal">Back</button>
                         <button class="button rounded-2 font btn btn-secondary" type="submit">Save</button>
                     </div>
                 </div>

@@ -177,7 +177,6 @@ export async function initFetchFranchise(searchQuery = "") {
       (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
     );
   } catch (error) {
-    console.error("Error fetching items:", error);
   }
 }
 
@@ -240,8 +239,6 @@ export function initDeleteFranchise(search) {
                 }
             }
         });
-    } else {
-        console.log("TableBody not found");
     }
 }
 

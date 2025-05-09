@@ -101,7 +101,6 @@ export function toggleTheme() {
         theme.textContent = currentTheme;
         body.classList.toggle("dark-theme", currentTheme === "dark_mode");
         localStorage.setItem("theme", currentTheme);
-        console.log("Theme toggled to:", currentTheme);
     });
 }
 

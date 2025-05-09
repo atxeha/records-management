@@ -3,7 +3,6 @@ export async function fetchAndRenderSchedules(dateFilter = "all", statusFilter =
   try {
     const response = await window.electronAPI.fetchSchedules();
     if (!response.success) {
-      console.error("Failed to fetch schedules:", response.message);
       return;
     }
     let schedules = response.data;
@@ -29,10 +28,6 @@ export async function fetchAndRenderSchedules(dateFilter = "all", statusFilter =
 
     const tbody = document.querySelector(".table-responsive table tbody");
     const table = document.querySelector(".table-responsive table");
-    if (!tbody) {
-      console.error("Schedule table tbody not found");
-      return;
-    }
 
     // Clear existing rows
     tbody.innerHTML = "";
@@ -173,7 +168,6 @@ export async function fetchAndRenderSchedules(dateFilter = "all", statusFilter =
       (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
     );
   } catch (error) {
-    console.error("Error fetching or rendering schedules:", error);
   }
 }
 
@@ -296,8 +290,6 @@ export function initreschedule() {
       if (tr && tr.dataset.scheduleId) {
         selectedScheduleId = tr.dataset.scheduleId
 
-        console.log(selectedScheduleId)
-
         modal.show();
       }
     }
@@ -387,8 +379,6 @@ export function initDeleteSchedule() {
       const tr = event.target.closest("tr");
       if (tr && tr.dataset.scheduleId) {
         selectedScheduleId = tr.dataset.scheduleId
-
-        console.log(selectedScheduleId)
 
         try {
           const filterSelect = document.getElementById("filterSchedule");

@@ -15,11 +15,8 @@ export async function initCount() {
         if (countElement) {
           countElement.textContent = response.count.toString();
         }
-      } else {
-        console.error(`Failed to fetch count for ${tableName}:`, response.message);
       }
     } catch (error) {
-      console.error(`Error fetching count for ${tableName}:`, error);
     }
   }
 }
@@ -96,6 +93,5 @@ export async function initFetchFranchise() {
       (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
     );
   } catch (error) {
-    console.error("Error fetching items:", error);
   }
 }

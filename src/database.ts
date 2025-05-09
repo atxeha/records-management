@@ -99,21 +99,22 @@ export async function newPurchaseRequest(
 }
 
 export async function newPettyCash(
+  receivedBy: string,
   purpose: string,
-  cashAmount: number,
-  date: string
+  department: string,
+  amount: number,
+  receivedOn: string
 ) {
   try {
-    let isoDate = date;
-    if (date.length === 16) {
-      isoDate = date + ":00";
-    }
+    const iso = isoDate(receivedOn)
 
     const newPettyCash = await prisma.pettyCash.create({
       data: {
+        receivedBy,
         purpose,
-        cashAmount,
-        dateIssued: new Date(isoDate),
+        department,
+        amount,
+        receivedOn: new Date(iso),
       },
     })
 
@@ -263,10 +264,8 @@ export async function autoAccountCreate() {
     } else {
       return;
     }
-    console.log("User created successfully:");
     return;
   } catch (error) {
-    console.error("Error creating account:", error);
     throw error;
   }
 }
@@ -294,7 +293,6 @@ export async function checkLogin(username: string, password: string) {
 
     return { success: true, message: 'Login successful', user: userWithPlainPassword };
   } catch (error) {
-    console.error('Login Error:', error);
     return { success: false, message: 'Internal server error' };
   }
 }

@@ -19,7 +19,6 @@ function showToastListener(event) {
   }
 }
 
-// Remove existing listener if any, then add
 window.removeEventListener("message", showToastListener);
 window.addEventListener("message", showToastListener);
 

@@ -1,10 +1,5 @@
-
-
 document.addEventListener("DOMContentLoaded", () => {
-
     const logoutMessage = localStorage.getItem("logoutMessage");
-
-    console.log(logoutMessage)
 
     if (logoutMessage) {
 

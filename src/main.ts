@@ -33,8 +33,6 @@ app.whenReady().then(async() => {
   // mainWindow.maximize();
 
   autoAccountCreate()
-    .then(() => console.log("Account created successfully"))
-    .catch((error) => console.error("Error creating account:", error.message));
 
   Menu.setApplicationMenu(menu);
 });
@@ -69,10 +67,8 @@ app.on("window-all-closed", () => {
 
 ipcMain.on("navigate", (event, page) => {
   const filePath = path.join(app.getAppPath(), "public", page);
-  console.log("Loading file:", filePath);
 
   if (!fs.existsSync(filePath)) {
-    console.error("File does not exist:", filePath);
     return;
   }
 
@@ -306,8 +302,6 @@ ipcMain.handle("approve-reject-pr", async (e, id, status) => {
       },
     })
 
-    console.log(result);
-
     return {success: true, message: `Request ${status}. ${result}`}
   }catch (err: any) {
     return{success: false, message: err.message}
@@ -317,9 +311,11 @@ ipcMain.handle("approve-reject-pr", async (e, id, status) => {
 ipcMain.handle("new-petty-cash", async (event, data) => {
   try{
     const result = await newPettyCash(
+      data.receivedBy,
       data.purpose,
-      data.cashAmount,
-      data.dateIssued
+      data.department,
+      data.amount,
+      data.receivedOn
     )
     if (result.success === false) {
       return { success: false, message: result.message };
@@ -334,7 +330,7 @@ ipcMain.handle("fetch-petty-cash", async () => {
   try {
     const pettyCash = await prisma.pettyCash.findMany({
       orderBy: {
-        dateIssued: "desc",
+        receivedOn: "desc",
       },
     })
 
@@ -361,6 +357,7 @@ ipcMain.handle("release-all-pc", async () => {
     await prisma.pettyCash.updateMany({
       data: {
         status: "released",
+        releasedOn: new Date(),
       },
     });
 
@@ -387,6 +384,7 @@ ipcMain.handle("release-pc", async (e, id, status) => {
       where: { id },
       data: {
         status: status,
+        releasedOn: new Date(),
       },
     })
 
@@ -683,7 +681,6 @@ ipcMain.handle("edit-franchise", async (_event, data) => {
 
     return { success: true, message: "Franchise updated successfully.", data: updatedFranchise };
   } catch (err) {
-    console.error("Edit franchise error:", err);
     return { success: false, message: "Failed to update franchise." };
   }
 });

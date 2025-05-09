@@ -11,8 +11,6 @@ export function initNewVoucher() {
         const receivedBy = document.getElementById("newVoucherReceivedBy").value.trim();
         const date = document.getElementById("newVoucherDate").value.trim();
 
-        console.log(payee, amount, purpose, receivedBy, date)
-
         if(!payee || !amount || !purpose || !receivedBy || !date){window.electronAPI.showToast("All fields required.", false); return;}
           
         const data = {
@@ -135,7 +133,6 @@ export async function initFetchVoucher(searchQuery = "") {
             (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
         );
     } catch (error) {
-        console.error("Error fetching items:", error);
     }
 }
 
@@ -270,7 +267,5 @@ export function initApproveRejectVoucher(search) {
                 }
             }
         });
-    } else {
-    console.log("risTableBody not found");
     }
 }

@@ -57,9 +57,12 @@ model CheckLog {
 
 model PettyCash {
   id         Int      @id @default(autoincrement())
-  cashAmount Float
+  receivedBy String
+  amount Float
   purpose    String
-  dateIssued DateTime
+  department String
+  receivedOn DateTime
+  releasedOn DateTime?
   status     String   @default("pending")
   createdAt  DateTime @default(now())
 }

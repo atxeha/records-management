@@ -133,7 +133,6 @@ export async function initFetchPurchaseRequest(searchQuery = "") {
         (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
       );
     } catch (error) {
-      console.error("Error fetching items:", error);
     }
 }
 
@@ -182,7 +181,6 @@ export function initRejectApprovePr(search) {
       }
     });
   } else {
-    console.log("prTableBody not found");
   }
 }
 
