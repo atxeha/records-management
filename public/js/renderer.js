@@ -80,6 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 if (page === "home.html") {
                   const fetchTodaysSchedules = await import("./logics/populateSchedules.js")
+                  const homeModule = await import("./logics/home.js")
 
                   fetchTodaysSchedules.sampleUsage();
                   homeModule.initCount();
@@ -91,7 +92,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                   module.updateAccountInfo();
                   module.logout()
-                  module.showPassword()
+                  module.showPassword("toggleIcon", "settingsPass")
+                  module.showPassword("toggleIcons", "staffPass")
                   module.populateFields()
                   module.toggleTheme()
                   module.addStaff()

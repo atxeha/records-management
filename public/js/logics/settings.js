@@ -12,15 +12,15 @@ export function logout() {
     }
 }
 
-export function showPassword() {
-    document.getElementById("toggleIcon").addEventListener("click", (event) => {
+export function showPassword(iconId, inputId) {
+    document.getElementById(iconId).addEventListener("click", (event) => {
         event.preventDefault();
         togglePassword()
     })
 
     function togglePassword() {
-        const passwordInput = document.getElementById("settingsPass");
-        const toggleIcon = document.getElementById("toggleIcon");
+        const passwordInput = document.getElementById(inputId);
+        const toggleIcon = document.getElementById(iconId);
         if (passwordInput.type === "password") {
             passwordInput.type = "text";
             toggleIcon.textContent = "visibility";
@@ -34,20 +34,6 @@ export function showPassword() {
 let user = JSON.parse(localStorage.getItem("activeUser"));
 
 export function populateFields() {
-    const name = document.getElementById("settingsName");
-    const email = document.getElementById("settingsEmail");
-    const username = document.getElementById("settingsUser");
-    const password = document.getElementById("settingsPass");
-
-    if (user) {
-        name.value = user.name;
-        email.value = user.email;
-        username.value = user.username;
-        password.value = user.password
-    }
-}
-
-function repopulateFields() {
     const name = document.getElementById("settingsName");
     const email = document.getElementById("settingsEmail");
     const username = document.getElementById("settingsUser");
@@ -91,7 +77,7 @@ export function updateAccountInfo() {
                 window.electronAPI.showToast(response.message, true)
 
                 user = localStorage.setItem("activeUser", JSON.stringify(response.data))
-                repopulateFields()
+                populateFields()
             } else {
                 window.electronAPI.showToast(response.message, false)
             }
@@ -103,11 +89,20 @@ export function updateAccountInfo() {
 
 export function toggleTheme() {
     const theme = document.getElementById("themeBtn");
+    const body = document.body;
 
-    theme.addEventListener("click", ()=>{
-        console.log(theme.textContent)
-        theme.textContent === "dark_mode" ? theme.textContent = "light_mode" : theme.textContent = "dark_mode";
-    })
+    // Initialize theme from localStorage or default to light_mode
+    let currentTheme = localStorage.getItem("theme") || "light_mode";
+    body.classList.toggle("dark-theme", currentTheme === "dark_mode");
+    theme.textContent = currentTheme;
+
+    theme.addEventListener("click", () => {
+        currentTheme = theme.textContent === "dark_mode" ? "light_mode" : "dark_mode";
+        theme.textContent = currentTheme;
+        body.classList.toggle("dark-theme", currentTheme === "dark_mode");
+        localStorage.setItem("theme", currentTheme);
+        console.log("Theme toggled to:", currentTheme);
+    });
 }
 
 export function addStaff(){

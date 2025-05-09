@@ -1,0 +1,56 @@
+body.dark-theme {
+    background-color: #202429;
+    color: #cecdd3 !important;
+}
+
+body.dark-theme .sidebar {
+    background-color: #393d42;
+}
+
+body.dark-theme .icon,
+body.dark-theme .icon-sm {
+    color: #cecdd3;
+}
+
+body.dark-theme .sidebar-icon.active {
+    box-shadow: 0 0 9px #aeadb3;
+    transition: all 0.1s ease-in;
+}
+
+body.dark-theme .icon-btn:hover {
+    box-shadow: 0 0 9px #aeadb3;
+    transition: all 0.1s ease-in;
+}
+
+body.dark-theme .input {
+    background-color: #2F343A;
+    border-color: #aeadb3;
+    color: #cecdd3;
+    height: 32px;
+}
+
+body.dark-theme .input:focus,
+body.dark-theme .textarea:focus {
+    box-shadow: none;
+    border-color: #cecdd3;
+}
+
+body.dark-theme .toggle-password {
+    color: #cecdd3;
+}
+
+body.dark-theme .toggle-password:hover {
+    color: #a3a2aa;
+}
+
+body.dark-theme .modal-content {
+    background-color: #202429;
+}
+
+body.dark-theme .modal-header {
+    border-bottom: solid 1px #535961;
+}
+
+body.dark-theme .modal-footer {
+    border-top: solid 1px #535961;
+}
