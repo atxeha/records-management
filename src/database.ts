@@ -75,6 +75,7 @@ export async function createSchedule(
 }
 
 export async function newPurchaseRequest(
+  docTitle: string,
   receivedBy: string,
   receivedOn: string,
   purpose: string,
@@ -85,6 +86,7 @@ export async function newPurchaseRequest(
 
     const newPurchaseRequest = await prisma.purchaseRequest.create({
       data: {
+        docTitle,
         receivedBy,
         receivedOn: new Date(receivedOnIso),
         purpose,
@@ -124,33 +126,22 @@ export async function newPettyCash(
 }
 
 export async function newRis(
-  risNumber: number,
-  item: string,
-  preparedBy: string,
+  docTitle: string,
+  receivedBy: string,
+  receivedOn: string,
   purpose: string,
-  issuedTo: string,
-  preparedDate: string,
+  department: string,
 ) {
   try {
-    let isoDate = preparedDate;
-    if (preparedDate.length === 16) {
-      isoDate = preparedDate + ":00";
-    }
-
-    const existingRequest = await prisma.requisitionIssueSlip.findUnique({
-      where: { risNumber },
-    })
-
-    if (existingRequest) { throw new Error(`Slip '${risNumber}' already exists.`) }
+    const receivedOnIso = isoDate(receivedOn)
 
     const newPurchaseRequest = await prisma.requisitionIssueSlip.create({
       data: {
-        risNumber,
-        item,
-        preparedBy,
+        docTitle,
+        receivedBy,
+        receivedOn: new Date(receivedOnIso),
         purpose,
-        issuedTo,
-        preparedDate: new Date(isoDate),
+        department,
       },
     })
 
@@ -161,33 +152,22 @@ export async function newRis(
 }
 
 export async function newVoucher(
-  voucherNumber: number,
   payee: string,
   amount: number,
   purpose: string,
-  accountTitle: string,
-  datePrepared: string,
+  receivedBy: string,
+  receivedOn: string
 ) {
   try {
-    let isoDate = datePrepared;
-    if (datePrepared.length === 16) {
-      isoDate = datePrepared + ":00";
-    }
-
-    const existingRequest = await prisma.voucher.findUnique({
-      where: { voucherNumber },
-    })
-
-    if (existingRequest) { throw new Error(`Voucher '${voucherNumber}' already exists.`) }
+    const iso = isoDate(receivedOn)
 
     const newVoucher = await prisma.voucher.create({
       data: {
-        voucherNumber,
         payee,
         amount,
         purpose,
-        accountTitle,
-        datePrepared: new Date(isoDate),
+        receivedBy,
+        receivedOn: new Date(iso),
       },
     })
 
@@ -238,29 +218,22 @@ export async function newFranchise(
 }
 
 export async function newObligationRequest(
-  title: string,
+  receivedBy: string,
   purpose: string,
   amount: number,
-  fundSource: string,
   department: string,
-  preparedDate: string,
-  status: string
+  receivedOn: string
 ) {
   try {
-    let isoDate = preparedDate;
-    if (preparedDate.length === 16) {
-      isoDate = preparedDate + ":00";
-    }
+    const iso = isoDate(receivedOn)
 
     const newPurchaseRequest = await prisma.obligationRequest.create({
       data: {
-        title,
+        receivedBy,
         purpose,
         amount,
-        fundSource,
         department,
-        preparedDate: new Date(isoDate),
-        status,
+        receivedOn: new Date(iso),
       },
     })
 

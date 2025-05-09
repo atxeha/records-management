@@ -5,23 +5,20 @@ export function initNewOr() {
     newObligationForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const title = document.getElementById("newObligationTitle").value.trim();
+        const receivedBy = document.getElementById("newObligationReceivedBy").value.trim();
         const department = document.getElementById("newObligationDepartment").value.trim();
     const amount = parseInt(document.getElementById("newObligationAmount").value.trim());
         const purpose = document.getElementById("newObligationPurpose").value.trim();
-        const fundSource = document.getElementById("newObligationFund").value.trim();
         const date = document.getElementById("newObligationDate").value.trim();
 
-        if(!title || !purpose || !amount || !purpose || !department || !date){window.electronAPI.showToast("All fields required.", false); return;}
+        if(!receivedBy || !purpose || !amount || !department || !date){window.electronAPI.showToast("All fields required.", false); return;}
           
         const data = {
-            title: title,
             purpose: purpose,
             amount: amount,
-            fundSource: fundSource,
             department: department,
-            preparedDate: date,
-            preparedDate: date,
+            receivedBy: receivedBy,
+            receivedOn: date,
         }
 
         try{
@@ -52,11 +49,11 @@ export async function initFetchOr(searchQuery = "") {
         tableBody.innerHTML = "";
 
         const filteredItems = items.filter((item) => {
-            const itemCodeMatch = item.title
+            const itemCodeMatch = item.department
                 .toLowerCase()
                 .includes(searchQuery.toLowerCase());
 
-            const itemDate = new Date(item.preparedDate).toLocaleString(undefined, {
+            const itemDate = new Date(item.receivedOn).toLocaleString(undefined, {
                 year: "numeric",
                 month: "2-digit",
                 day: "2-digit",
@@ -82,31 +79,40 @@ export async function initFetchOr(searchQuery = "") {
         filteredItems.forEach((item, index) => {
             const row = document.createElement("tr");
 
-            const formattedDate = new Date(item.preparedDate)
-                .toLocaleString(undefined, {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "numeric",
-                    minute: "2-digit",
-                    hour12: true,
-                })
+          const formattedReceivedOn = new Date(item.receivedOn)
+            .toLocaleString(undefined, {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            })
+          const formattedReleasedOn = new Date(item.releasedOn)
+            .toLocaleString(undefined, {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            })
 
             row.innerHTML = `
                 <td>${index + 1}</td>
-                <td>${item.title}</td>
                 <td>${item.purpose}</td>
                 <td>${item.department}</td>
                 <td>${item.amount}</td>
-                <td>${item.fundSource}</td>
-                <td>${formattedDate}</td>
-                <td class="${item.status === "approved" ? "edit-icon" : item.status === "rejected" ? "dlt-icon" : ""}">${item.status === "pending" ? "Pending" : item.status === "rejected" ? "Rejected" : "Approved"}</td>
+                <td>${item.receivedBy}</td>
+                <td>${formattedReceivedOn}</td>
+                <td>${item.releasedOn ? formattedReleasedOn : "-- --"}</td>
+                <td class="${item.status === "approved" ? "edit-icon" : item.status === "rejected" ? "dlt-icon" : ""}">${item.status === "pending" ? "Unsigned" : item.status === "rejected" ? "Rejected" : "Released"}</td>
                 <td class="pb-0">
                     <i data-obligation-id="${item.id}" class="rejectOr dlt-icon icon-btn icon-sm material-icons me-1" data-bs-toggle="tooltip"
                         data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Reject" style="margin-left:1px;">close</i>
                   
                     <i data-obligation-id="${item.id}" class="approveOr edit-icon icon-btn icon-sm material-icons" data-bs-toggle="tooltip"
-                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Approve">check</i>
+                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Released">check</i>
                 </td>
             `;
             tableBody.appendChild(row);

@@ -23,7 +23,7 @@
         </span>
         <span data-bs-toggle="modal" data-bs-target="#approveAllVoucherModal" class="mt-1">
             <i class="icon-sm edit-icon material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
-                data-bs-custom-class="custom-tooltip" title="Approve all" id="approveAllVoucherBtn">check
+                data-bs-custom-class="custom-tooltip" title="Release all" id="approveAllVoucherBtn">check
             </i>
         </span>
     </div>
@@ -32,13 +32,13 @@
         <table class="table table-hover" id="voucherTable">
             <thead id="voucherTableHead">
                 <tr>
-                    <th>Seq.</th>
-                    <th>Voucher No.</th>
+                    <th></th>
                     <th>Payee</th>
                     <th>Amount</th>
                     <th>Purpose</th>
-                    <th>Account Title</th>
-                    <th>Date Issued</th>
+                    <th>Received by</th>
+                    <th>Received on</th>
+                    <th>Released on</th>
                     <th>Status</th>
                     <th style="width: 6rem; padding-left: .6rem;">Actions</th>
                 </tr>
@@ -61,34 +61,26 @@
                 <div class="modal-body font p-4 pb-2">
 
                     <div class="row font mb-3">
-                        <div class="input-field col-3">
-                            <label class="mb-1 ms-2" for="newVoucherNumber">Voucher Number</label>
-                            <input type="number" id="newVoucherNumber" class="form-control rounded-2 font input">
+                        <div class="input-field col-7">
+                            <label class="mb-1 ms-2" for="newVoucherPurpose">Purpose</label>
+                            <textarea id="newVoucherPurpose" class="form-control rounded-2 font textarea mb-3" rows="4"
+                                style="height: 105px;"></textarea>
+                    
+                            <label class="mb-1 ms-2" for="newVoucherPayee">Payee</label>
+                            <input type="text" id="newVoucherPayee" class="form-control rounded-2 font input mb-3">
                         </div>
                         <div class="input-field col-5">
-                            <label class="mb-1 ms-2" for="newVoucherPayee">Payee</label>
-                            <input type="text" id="newVoucherPayee" class="form-control rounded-2 font input">
-                        </div>
-                        <div class="input-field col-4">
-                            <label class="mb-1 ms-2" for="newVoucherDate">Date Issued</label>
+                            <label class="mb-1 ms-2" for="newVoucherAmount">Amount</label>
+                            <input type="number" id="newVoucherAmount" class="form-control rounded-2 font input mb-3">
+                    
+                            <label class="mb-1 ms-2" for="newVoucherReceivedBy">Received by</label>
+                            <input type="text" id="newVoucherReceivedBy" class="form-control rounded-2 font input mb-3">
+                    
+                            <label class="mb-1 ms-2" for="newVoucherDate">Received on</label>
                             <input type="datetime-local" id="newVoucherDate" class="form-control rounded-2 font input">
                         </div>
                     </div>
 
-                    <div class="row font mb-3">
-                        <div class="input-field col-6">
-                            <label class="mb-1 ms-2" for="newVoucherPurpose">Purpose</label>
-                            <textarea id="newVoucherPurpose" class="form-control rounded-2 font textarea" rows=4
-                                style="height: 105px;"></textarea>
-                        </div>
-                        <div class="input-field col-6">
-                            <label class="mb-1 ms-2" for="newVoucherAmount">Amount</label>
-                            <input type="number" id="newVoucherAmount" class="form-control rounded-2 font input mb-3">
-
-                            <label class="mb-1 ms-2" for="newVoucherTitle">Account Title</label>
-                            <input type="text" id="newVoucherTitle" class="form-control rounded-2 font input mb-3">
-                        </div>
-                    </div>
                     <div class="modal-footer font">
                         <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
                             data-bs-dismiss="modal">Back</button>
@@ -128,12 +120,12 @@
             <div class="modal-body font p-4 pb-2">
                 <form method="post" id="approveAllVoucherForm">
                     <div class="font mb-4">
-                        <p>Are sure to approve all Vouchers?</p>
+                        <p>Are sure to release all Vouchers?</p>
                     </div>
                     <div class="modal-footer font">
                         <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
                             data-bs-dismiss="modal">Back</button>
-                        <button class="button rounded-2 font btn btn-secondary" type="submit">Approve</button>
+                        <button class="button rounded-2 font btn btn-secondary" type="submit">Release</button>
                     </div>
                 </form>
             </div>

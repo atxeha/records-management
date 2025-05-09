@@ -16,6 +16,7 @@ datasource db {
 model PurchaseRequest {
   id          Int      @id @default(autoincrement())
   receivedBy String
+  docTitle String
   department  String
   purpose     String
   receivedOn DateTime
@@ -26,12 +27,11 @@ model PurchaseRequest {
 
 model RequisitionIssueSlip {
   id           Int      @id @default(autoincrement())
-  risNumber    BigInt   @unique
-  item         String
-  preparedBy   String
+  receivedBy   String
+  docTitle String
+  department String
   purpose      String
-  issuedTo     String
-  preparedDate DateTime
+  receivedOn DateTime
   releasedOn DateTime?
   status String @default("pending")
   createdAt    DateTime @default(now())
@@ -68,12 +68,11 @@ model Franchise {
 
 model Voucher {
   id            Int      @id @default(autoincrement())
-  voucherNumber BigInt @unique
   payee         String
   amount        Float
   purpose       String
-  accountTitle  String
-  datePrepared  DateTime
+  receivedBy  String
+  receivedOn DateTime
   releasedOn DateTime?
   status    String @default("pending")
   createdAt     DateTime @default(now())
@@ -81,13 +80,11 @@ model Voucher {
 
 model ObligationRequest {
   id           Int      @id @default(autoincrement())
-  title    String
-  purpose      String
-  preparedBy   String @default("Admin")
-  amount       Float
-  fundSource       String
+  receivedBy   String
   department String
-  preparedDate DateTime
+  purpose      String
+  amount BigInt
+  receivedOn DateTime
   releasedOn DateTime?
   status  String  @default("pending")
   createdAt    DateTime @default(now())

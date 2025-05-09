@@ -38,6 +38,8 @@ db/inventory.db
 db/*.sqlite
 db/*.sqlite3
 
+release.zip
+
 # Electron Forge & Electron Builder output
 forge.config.js
 electron-builder.yml

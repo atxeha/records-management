@@ -42,6 +42,14 @@ const menu = Menu.buildFromTemplate([
           shell.openExternal("https://www.facebook.com/a1yag/");
         },
       },
+      {
+        label: "Reload",
+        role: "reload",
+      },
+      {
+        label: "Toggle DevTools",
+        role: "toggleDevTools",
+      },
     ],
   },
 ]);
@@ -227,6 +235,7 @@ ipcMain.handle("delete-schedule", async (event, id) => {
 ipcMain.handle("new-purchase-request", async (event, data) => {
   try{
     const result = await newPurchaseRequest(
+      data.docTitle,
       data.receivedBy,
       data.receivedOn,
       data.purpose,
@@ -381,12 +390,11 @@ ipcMain.handle("delete-pc", async (event, id) => {
 ipcMain.handle("new-ris", async (event, data) => {
   try {
     const result = await newRis(
-      data.risNumber,
-      data.item,
-      data.preparedBy,
+      data.docTitle,
+      data.receivedBy,
+      data.receivedOn,
       data.purpose,
-      data.issuedTo,
-      data.preparedDate
+      data.department,
     )
     if (result.success === false) {
       return { success: false, message: result.message };
@@ -402,7 +410,7 @@ ipcMain.handle("fetch-ris-voucher", async (event, tableName) => {
         if (tableName === "requisitionIssueSlip") {
             const risData = await prisma.requisitionIssueSlip.findMany({
                 orderBy: {
-                    preparedDate: "desc",
+                    receivedOn: "asc",
                 },
             });
 
@@ -411,7 +419,7 @@ ipcMain.handle("fetch-ris-voucher", async (event, tableName) => {
         } else if (tableName === "voucher") {
             const voucherData = await prisma.voucher.findMany({
                 orderBy: {
-                    datePrepared: "desc",
+                    receivedOn: "asc",
                 },
             });
 
@@ -420,7 +428,7 @@ ipcMain.handle("fetch-ris-voucher", async (event, tableName) => {
         } else if (tableName === "franchise") {
             const franchiseData = await prisma.franchise.findMany({
                 orderBy: {
-                    startDate: "desc",
+                    startDate: "asc",
                 },
             });
 
@@ -429,7 +437,7 @@ ipcMain.handle("fetch-ris-voucher", async (event, tableName) => {
         } else if (tableName === "obligationRequest") {
             const orData = await prisma.obligationRequest.findMany({
                 orderBy: {
-                    preparedDate: "desc",
+                    receivedOn: "asc",
                 },
             });
 
@@ -506,6 +514,7 @@ ipcMain.handle("update-all-status", async (event, tableName, status) => {
       },
       data: {
         status: status,
+        releasedOn: null,
       },
     });
     } else {
@@ -551,7 +560,7 @@ ipcMain.handle("approve-reject", async (e, id, status, tableName) => {
     });
 
     if (statusObj?.status === status) {
-      return { success: false, message: `Request already ${status}.` };
+      return { success: false, message: `Request already ${status === "rejected" ? "rejected" : "released"}.` };
     }
 
     if (status === "rejected") {
@@ -559,6 +568,7 @@ ipcMain.handle("approve-reject", async (e, id, status, tableName) => {
         where: { id },
         data: {
           status: status,
+          releasedOn: null,
         },
       });
     } else {
@@ -571,7 +581,7 @@ ipcMain.handle("approve-reject", async (e, id, status, tableName) => {
       });
     }
 
-    return { success: true, message: `Request ${status}.` };
+    return { success: true, message: `Request ${status === "rejected" ? "rejected" : "released"}.` };
   } catch (err: any) {
     return { success: false, message: err.message };
   }
@@ -580,12 +590,11 @@ ipcMain.handle("approve-reject", async (e, id, status, tableName) => {
 ipcMain.handle("new-voucher", async (event, data) => {
   try {
     const result = await newVoucher(
-      data.voucherNumber,
       data.payee,
       data.amount,
       data.purpose,
-      data.accountTitle,
-      data.datePrepared
+      data.receivedBy,
+      data.receivedOn
     );
     if (result.success === false) {
       return { success: false, message: result.message };
@@ -661,13 +670,11 @@ ipcMain.handle("edit-franchise", async (_event, data) => {
 ipcMain.handle("new-obligation", async (event, data) => {
   try {
     const result = await newObligationRequest(
-      data.title,
+      data.receivedBy,
       data.purpose,
       data.amount,
-      data.fundSource,
       data.department,
-      data.preparedDate,
-      data.status
+      data.receivedOn,
     )
     if (result.success === false) {
       return { success: false, message: result.message };

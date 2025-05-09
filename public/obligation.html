@@ -4,7 +4,7 @@
     <div class="d-flex ms-4 ps-2 gap-2 mb-2" id="actions">
         <span class="me-4">
             <input type="search" class="form-control rounded-2 font-sm input col-4 search-box"
-                placeholder="Search obligation name" id="obligationFilter">
+                placeholder="Search department" id="obligationFilter">
         </span>
         <span data-bs-toggle="modal" data-bs-target="#newObligationModal" class="mt-1">
             <i class="icon-sm material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -23,7 +23,7 @@
         </span>
         <span data-bs-toggle="modal" data-bs-target="#approveAllObligationModal" class="mt-1">
             <i class="icon-sm edit-icon material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
-                data-bs-custom-class="custom-tooltip" title="Approve all" id="approveAllObligationBtn">check
+                data-bs-custom-class="custom-tooltip" title="Release all" id="approveAllObligationBtn">check
             </i>
         </span>
     </div>
@@ -32,13 +32,13 @@
         <table class="table table-hover" id="obligationTable">
             <thead id="obligationTableHead">
                 <tr>
-                    <th>Seq.</th>
-                    <th>Title</th>
+                    <th></th>
                     <th>Purpose</th>
                     <th>Department</th>
                     <th>Amount</th>
-                    <th>Fund Source</th>
-                    <th>Date</th>
+                    <th>received by</th>
+                    <th>received on</th>
+                    <th>released on</th>
                     <th>Status</th>
                     <th style="width: 6rem; padding-left: .6rem;">Actions</th>
                 </tr>
@@ -61,34 +61,26 @@
                 <div class="modal-body font p-4 pb-2">
 
                     <div class="row font mb-3">
-                        <div class="input-field col-3">
-                            <label class="mb-1 ms-2" for="newObligationTitle">Title</label>
-                            <input type="text" id="newObligationTitle" class="form-control rounded-2 font input">
+                        <div class="input-field col-7">
+                            <label class="mb-1 ms-2" for="newObligationPurpose">Purpose</label>
+                            <textarea id="newObligationPurpose" class="form-control rounded-2 font textarea mb-3" rows="4"
+                                style="height: 105px;"></textarea>
+                    
+                            <label class="mb-1 ms-2" for="newObligationDepartment">Department</label>
+                            <input type="text" id="newObligationDepartment" class="form-control rounded-2 font input mb-3">
                         </div>
                         <div class="input-field col-5">
-                            <label class="mb-1 ms-2" for="newObligationDepartment">Department</label>
-                            <input type="text" id="newObligationDepartment" class="form-control rounded-2 font input">
-                        </div>
-                        <div class="input-field col-4">
-                            <label class="mb-1 ms-2" for="newObligationDate">Date Issued</label>
+                            <label class="mb-1 ms-2" for="newObligationAmount">Amount</label>
+                            <input type="text" id="newObligationAmount" class="form-control rounded-2 font input mb-3">
+                    
+                            <label class="mb-1 ms-2" for="newObligationReceivedBy">Received by</label>
+                            <input type="text" id="newObligationReceivedBy" class="form-control rounded-2 font input mb-3">
+                    
+                            <label class="mb-1 ms-2" for="newObligationDate">Received on</label>
                             <input type="datetime-local" id="newObligationDate" class="form-control rounded-2 font input">
                         </div>
                     </div>
-                    
-                    <div class="row font mb-3">
-                        <div class="input-field col-6">
-                            <label class="mb-1 ms-2" for="newObligationPurpose">Purpose</label>
-                            <textarea id="newObligationPurpose" class="form-control rounded-2 font textarea" rows=4
-                                style="height: 105px;"></textarea>
-                        </div>
-                        <div class="input-field col-6">
-                            <label class="mb-1 ms-2" for="newObligationAmount">Amount</label>
-                            <input type="number" id="newObligationAmount" class="form-control rounded-2 font input mb-3">
-                    
-                            <label class="mb-1 ms-2" for="newObligationFund">Fund Source</label>
-                            <input type="text" id="newObligationFund" class="form-control rounded-2 font input mb-3">
-                        </div>
-                    </div>
+
                     <div class="modal-footer font">
                         <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
                             data-bs-dismiss="modal">Back</button>

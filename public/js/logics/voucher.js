@@ -5,22 +5,22 @@ export function initNewVoucher() {
     newVoucherForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const voucherNumber = parseInt(document.getElementById("newVoucherNumber").value.trim());
         const payee = document.getElementById("newVoucherPayee").value.trim();
         const amount = parseInt(document.getElementById("newVoucherAmount").value.trim());
         const purpose = document.getElementById("newVoucherPurpose").value.trim();
-        const accountTitle = document.getElementById("newVoucherTitle").value.trim();
+        const receivedBy = document.getElementById("newVoucherReceivedBy").value.trim();
         const date = document.getElementById("newVoucherDate").value.trim();
 
-        if(!voucherNumber || !payee || !amount || !purpose || !accountTitle || !date){window.electronAPI.showToast("All fields required.", false); return;}
+        console.log(payee, amount, purpose, receivedBy, date)
+
+        if(!payee || !amount || !purpose || !receivedBy || !date){window.electronAPI.showToast("All fields required.", false); return;}
           
         const data = {
-            voucherNumber: voucherNumber,
             payee: payee,
             amount: amount,
             purpose: purpose,
-            accountTitle: accountTitle,
-            datePrepared: date,
+            receivedBy: receivedBy,
+            receivedOn: date,
         }
 
         try{
@@ -55,7 +55,7 @@ export async function initFetchVoucher(searchQuery = "") {
                 .toLowerCase()
                 .includes(searchQuery.toLowerCase());
 
-            const itemDate = new Date(item.datePrepared).toLocaleString(undefined, {
+            const itemDate = new Date(item.receivedOn).toLocaleString(undefined, {
                 year: "numeric",
                 month: "2-digit",
                 day: "2-digit",
@@ -81,31 +81,40 @@ export async function initFetchVoucher(searchQuery = "") {
         filteredItems.forEach((item, index) => {
             const row = document.createElement("tr");
 
-            const formattedDate = new Date(item.datePrepared)
-                .toLocaleString(undefined, {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "numeric",
-                    minute: "2-digit",
-                    hour12: true,
-                })
+          const formattedReceivedOn = new Date(item.receivedOn)
+            .toLocaleString(undefined, {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            })
+          const formattedReleasedOn = new Date(item.releasedOn)
+            .toLocaleString(undefined, {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            })
 
             row.innerHTML = `
                 <td>${index + 1}</td>
-                <td>${item.voucherNumber}</td>
                 <td>${item.payee}</td>
                 <td>${item.amount}</td>
                 <td>${item.purpose}</td>
-                <td>${item.accountTitle}</td>
-                <td>${formattedDate}</td>
-                <td class="${item.status === "approved" ? "edit-icon" : item.status === "rejected" ? "dlt-icon" : ""}">${item.status === "pending" ? "Pending" : item.status === "rejected" ? "Rejected" : "Approved"}</td>
+                <td>${item.receivedBy}</td>
+                <td>${formattedReceivedOn}</td>
+                <td>${item.releasedOn ? formattedReleasedOn : "-- --"}</td>
+                <td class="${item.status === "approved" ? "edit-icon" : item.status === "rejected" ? "dlt-icon" : ""}">${item.status === "pending" ? "Unsigned" : item.status === "rejected" ? "Rejected" : "Released"}</td>
                 <td class="pb-0">
                     <i data-voucher-id="${item.id}" class="rejectVoucher dlt-icon icon-btn icon-sm material-icons me-1" data-bs-toggle="tooltip"
                         data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Reject" style="margin-left:1px;">close</i>
                   
                     <i data-voucher-id="${item.id}" class="approveVoucher edit-icon icon-btn icon-sm material-icons" data-bs-toggle="tooltip"
-                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Approve">check</i>
+                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Release">check</i>
                 </td>
             `;
             tableBody.appendChild(row);

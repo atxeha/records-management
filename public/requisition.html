@@ -3,7 +3,7 @@
 
     <div class="d-flex ms-4 ps-2 gap-2 mb-2" id="actions">
         <span class="me-4">
-            <input type="search" class="form-control rounded-2 font-sm input col-4 search-box" placeholder="Search issued to or date"
+            <input type="search" class="form-control rounded-2 font-sm input col-4 search-box" placeholder="Search title or date"
                 id="risFilter">
         </span>
         <span data-bs-toggle="modal" data-bs-target="#newRisModal" class="mt-1">
@@ -23,7 +23,7 @@
         </span>
         <span data-bs-toggle="modal" data-bs-target="#approveAllRisModal" class="mt-1">
             <i class="icon-sm edit-icon material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
-                data-bs-custom-class="custom-tooltip" title="Approve all" id="approveAllRisBtn">check
+                data-bs-custom-class="custom-tooltip" title="Release all" id="approveAllRisBtn">check
             </i>
         </span>
     </div>
@@ -32,13 +32,13 @@
         <table class="table table-hover" id="risTable">
             <thead id="risTableHead">
                 <tr>
-                    <th>Seq.</th>
-                    <th>RIS No.</th>
-                    <th>Item</th>
-                    <th>From</th>
-                    <th>Issued To</th>
+                    <th></th>
+                    <th>Title</th>
                     <th>Purpose</th>
-                    <th>Date Issued</th>
+                    <th>Department</th>
+                    <th>Received by</th>
+                    <th>Received on</th>
+                    <th>Released on</th>
                     <th>Status</th>
                     <th style="width: 6rem; padding-left: .6rem;">Actions</th>
                 </tr>
@@ -59,40 +59,28 @@
             </div>
             <form method="post" id="newRisForm">
                 <div class="modal-body font p-4 pb-2">
-
                     <div class="row font mb-3">
-                        <div class="input-field col-3">
-                            <label class="mb-1 ms-2" for="newRisNumber">RIS Number</label>
-                            <input type="number" id="newRisNumber" class="form-control rounded-2 font input">
+                        <div class="input-field col-7">
+                            <label class="mb-1 ms-2" for="purpose">Purpose</label>
+                            <textarea id="purpose" class="form-control rounded-2 font textarea mb-3" rows="4"
+                                style="height: 105px;"></textarea>
+            
+                            <label class="mb-1 ms-2" for="department">Department</label>
+                            <input type="text" id="department" class="form-control rounded-2 font input mb-3">
                         </div>
                         <div class="input-field col-5">
-                            <label class="mb-1 ms-2" for="newRisItem">Item</label>
-                            <input type="text" id="newRisItem" class="form-control rounded-2 font input">
-                        </div>
-                        <div class="input-field col-4">
-                            <label class="mb-1 ms-2" for="newRisDate">Date Issued</label>
-                            <input type="datetime-local" id="newRisDate" class="form-control rounded-2 font input">
-                        </div>
-                    </div>
-
-                    <div class="row font mb-3">
-                        <div class="input-field col-6">
-                            <label class="mb-1 ms-2" for="newRisPurpose">Purpose</label>
-                            <textarea id="newRisPurpose" class="form-control rounded-2 font textarea"
-                                rows=4
-                                style="height: 105px;"></textarea>
-                        </div>
-                        <div class="input-field col-6">
-                            <label class="mb-1 ms-2" for="newRisBy">From <span class="text-muted small">(office name)</span></label>
-                            <input type="text" id="newRisBy" class="form-control rounded-2 font input mb-3">
-
-                            <label class="mb-1 ms-2" for="newRisTo">Issued To</label>
-                            <input type="text" id="newRisTo" class="form-control rounded-2 font input mb-3">
+                            <label class="mb-1 ms-2" for="docTitle">Document Title</label>
+                            <input type="text" id="docTitle" class="form-control rounded-2 font input mb-3">
+            
+                            <label class="mb-1 ms-2" for="receivedBy">Received by</label>
+                            <input type="text" id="receivedBy" class="form-control rounded-2 font input mb-3">
+            
+                            <label class="mb-1 ms-2" for="receivedOn">Received on</label>
+                            <input type="datetime-local" id="receivedOn" class="form-control rounded-2 font input">
                         </div>
                     </div>
                     <div class="modal-footer font">
-                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
-                            data-bs-dismiss="modal">Back</button>
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3" data-bs-dismiss="modal">Back</button>
                         <button class="button rounded-2 font btn btn-secondary" type="submit">Save</button>
                     </div>
                 </div>
@@ -129,12 +117,12 @@
             <div class="modal-body font p-4 pb-2">
                 <form method="post" id="approveAllRisForm">
                     <div class="font mb-4">
-                        <p>Are sure to approve all Requisition Issue Slips?</p>
+                        <p>Are sure to release all Requisition Issue Slips?</p>
                     </div>
                     <div class="modal-footer font">
                         <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
                             data-bs-dismiss="modal">Back</button>
-                        <button class="button rounded-2 font btn btn-secondary" type="submit">Approve</button>
+                        <button class="button rounded-2 font btn btn-secondary" type="submit">Release</button>
                     </div>
                 </form>
             </div>

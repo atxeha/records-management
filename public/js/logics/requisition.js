@@ -5,23 +5,21 @@ export function initNewRis() {
     newRisForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const risNumber = parseInt(document.getElementById("newRisNumber").value.trim());
-        const item = document.getElementById("newRisItem").value.trim();
-        const issuedFrom = document.getElementById("newRisBy").value.trim();
-        const purpose = document.getElementById("newRisPurpose").value.trim();
-        const issuedTo = document.getElementById("newRisTo").value.trim();
-        const date = document.getElementById("newRisDate").value.trim();
+      const docTitle = document.getElementById("docTitle").value.trim();
+      const receivedBy = document.getElementById("receivedBy").value.trim();
+      const receivedOn = document.getElementById("receivedOn").value.trim();
+      const purpose = document.getElementById("purpose").value.trim();
+      const department = document.getElementById("department").value.trim();
 
-        if(!risNumber || !item || !issuedFrom || !purpose || !issuedTo || !date){window.electronAPI.showToast("All fields required.", false); return;}
-          
-        const data = {
-            risNumber: risNumber,
-            item: item,
-            preparedBy: issuedFrom,
-            purpose: purpose,
-            issuedTo: issuedTo,
-            preparedDate: date,
-        }
+      if (!docTitle || !receivedBy || !receivedOn || !purpose || !department) { window.electronAPI.showToast("All fields required.", false); return; }
+
+      const data = {
+        docTitle: docTitle,
+        receivedBy: receivedBy,
+        receivedOn: receivedOn,
+        purpose: purpose,
+        department: department,
+      }
 
         try{
             const response = await window.electronAPI.newRis(data);
@@ -51,11 +49,11 @@ export async function initFetchRis(searchQuery = "") {
         tableBody.innerHTML = "";
 
         const filteredItems = items.filter((item) => {
-            const itemCodeMatch = item.issuedTo
+            const itemCodeMatch = item.department
                 .toLowerCase()
                 .includes(searchQuery.toLowerCase());
 
-            const itemDate = new Date(item.preparedDate).toLocaleString(undefined, {
+            const itemDate = new Date(item.receivedOn).toLocaleString(undefined, {
                 year: "numeric",
                 month: "2-digit",
                 day: "2-digit",
@@ -81,31 +79,40 @@ export async function initFetchRis(searchQuery = "") {
         filteredItems.forEach((item, index) => {
             const row = document.createElement("tr");
 
-            const formattedDate = new Date(item.preparedDate)
-                .toLocaleString(undefined, {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "numeric",
-                    minute: "2-digit",
-                    hour12: true,
-                })
+          const formattedReceivedOn = new Date(item.receivedOn)
+            .toLocaleString(undefined, {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            })
+          const formattedReleasedOn = new Date(item.releasedOn)
+            .toLocaleString(undefined, {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            })
 
             row.innerHTML = `
                 <td>${index + 1}</td>
-                <td>${item.risNumber}</td>
-                <td>${item.item}</td>
-                <td>${item.preparedBy}</td>
-                <td>${item.issuedTo}</td>
+                <td>${item.docTitle}</td>
                 <td>${item.purpose}</td>
-                <td>${formattedDate}</td>
-                <td class="${item.status === "approved" ? "edit-icon" : item.status === "rejected" ? "dlt-icon" : ""}">${item.status === "pending" ? "Pending" : item.status === "rejected" ? "Rejected" : "Approved"}</td>
+                <td>${item.department}</td>
+                <td>${item.receivedBy}</td>
+                <td>${formattedReceivedOn}</td>
+                <td>${item.releasedOn ? formattedReleasedOn : "-- --"}</td>
+                <td class="${item.status === "approved" ? "edit-icon" : item.status === "rejected" ? "dlt-icon" : ""}">${item.status === "pending" ? "Unsigned" : item.status === "rejected" ? "Rejected" : "Released"}</td>
                 <td class="pb-0">
                     <i data-ris-id="${item.id}" class="rejectRis dlt-icon icon-btn icon-sm material-icons me-1" data-bs-toggle="tooltip"
                         data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Reject" style="margin-left:1px;">close</i>
                   
                     <i data-ris-id="${item.id}" class="approveRis edit-icon icon-btn icon-sm material-icons" data-bs-toggle="tooltip"
-                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Approve">check</i>
+                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Release">check</i>
                 </td>
             `;
             tableBody.appendChild(row);
