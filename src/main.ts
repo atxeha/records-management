@@ -10,8 +10,11 @@ import {
   newRis,
   newVoucher,
   newFranchise,
-  newObligationRequest
+  newObligationRequest,
+  checkLogin,
+  autoAccountCreate
 } from "./database";
+import bcrypt from 'bcrypt';
 
 let mainWindow: BrowserWindow | null;
 app.whenReady().then(async() => {
@@ -26,8 +29,12 @@ app.whenReady().then(async() => {
     },
   });
 
-  await mainWindow.loadFile(path.join(app.getAppPath(), "public", "main.html"));
-  mainWindow.maximize();
+  await mainWindow.loadFile(path.join(app.getAppPath(), "public", "login.html"));
+  // mainWindow.maximize();
+
+  autoAccountCreate()
+    .then(() => console.log("Account created successfully"))
+    .catch((error) => console.error("Error creating account:", error.message));
 
   Menu.setApplicationMenu(menu);
 });
@@ -57,6 +64,20 @@ const menu = Menu.buildFromTemplate([
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
+  }
+});
+
+ipcMain.on("navigate", (event, page) => {
+  const filePath = path.join(app.getAppPath(), "public", page);
+  console.log("Loading file:", filePath);
+
+  if (!fs.existsSync(filePath)) {
+    console.error("File does not exist:", filePath);
+    return;
+  }
+
+  if (mainWindow) {
+    mainWindow.loadFile(filePath);
   }
 });
 
@@ -741,3 +762,37 @@ ipcMain.handle("count-record", async (event, tableName) => {
         return { success: false, message: (err as Error).message };
     }
 });
+
+ipcMain.handle("check-login", async (event, data) => {
+  try {
+    const response = await checkLogin(
+      data.username,
+      data.password
+    )
+    return response;
+  } catch (error: any) {
+    return;
+  }
+})
+
+ipcMain.handle("update-account", async (event, data) => {
+  try {
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const updatedAccount = await prisma.user.update({
+      where: {id: data.id},
+      data: {
+        name: data.name,
+        email: data.email,
+        username: data.username,
+        password: hashedPassword,
+      },
+    });
+
+    // Replace encrypted password with plain password in user object
+    const userWithPlainPassword = { ...updatedAccount, password: data.password };
+
+    return { success: true, message: "Account updated successfully.", data: userWithPlainPassword };
+  } catch(err) {
+    return { success: false, message: (err as Error).message };
+  }
+})

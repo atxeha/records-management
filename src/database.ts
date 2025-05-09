@@ -1,10 +1,8 @@
-import { execSync } from "child_process";
 import path from "path";
 import { app } from "electron";
 import fs from "fs";
 import { PrismaClient } from "@prisma/client";
-import internal from "stream";
-import { scheduler } from "timers/promises";
+import bcrypt from 'bcrypt';
 
 // Determine database path
 const isDev = !app.isPackaged; // Check if running in development
@@ -14,7 +12,7 @@ const dbFileName = "inventory.db";
 const dbPath = isDev
   ? path.join(__dirname, "..", "db", dbFileName) // Development: Use `db/`
   : path.join(app.getPath("userData"), dbFileName); // Production: Use `userData/`
-  
+
 process.env.DATABASE_URL = `file:${dbPath}`;
 
 // Ensure the database file exists in production
@@ -68,7 +66,7 @@ export async function createSchedule(
       },
     });
 
-    return newSchedule 
+    return newSchedule
   } catch (err) {
     return (err as Error).message
   }
@@ -81,7 +79,7 @@ export async function newPurchaseRequest(
   purpose: string,
   department: string
 ) {
-  try{
+  try {
     const receivedOnIso = isoDate(receivedOn)
 
     const newPurchaseRequest = await prisma.purchaseRequest.create({
@@ -95,7 +93,7 @@ export async function newPurchaseRequest(
     });
 
     return { success: true, data: newPurchaseRequest };
-  }catch(err){
+  } catch (err) {
     return { success: false, message: `${(err as Error).message}` };
   }
 }
@@ -105,7 +103,7 @@ export async function newPettyCash(
   cashAmount: number,
   date: string
 ) {
-  try{
+  try {
     let isoDate = date;
     if (date.length === 16) {
       isoDate = date + ":00";
@@ -120,7 +118,7 @@ export async function newPettyCash(
     })
 
     return { success: true, data: newPettyCash };
-  }catch(err){
+  } catch (err) {
     return { success: false, message: (err as Error).message };
   }
 }
@@ -240,5 +238,63 @@ export async function newObligationRequest(
     return { success: true, data: newPurchaseRequest };
   } catch (err) {
     return { success: false, message: (err as Error).message };
+  }
+}
+
+export async function autoAccountCreate() {
+  const username = "admin";
+  const name = "admin";
+  const password = "admin";
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { username },
+    });
+
+    if (!existingUser) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      await prisma.user.create({
+        data: {
+          username,
+          name,
+          password: hashedPassword,
+        },
+      });
+    } else {
+      return;
+    }
+    console.log("User created successfully:");
+    return;
+  } catch (error) {
+    console.error("Error creating account:", error);
+    throw error;
+  }
+}
+
+export async function checkLogin(username: string, password: string) {
+  try {
+    // Find user by username
+    const user = await prisma.user.findUnique({
+      where: { username },
+    });
+
+    // If user not found
+    if (!user) {
+      return { success: false, message: 'Invalid username or password.' };
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return { success: false, message: 'Invalid username or password.' };
+    }
+
+    // Replace encrypted password with plain password in user object
+    const userWithPlainPassword = { ...user, password: password };
+
+    return { success: true, message: 'Login successful', user: userWithPlainPassword };
+  } catch (error) {
+    console.error('Login Error:', error);
+    return { success: false, message: 'Internal server error' };
   }
 }

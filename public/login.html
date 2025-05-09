@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="
+            default-src 'self';
+            script-src 'self';
+            style-src 'self' 'unsafe-inline';
+            img-src 'self' data:;
+    ">
+    <title>Records Management</title>
+
+    <link rel="stylesheet" href="../node_modules/toastify-js/src/toastify.css">
+
+    <link rel="stylesheet" href="../node_modules/material-icons/iconfont/material-icons.css">
+
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="./css/index.css">
+
+    <link rel="stylesheet" href="./css/login.css">
+
+
+</head>
+
+<body>
+    <div class="login-container rounded-4 mb-3">
+        <div class="mb-4 d-flex ms-2 ps-3">
+            <img src="../assets/icons/logo.png" alt="Logo" class="logo">
+            <h4 class="text-center mt-3 ms-2 color">LGU Mambajao</h4>
+        </div>
+        <form method="post" id="loginForm">
+            <div class="mb-3 font">
+                <label for="username" class="form-label mb-1 ms-2 color">Username</label>
+                <input id="username" type="text" class="form-control rounded-2 font input">
+            </div>
+            <div class="font position-relative">
+                <label for="password" class="form-label mb-1 ms-2 color">Password</label>
+                <input id="password" type="password" class="form-control rounded-2 font input">
+                <i class="material-icons toggle-password mt-2" style="padding-top: 11px !important;" id="toggleIcon">visibility_off</i>
+            </div>
+            <p class="mb-4 pb-2 ms-2 mt-1 btn-link" style="font-size: .8rem; cursor: pointer;"><a data-bs-toggle="modal" data-bs-target="#forgotPassword">Forgot password</a></p>
+            <button type="submit" class="button rounded-2 font btn btn-secondary w-100 mb-3 color">Login</button>
+        </form>
+    </div>
+
+    <div class="modal" id="forgotPassword" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="1"
+        aria-labelledby="forgotPasswordLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="forgotPasswordLabel">Forgot password</h6>
+                </div>
+                <form method="post" id="forgotPasswordForm">
+                    <div class="modal-body font p-4 pb-2">
+    
+                        <div class="row font mb-3">
+                            <div class="input-field col-6">
+                                <label class="mb-1 ms-2" for="forgotUser">Username</label>
+                                <input type="text" id="forgotUser"
+                                    class="form-control rounded-2 font input mb-3">
+                            </div>
+                            <div class="input-field col-6">
+                                <label class="mb-1 ms-2" for="forgotPass">New password</label>
+                                <input type="text" id="forgotPass" class="form-control rounded-2 font input mb-3">
+                            
+                                <label class="mb-1 ms-2" for="forgotConPass">Confirm password</label>
+                                <input type="text" id="forgotConPass" class="form-control rounded-2 font input mb-3">
+                            </div>
+                        </div>
+    
+                        <div class="modal-footer font">
+                            <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
+                                data-bs-dismiss="modal">Back</button>
+                            <button class="button rounded-2 font btn btn-secondary" type="submit">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="./js/utils/login.js"></script>
+    <script src="./js/utils/tooltip.js"></script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../node_modules/toastify-js/src/toastify.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background: none;
+    color: black !important;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-image: url('../../assets/images/SGLG.jpg');
+    background-size: cover;
+    background-position: center;
+    background-color: rgba(36, 57, 116, 0.4);
+        background-blend-mode: darken;
+    opacity: 0.5;
+    /* Adjust opacity here */
+    z-index: -1;
+}
+
+.login-container {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2rem;
+    box-shadow: 0px 5px 15px rgba(70, 58, 58, 0.2);
+    width: 100%;
+    max-width: 350px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #3C374D;
+    font-size: 1.2rem;
+    transition: all 0.1s ease-in-out;
+}
+
+.toggle-password:hover {
+    color: #817b96;
+}
+
+.logo {
+    width: 54px;
+    height: 54px;
+}

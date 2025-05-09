@@ -15,7 +15,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   deleteSchedule: (id: number) => ipcRenderer.invoke("delete-schedule", id),
   newPurchaseRequest: (data: any) => ipcRenderer.invoke("new-purchase-request", data),
   fetchPurchaseRequests: () => ipcRenderer.invoke("fetch-purchase-requests"),
-  // approveRejectPr: (id: number, status: string) => ipcRenderer.invoke("approve-reject-pr", id, status),
   newPettyCash: (data: any) => ipcRenderer.invoke("new-petty-cash", data),
   fetchPettyCash: () => ipcRenderer.invoke("fetch-petty-cash"),
   releaseAllPc: () => ipcRenderer.invoke("release-all-pc"),
@@ -33,5 +32,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
   newObligation: (data: any) => ipcRenderer.invoke("new-obligation", data),
   fetchQoute: () => ipcRenderer.invoke("fetch-qoute"),
   countRecord: (tableName: string) => ipcRenderer.invoke("count-record", tableName),
+  checkLogin: (data: any) => ipcRenderer.invoke("check-login", data),
+  autoLogin: () => ipcRenderer.invoke("auto-login"),
+  logout: (username: string) => ipcRenderer.invoke("logout", username),
+  updateAccount: (data: any) => ipcRenderer.invoke("update-account", data),
 });
 

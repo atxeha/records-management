@@ -281,13 +281,37 @@ body {
     box-shadow: none;
 }
 
+.settings {
+    display: flex;
+    flex-direction: column;
+    height: 94vh;
+}
+
+.settings-main {
+    flex-grow: 1;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 32px;
+    top: 67.5%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #3C374D;
+    font-size: 1.2rem;
+    transition: all 0.1s ease-in-out;
+}
+
+.toggle-password:hover {
+    color: #817b96;
+}
+
 .tooltip-inner {
     background-color: #c2c1c1 !important;
     color: #000 !important;
     font-size: 12px;
     border-radius: 5px;
     margin-left: 4px;
-    border: solid 1px #6e6c72;
     padding: 3px 8px;
 }
 

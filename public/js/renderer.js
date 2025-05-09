@@ -1,5 +1,16 @@
+// const user = JSON.parse(localStorage.getItem("activeUser"));
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+  const loginMessage = localStorage.getItem("loginMessage");
+
+  if (loginMessage) {
+
+    window.electronAPI.showToast(loginMessage, true);
+
+    localStorage.removeItem("loginMessage");
+  }
+
   const scheduleBtn = document.getElementById("scheduleBtn");
   const viewScheduleBtn = document.getElementById("viewScheduleBtn");
   const homeBtn = document.getElementById("homeBtn");
@@ -9,6 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const voucherBtn = document.getElementById("voucherBtn");
   const franchiseBtn = document.getElementById("franchiseBtn");
   const ORBtn = document.getElementById("ORBtn");
+  const settingsBtn = document.getElementById("settingsBtn");
 
   function attachScrollListener() {
     const tableContainer = document.querySelector(".table-container");
@@ -68,11 +80,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 if (page === "home.html") {
                   const fetchTodaysSchedules = await import("./logics/populateSchedules.js")
-                  const homeModule = await import("./logics/home.js")
 
                   fetchTodaysSchedules.sampleUsage();
                   homeModule.initCount();
                   homeModule.initFetchFranchise()
+                }
+
+                if (page === "settings.html") {
+                  const module = await import("./logics/settings.js")
+
+                  module.updateAccountInfo();
+                  module.logout()
+                  module.showPassword()
+                  module.populateFields()
+                  module.toggleTheme()
                 }
 
                 if (page === "schedule.html") {
@@ -361,8 +382,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                   orModule.initRejectApproveOr(obligationFilter)
                   orModule.initFetchOr(obligationFilter);
                   orModule.initDeleteAllOr();
-                  // orModule.initDeleteFranchise(obligationFilter);
-                  // orModule.initPopulateFranchise();
 
                   document.addEventListener(
                     "shown.bs.modal",
@@ -594,6 +613,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     ORBtn.addEventListener("click", async (e) => {
       e.preventDefault();
       await loadPage("obligation.html")
+    })
+  }
+
+  if(settingsBtn) {
+    settingsBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      await loadPage("settings.html")
     })
   }
 

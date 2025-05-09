@@ -1,0 +1,103 @@
+
+<div class="container font settings w-50 px-5">
+    <div class="settings-main px-3">
+            <h6 class="text-center"><b>Update Account</b></h6>
+            <form method="post" id="updateAccountForm">
+                <div class="modal-body font p-4 pb-2">
+                    <div class="row font mb-3">
+                        <div class="input-field col-12">
+                            <label class="mb-1 ms-2" for="settingsName">Name</label>
+                            <input type="text" id="settingsName" class="form-control rounded-2 font input">
+                        </div>
+                    </div>
+
+                    <div class="row font mb-3">
+                        <div class="input-field col-12">
+                            <label class="mb-1 ms-2" for="settingsEmail">Email</label>
+                            <input type="email" id="settingsEmail" class="form-control rounded-2 font input">
+                        </div>
+                    </div>
+
+                    <div class="row font mb-4">
+                        <div class="input-field col-6">
+                            <label class="mb-1 ms-2" for="settingsUser">Username</label>
+                            <input type="text" id="settingsUser" class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-6">
+                            <label class="mb-1 ms-2" for="settingsPass">Password</label>
+                            <input type="password" id="settingsPass" class="form-control rounded-2 font input">
+                            <i class="material-icons toggle-password mt-2" style="padding-top: 11px !important;" id="toggleIcon">visibility_off</i>
+                        </div>
+                    </div>
+                    <div class="modal-footer font d-flex justify-content-between">
+                        <div class="mt-1">
+                            <i class="icon-btn icon material-icons me-2" data-bs-toggle="tooltip" data-bs-placement="right"
+                                data-bs-custom-class="custom-tooltip" title="Logout" id="logoutBtn">logout
+                            </i>
+                            <span data-bs-toggle="modal" data-bs-target="#addStaffModal">
+                                <i class="icon-btn icon material-icons me-2" data-bs-toggle="tooltip" data-bs-placement="right"
+                                    data-bs-custom-class="custom-tooltip" title="Add staff" id="addStaffBtn">person_add
+                                </i>
+                            </span>
+                            <i class="icon-btn icon material-icons me-2" data-bs-toggle="tooltip" data-bs-placement="right"
+                                data-bs-custom-class="custom-tooltip" title="Toggle theme" id="themeBtn">dark_mode
+                            </i>
+                        </div>
+                        
+                        <div>
+                            <button class="button rounded-2 font btn btn-secondary" type="submit">Update</button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </form>
+    </div>
+    <div>
+        <p class="text-musted text-center" style="font-size: .8rem; color: rgb(211, 211, 211);">&copy; 2025 Computer Science Interns. All rights reserved.</p>
+    </div>
+</div>
+
+<div class="modal" id="addStaffModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="1"
+    aria-labelledby="addStaffModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="addStaffModalLabel">Add Staff</h6>
+            </div>
+
+            <form method="post" id="addStaffForm">
+                <div class="modal-body font p-4 pb-2">
+                    <div class="row font mb-3">
+                        <div class="input-field col-12">
+                            <label class="mb-1 ms-2" for="staffName">Name</label>
+                            <input type="text" id="staffName" class="form-control rounded-2 font input">
+                        </div>
+                    </div>
+
+                    <div class="row font mb-3">
+                        <div class="input-field col-12">
+                            <label class="mb-1 ms-2" for="staffEmail">Email</label>
+                            <input type="email" id="staffEmail" class="form-control rounded-2 font input">
+                        </div>
+                    </div>
+
+                    <div class="row font mb-4">
+                        <div class="input-field col-6">
+                            <label class="mb-1 ms-2" for="staffUser">Username</label>
+                            <input type="text" id="staffUser" class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-6">
+                            <label class="mb-1 ms-2" for="staffPass">Password</label>
+                            <input type="password" id="staffPass" class="form-control rounded-2 font input">
+                        </div>
+                    </div>
+                    <div class="modal-footer font">
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
+                            data-bs-dismiss="modal">Back</button>
+                        <button class="button rounded-2 font btn btn-secondary" type="submit">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
