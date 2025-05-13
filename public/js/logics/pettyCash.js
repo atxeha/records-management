@@ -1,18 +1,14 @@
 export function initNewPettyCash() {
     const form = document.getElementById("newPettyForm");
     const modal = new bootstrap.Modal(document.getElementById("newPettyCashModal"))
-
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
-
         const receivedBy = document.getElementById("receivedBy").value.trim();
         const purpose = document.getElementById("newPettyPurpose").value.trim();
         const department = document.getElementById("newPettyDepartment").value.trim();
         const amount = parseInt(document.getElementById("newPettyAmount").value.trim());
         const receivedOn = document.getElementById("receivedOn").value.trim();
-
         if(!amount || !receivedOn || !purpose || !receivedBy || !department){window.electronAPI.showToast("All fields required.", false); return;}
-
         const data = {
           receivedBy: receivedBy,
           purpose: purpose,
@@ -20,36 +16,27 @@ export function initNewPettyCash() {
             amount: amount,
             receivedOn:receivedOn,
         }
-
         try{
             const response = await window.electronAPI.newPettyCash(data);
-
             if (response.success){
               window.electronAPI.showToast(response.message, true)
               modal.hide()
-
               initFetchPettyCash()
             } else {
               window.electronAPI.showToast(response.message, false);
             }
-
         }catch(err){
             window.electronAPI.showToast(err.message, false);
         }
     })
 }
-
 export async function initFetchPettyCash(searchQuery = "") {
     try {
         const items = await window.electronAPI.fetchPettyCash();
-
         const tableBody = document.getElementById("pcTableBody");
         const pulledTable = document.getElementById("pcTable");
-
         tableBody.innerHTML = "";
-
         const filteredItems = items.filter((item) => {
-
             const itemDate = new Date(item.receivedOn).toLocaleString(undefined, {
                 year: "numeric",
                 month: "2-digit",
@@ -58,11 +45,9 @@ export async function initFetchPettyCash(searchQuery = "") {
                 minute: "2-digit",
                 hour12: true,
             });
-
             const dateMatch = itemDate.includes(searchQuery);
             return dateMatch;
         });
-
         if (filteredItems.length === 0) {
             pulledTable.classList.remove("table-hover");
             tableBody.innerHTML = `
@@ -72,10 +57,8 @@ export async function initFetchPettyCash(searchQuery = "") {
             `;
             return;
         }
-
         filteredItems.forEach((item, index) => {
             const row = document.createElement("tr");
-
             const formattedReceivedOn = new Date(item.receivedOn)
             .toLocaleString(undefined, {
               year: "numeric",
@@ -94,7 +77,6 @@ export async function initFetchPettyCash(searchQuery = "") {
               minute: "2-digit",
               hour12: true,
             })
-
             row.innerHTML = `
                 <td>${index + 1}</td>
                 <td>${item.purpose}</td>
@@ -117,15 +99,12 @@ export async function initFetchPettyCash(searchQuery = "") {
         var tooltipTriggerList = [].slice.call(
             document.querySelectorAll('[data-bs-toggle="tooltip"]')
         );
-
-        // Dispose existing tooltips to avoid duplicates
         tooltipTriggerList.forEach((el) => {
             const tooltipInstance = bootstrap.Tooltip.getInstance(el);
             if (tooltipInstance) {
                 tooltipInstance.dispose();
             }
         });
-
         tooltipTriggerList.map(
             (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
         );
@@ -135,26 +114,19 @@ export async function initFetchPettyCash(searchQuery = "") {
 export function initReleaseAllPc(search) {
   const releaseForm = document.querySelector("#releaseAllPettyModal form");
   if (!releaseForm) return;
-
   releaseForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     try {
       const result = await window.electronAPI.releaseAllPc();
-
       if (result.success) {
         let releaseAllModal = bootstrap.Modal.getInstance(
           document.getElementById("releaseAllPettyModal")
         );
-
         if (!releaseAllModal) {
           releaseAllModal = new bootstrap.Modal(document.getElementById("releaseAllPettyModal"));
         }
-
         releaseAllModal.hide();
-        
         await initFetchPettyCash(search);
-
         window.electronAPI.showToast(result.message, true);
       } else {
         window.electronAPI.showToast(result.message, false);
@@ -164,30 +136,22 @@ export function initReleaseAllPc(search) {
     }
   });
 }
-
 export function initDeleteAllPc() {
   const deleteAllForm = document.querySelector("#deleteAllPcModal form");
   if (!deleteAllForm) return;
-
   deleteAllForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     try {
       const result = await window.electronAPI.deleteAllRecords("pettyCash");
-
       if (result.success) {
         let deleteAllModal = bootstrap.Modal.getInstance(
           document.getElementById("deleteAllPcModal")
         );
-
         if (!deleteAllModal) {
           deleteAllModal = new bootstrap.Modal(document.getElementById("deleteAllPcModal"));
         }
-
         deleteAllModal.hide();
-        
         await initFetchPettyCash();
-
         window.electronAPI.showToast(result.message, true);
       } else {
         window.electronAPI.showToast(result.message, false);
@@ -197,23 +161,18 @@ export function initDeleteAllPc() {
     }
   });
 }
-
 export function initReleasePc(search) {
   const tableBody = document.getElementById("pcTableBody");
-
   if (tableBody) {
     tableBody.addEventListener("click", async (event) => {
       const target = event.target;
       if (target.classList.contains("releasePc")) {
         event.preventDefault();
         const id = target.dataset.pettyId;
-
         const res = await window.electronAPI.releasePc(parseInt(id), "released")
-
         if(res.success){
           window.electronAPI.showToast(res.message, true)
           initFetchPettyCash(search)
-
           const tooltip = bootstrap.Tooltip.getInstance(target);
           if (tooltip) {
             tooltip.hide();
@@ -226,23 +185,18 @@ export function initReleasePc(search) {
     });
   }
 }
-
 export function initDeletePc(search) {
     const tableBody = document.getElementById("pcTableBody");
-
     if (tableBody) {
         tableBody.addEventListener("click", async (event) => {
             const target = event.target;
             if (target.classList.contains("deletePc")) {
                 event.preventDefault();
                 const id = target.dataset.pettyId;
-
                 const res = await window.electronAPI.deletePc(parseInt(id))
-
                 if (res.success) {
                     window.electronAPI.showToast(res.message, true)
                     initFetchPettyCash(search)
-
                     const tooltip = bootstrap.Tooltip.getInstance(target);
                     if (tooltip) {
                         tooltip.hide();

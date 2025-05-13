@@ -8,11 +8,7 @@ export function populateScheduleList(schedules, containerSelector) {
   if (!container) {
     return;
   }
-
-  // Clear existing content
   container.innerHTML = "";
-
-  // Create header row
   const header = document.createElement("div");
   header.className = "list-group-item sticky-header d-flex fw-bold bg-light justify-content-between";
   header.innerHTML = `
@@ -21,7 +17,6 @@ export function populateScheduleList(schedules, containerSelector) {
     <div class="col-3">Time</div>
   `;
   container.appendChild(header);
-
   if (schedules.length === 0) {
     const noScheduleDiv = document.createElement("div");
     noScheduleDiv.className = "list-group-item text-center text-muted";
@@ -29,20 +24,15 @@ export function populateScheduleList(schedules, containerSelector) {
     container.appendChild(noScheduleDiv);
     return;
   }
-
-  // Create rows for each schedule
   schedules.forEach(schedule => {
     const row = document.createElement("div");
     row.className = "list-group-item d-flex justify-content-between";
-
     const descriptionDiv = document.createElement("div");
     descriptionDiv.className = "col-5";
     descriptionDiv.textContent = schedule.description;
-
     const venueDiv = document.createElement("div");
     venueDiv.className = "col-3";
     venueDiv.textContent = schedule.venue;
-
     const timeDiv = document.createElement("div");
     timeDiv.className = "col-3";
     const dateObj = new Date(schedule.date);
@@ -51,19 +41,12 @@ export function populateScheduleList(schedules, containerSelector) {
       minute: "2-digit",
       hour12: true,
     });
-
     row.appendChild(descriptionDiv);
     row.appendChild(venueDiv);
     row.appendChild(timeDiv);
-
     container.appendChild(row);
   });
 }
-
-/**
- * Sample usage of populateScheduleList function.
- * Fetches today's schedules and populates the container with id "scheduleListContainer".
- */
 export async function sampleUsage() {
   try {
     const response = await window.electronAPI.fetchTodaysSchedules();

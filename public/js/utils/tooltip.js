@@ -18,10 +18,8 @@ function showToastListener(event) {
     }).showToast();
   }
 }
-
 window.removeEventListener("message", showToastListener);
 window.addEventListener("message", showToastListener);
-
 document.addEventListener("DOMContentLoaded", () => {
   var tooltipTriggerList = [].slice.call(
     document.querySelectorAll('[data-bs-toggle="tooltip"]')
