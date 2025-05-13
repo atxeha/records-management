@@ -6,15 +6,17 @@ export function initNewVoucher() {
         e.preventDefault();
 
         const payee = document.getElementById("newVoucherPayee").value.trim();
+        const vcode = document.getElementById("newVoucherCode").value.trim();
         const amount = parseInt(document.getElementById("newVoucherAmount").value.trim());
         const purpose = document.getElementById("newVoucherPurpose").value.trim();
         const receivedBy = document.getElementById("newVoucherReceivedBy").value.trim();
         const date = document.getElementById("newVoucherDate").value.trim();
 
-        if(!payee || !amount || !purpose || !receivedBy || !date){window.electronAPI.showToast("All fields required.", false); return;}
+        if(!payee || !vcode || !amount || !purpose || !receivedBy || !date){window.electronAPI.showToast("All fields required.", false); return;}
           
         const data = {
             payee: payee,
+            code: vcode,
             amount: amount,
             purpose: purpose,
             receivedBy: receivedBy,
@@ -70,7 +72,7 @@ export async function initFetchVoucher(searchQuery = "") {
             pulledTable.classList.remove("table-hover");
             tableBody.innerHTML = `
                 <tr>
-                <td colspan="9" class="text-center text-muted pt-3"><h6>No Records found</h6></td>
+                <td colspan="10" class="text-center text-muted pt-3"><h6>No Records found</h6></td>
                 </tr>
             `;
             return;
@@ -100,6 +102,7 @@ export async function initFetchVoucher(searchQuery = "") {
 
             row.innerHTML = `
                 <td>${index + 1}</td>
+                <td>${item.code}</td>
                 <td>${item.payee}</td>
                 <td>${item.amount}</td>
                 <td>${item.purpose}</td>

@@ -4,7 +4,7 @@
     <div class="d-flex ms-4 ps-2 gap-2 mb-2" id="actions">
         <span class="me-4">
             <input type="search" class="form-control rounded-2 font-sm input col-4 search-box"
-                placeholder="Search franchise name" id="franchiseFilter">
+                placeholder="Search department" id="franchiseFilter">
         </span>
         <span data-bs-toggle="modal" data-bs-target="#newFranchiseModal" class="mt-1">
             <i class="icon-sm material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -16,6 +16,11 @@
                 data-bs-custom-class="custom-tooltip" title="Delete all" id="deleteAllFranchiseBtn">delete_sweep
             </i>
         </span>
+        <span data-bs-toggle="modal" data-bs-target="#releaseAllFranchiseModal" class="mt-1">
+            <i class="icon-sm edit-icon material-icons icon-btn" data-bs-toggle="tooltip" data-bs-placement="top"
+                data-bs-custom-class="custom-tooltip" title="Release all" id="releaseAllFranchiseBtn">check
+            </i>
+        </span>
     </div>
 
     <div class="table-responsive table-container mx-4 mt-2 font">
@@ -23,12 +28,14 @@
             <thead id="franchiseTableHead">
                 <tr>
                     <th></th>
-                    <th>Code</th>
-                    <th>Franchise</th>
-                    <th>Issued By</th>
-                    <th>Issued To</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
+                    <th>Purpose</th>
+                    <th>Department</th>
+                    <th>Amount</th>
+                    <th>Received by</th>
+                    <th>Received on</th>
+                    <th>Effective date</th>
+                    <th>Released on</th>
+                    <th>Status</th>
                     <th style="width: 6rem; padding-left: .6rem;">Actions</th>
                 </tr>
             </thead>
@@ -48,39 +55,43 @@
             </div>
             <form method="post" id="newFranchiseForm">
                 <div class="modal-body font p-4 pb-2">
-
-                    <div class="row font mb-3">
-                        <div class="input-field col-4">
-                            <label class="mb-1 ms-2" for="newFranchiseCode">Franchise Code</label>
-                            <input type="number" id="newFranchiseCode" class="form-control rounded-2 font input">
+            
+                    <div class="row font mb-1">
+                        <div class="input-field col-7">
+                            <label class="mb-1 ms-2" for="purpose">Purpose</label>
+                            <textarea id="purpose" class="form-control rounded-2 font textarea mb-3" rows="4"
+                                style="height: 105px;"></textarea>
+            
                         </div>
-                        <div class="input-field col-4">
-                            <label class="mb-1 ms-2" for="newFranchiseName">Franchise Name</label>
-                            <input type="text" id="newFranchiseName" class="form-control rounded-2 font input">
-                        </div>
-                        <div class="input-field col-4">
-                            <label class="mb-1 ms-2" for="newFranchiseIssuedBy">Issued By</label>
-                            <input type="text" id="newFranchiseIssuedBy" class="form-control rounded-2 font input">
-                        </div>
-                    </div>
-
-                    <div class="row font mb-3">
-                        <div class="input-field col-4">
-                            <label class="mb-1 ms-2" for="newFranchiseIssuedTo">Issued To</label>
-                            <input type="text" id="newFranchiseIssuedTo" class="form-control rounded-2 font input">
-                        </div>
-                        <div class="input-field col-4">
-                            <label class="mb-1 ms-2" for="newFranchiseStartDate">Start Date</label>
-                            <input type="datetime-local" id="newFranchiseStartDate" class="form-control rounded-2 font input">
-                        </div>
-                        <div class="input-field col-4">
-                            <label class="mb-1 ms-2" for="newFranchiseEndDate">End Date</label>
-                            <input type="datetime-local" id="newFranchiseEndDate" class="form-control rounded-2 font input">
+                        <div class="input-field col-5">
+                            <label class="mb-1 ms-2" for="department">Department</label>
+                            <input type="text" id="department" class="form-control rounded-2 font input mb-3">
+            
+                            <label class="mb-1 ms-2" for="amount">Amount</label>
+                            <input type="number" id="amount" class="form-control rounded-2 font input mb-3">
+            
                         </div>
                     </div>
+                    <div class="row font mb-3">
+                        <div class="input-field col-3">
+                            <label class="mb-1 ms-2" for="startDate">Effective date <span class="text-muted small">(from)</span></label>
+                            <input type="date" id="startDate" class="form-control rounded-2 font input mb-2">
+
+                            <label for="endDate" class="mb-2 ms-2"><span class="text-muted small">(to)</span></label>
+                            <input type="date" id="endDate" class="form-control rounded-2 font input mb-3">
+                        </div>
+                        <div class="input-field col-4">
+                            <label class="mb-1 ms-2" for="receivedOn">Received on</label>
+                            <input type="datetime-local" id="receivedOn" class="form-control rounded-2 font input">
+                        </div>
+                        <div class="input-field col-5">
+                            <label class="mb-1 ms-2" for="receivedBy">Received by</label>
+                            <input type="text" id="receivedBy" class="form-control rounded-2 font input mb-3">
+                        </div>
+                    </div>
+            
                     <div class="modal-footer font">
-                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
-                            data-bs-dismiss="modal">Back</button>
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3" data-bs-dismiss="modal">Back</button>
                         <button class="button rounded-2 font btn btn-secondary" type="submit">Save</button>
                     </div>
                 </div>
@@ -159,6 +170,26 @@
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="releaseAllFranchiseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body font p-4 pb-2">
+                <form method="post" id="releaseAllFranchiseForm">
+                    <div class="font mb-4">
+                        <p>Are sure to release all Franchise?</p>
+                    </div>
+                    <div class="modal-footer font">
+                        <button type="button" class="btn btn-link btn-link-red font p-0 me-3"
+                            data-bs-dismiss="modal">Back</button>
+                        <button class="button rounded-2 font btn btn-secondary" type="submit">Release</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

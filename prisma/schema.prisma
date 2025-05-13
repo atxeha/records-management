@@ -14,36 +14,36 @@ datasource db {
 }
 
 model User {
-  id       String   @id @default(cuid())
-  name     String
-  email    String?   @unique
-  username String   @unique
-  password String
+  id        String   @id @default(cuid())
+  name      String
+  email     String?  @unique
+  username  String   @unique
+  password  String
   createdAt DateTime @default(now())
 }
 
 model PurchaseRequest {
-  id          Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   receivedBy String
-  docTitle String
-  department  String
-  purpose     String
+  docTitle   String
+  department String
+  purpose    String
   receivedOn DateTime
   releasedOn DateTime?
-  status      String   @default("pending")
-  createdAt   DateTime @default(now())
+  status     String    @default("pending")
+  createdAt  DateTime  @default(now())
 }
 
 model RequisitionIssueSlip {
-  id           Int      @id @default(autoincrement())
-  receivedBy   String
-  docTitle String
+  id         Int       @id @default(autoincrement())
+  receivedBy String
+  docTitle   String
   department String
-  purpose      String
+  purpose    String
   receivedOn DateTime
   releasedOn DateTime?
-  status String @default("pending")
-  createdAt    DateTime @default(now())
+  status     String    @default("pending")
+  createdAt  DateTime  @default(now())
 }
 
 model CheckLog {
@@ -56,50 +56,54 @@ model CheckLog {
 }
 
 model PettyCash {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   receivedBy String
-  amount Float
+  amount     Float
   purpose    String
   department String
   receivedOn DateTime
   releasedOn DateTime?
-  status     String   @default("pending")
-  createdAt  DateTime @default(now())
+  status     String    @default("pending")
+  createdAt  DateTime  @default(now())
 }
 
 model Franchise {
-  id            Int      @id @default(autoincrement())
-  franchiseCode BigInt @unique
-  franchiseName String
-  issuedBy      String
-  issuedTo      String
+  id            Int       @id @default(autoincrement())
+  purpose       String
+  department    String
+  amount        Float
+  receivedBy    String
+  receivedOn    DateTime
   startDate DateTime
   endDate DateTime
-  createdAt     DateTime @default(now())
+  releasedOn    DateTime?
+  status     String    @default("pending")
+  createdAt     DateTime  @default(now())
 }
 
 model Voucher {
-  id            Int      @id @default(autoincrement())
-  payee         String
-  amount        Float
-  purpose       String
-  receivedBy  String
+  id         Int       @id @default(autoincrement())
+  payee      String
+  code       String    @unique
+  amount     Float
+  purpose    String
+  receivedBy String
   receivedOn DateTime
   releasedOn DateTime?
-  status    String @default("pending")
-  createdAt     DateTime @default(now())
+  status     String    @default("pending")
+  createdAt  DateTime  @default(now())
 }
 
 model ObligationRequest {
-  id           Int      @id @default(autoincrement())
-  receivedBy   String
+  id         Int       @id @default(autoincrement())
+  receivedBy String
   department String
-  purpose      String
-  amount BigInt
+  purpose    String
+  amount     BigInt
   receivedOn DateTime
   releasedOn DateTime?
-  status  String  @default("pending")
-  createdAt    DateTime @default(now())
+  status     String    @default("pending")
+  createdAt  DateTime  @default(now())
 }
 
 model Schedule {
@@ -114,8 +118,8 @@ model Schedule {
 }
 
 model Qoute {
-  id Int @id @default(autoincrement())
-  title String
+  id          Int      @id @default(autoincrement())
+  title       String
   description String
-  createdAt DateTime @default(now())
+  createdAt   DateTime @default(now())
 }

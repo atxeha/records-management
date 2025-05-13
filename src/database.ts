@@ -37,11 +37,10 @@ const prisma = new PrismaClient({
 export { prisma };
 
 function isoDate(date: string) {
-  let newIsoDate = ""
   if (date.length === 16) {
-    newIsoDate = date + ":00";
+    return new Date(date + ":00");
   }
-  return new Date(newIsoDate);
+  return new Date(date);
 }
 
 export async function createSchedule(
@@ -152,6 +151,7 @@ export async function newRis(
 
 export async function newVoucher(
   payee: string,
+  code: string,
   amount: number,
   purpose: string,
   receivedBy: string,
@@ -160,9 +160,16 @@ export async function newVoucher(
   try {
     const iso = isoDate(receivedOn)
 
+    const codeExist = await prisma.voucher.findUnique({
+      where: {code},
+    })
+
+    if (codeExist) {return { success: false, message: "Voucher code already exists."}}
+
     const newVoucher = await prisma.voucher.create({
       data: {
         payee,
+        code,
         amount,
         purpose,
         receivedBy,
@@ -177,36 +184,28 @@ export async function newVoucher(
 }
 
 export async function newFranchise(
-  franchiseCode: number,
-  franchiseName: string,
-  issuedTo: string,
-  issuedBy: string,
+  purpose: string,
+  department: string,
+  amount: number,
+  receivedBy: string,
   startDate: string,
   endDate: string,
+  receivedOn: string
 ) {
   try {
-    let newStartDate = startDate;
-    let newEndDate = endDate;
-
-    if (startDate.length === 16 && endDate.length === 16) {
-      newStartDate = startDate + ":00";
-      newEndDate = endDate + ":00";
-    }
-
-    const existingRequest = await prisma.franchise.findUnique({
-      where: { franchiseCode },
-    })
-
-    if (existingRequest) { throw new Error(`Franchise '${franchiseCode}' already exists.`) }
+    const isoReceivedOn = isoDate(receivedOn)
+    const isoStartDate = isoDate(startDate)
+    const isoEndDate = isoDate(endDate)
 
     const newVoucher = await prisma.franchise.create({
       data: {
-        franchiseCode,
-        franchiseName,
-        issuedTo,
-        issuedBy,
-        startDate: new Date(newStartDate),
-        endDate: new Date(newEndDate),
+        purpose,
+        department,
+        amount,
+        receivedBy,
+        startDate: new Date(isoStartDate),
+        endDate: new Date(isoEndDate),
+        receivedOn: new Date(isoReceivedOn),
       },
     });
 

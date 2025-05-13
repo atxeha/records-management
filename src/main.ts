@@ -447,7 +447,7 @@ ipcMain.handle("fetch-ris-voucher", async (event, tableName) => {
         } else if (tableName === "franchise") {
             const franchiseData = await prisma.franchise.findMany({
                 orderBy: {
-                    startDate: "asc",
+                    receivedOn: "asc",
                 },
             });
 
@@ -559,7 +559,7 @@ ipcMain.handle("update-all-status", async (event, tableName, status) => {
 
 ipcMain.handle("approve-reject", async (e, id, status, tableName) => {
   try {
-    const validTables = ["requisitionIssueSlip", "purchaseRequest", "voucher", "obligationRequest"];
+    const validTables = ["requisitionIssueSlip", "purchaseRequest", "voucher", "obligationRequest", "franchise"];
 
     if (!validTables.includes(tableName)) {
       return { success: false, message: "Invalid table name." };
@@ -610,6 +610,7 @@ ipcMain.handle("new-voucher", async (event, data) => {
   try {
     const result = await newVoucher(
       data.payee,
+      data.code,
       data.amount,
       data.purpose,
       data.receivedBy,
@@ -627,12 +628,13 @@ ipcMain.handle("new-voucher", async (event, data) => {
 ipcMain.handle("new-franchise", async (event, data) => {
   try {
     const result = await newFranchise(
-      data.franchiseCode,
-      data.franchiseName,
-      data.issuedBy,
-      data.issuedTo,
+      data.purpose,
+      data.department,
+      data.amount,
+      data.receivedBy,
       data.startDate,
-      data.endDate
+      data.endDate,
+      data.receivedOn
     );
     if (result.success === false) {
       return { success: false, message: result.message };
@@ -652,36 +654,6 @@ ipcMain.handle("delete-franchise", async (event, id) => {
     return { success: true, message: "Franchise deleted." };
   } catch (err: any) {
     return { success: false, message: err.message };
-  }
-});
-
-ipcMain.handle("edit-franchise", async (_event, data) => {
-  const {
-    id,
-    franchiseCode,
-    franchiseName,
-    issuedBy,
-    issuedTo,
-    startDate,
-    endDate,
-  } = data;
-
-  try {
-    const updatedFranchise = await prisma.franchise.update({
-      where: { id: Number(id) },
-      data: {
-        franchiseCode: BigInt(franchiseCode),
-        franchiseName,
-        issuedBy,
-        issuedTo,
-        startDate: new Date(startDate),
-        endDate: new Date(endDate),
-      },
-    });
-
-    return { success: true, message: "Franchise updated successfully.", data: updatedFranchise };
-  } catch (err) {
-    return { success: false, message: "Failed to update franchise." };
   }
 });
 

@@ -109,7 +109,7 @@ export async function initFetchPettyCash(searchQuery = "") {
                         data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Delete" style="margin-left:3px;">delete</i>
                   
                     <i data-petty-id="${item.id}" class="releasePc edit-icon icon-btn icon-sm material-icons" data-bs-toggle="tooltip"
-                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Release">file_upload</i>
+                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Release">check</i>
                 </td>
             `;
             tableBody.appendChild(row);

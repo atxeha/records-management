@@ -28,7 +28,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   deleteAllRecords: (tableName: string) => ipcRenderer.invoke("delete-all-records", tableName),
   newFranchise: (data: any) => ipcRenderer.invoke("new-franchise", data),
   deleteFranchise: (id: number) => ipcRenderer.invoke("delete-franchise", id),
-  editFranchise: (data: any) => ipcRenderer.invoke("edit-franchise", data),
   newObligation: (data: any) => ipcRenderer.invoke("new-obligation", data),
   fetchQoute: () => ipcRenderer.invoke("fetch-qoute"),
   countRecord: (tableName: string) => ipcRenderer.invoke("count-record", tableName),

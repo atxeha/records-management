@@ -95,7 +95,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                   module.showPassword("toggleIcon", "settingsPass")
                   module.showPassword("toggleIcons", "staffPass")
                   module.populateFields()
-                  module.toggleTheme()
                   module.addStaff()
                 }
 
@@ -350,11 +349,25 @@ document.addEventListener("DOMContentLoaded", async () => {
                   }
 
                   franchiseModule.initNewFranchise();
-                  franchiseModule.initEditFranchise();
                   franchiseModule.initFetchFranchise(franchiseFilter);
                   franchiseModule.initDeleteAllFranchise();
                   franchiseModule.initDeleteFranchise(franchiseFilter);
                   franchiseModule.initPopulateFranchise();
+                  franchiseModule.initRejectApprove();
+
+                  document.addEventListener("shown.bs.modal", function (event) {
+                    modalId = event.target.id;
+
+                    console.log(modalId)
+                    if (modalId === "releaseAllFranchiseModal") {
+                      franchiseModule.initUpdateAllFranchiseStatus(
+                        "releaseAllFranchiseModal",
+                        "franchise",
+                        "released",
+                        franchiseFilter
+                      );
+                    }
+                  });
 
                   if (filter) {
                     filter.addEventListener("input", () => {

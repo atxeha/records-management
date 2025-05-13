@@ -5,34 +5,35 @@ export function initNewFranchise() {
   newFranchiseForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const franchiseCode = parseInt(
-      document.getElementById("newFranchiseCode").value.trim()
-    );
-    const franchiseName = document.getElementById("newFranchiseName").value.trim();
-    const issuedBy = document.getElementById("newFranchiseIssuedBy").value.trim();
-    const issuedTo = document.getElementById("newFranchiseIssuedTo").value.trim();
-    const startDate = document.getElementById("newFranchiseStartDate").value.trim();
-    const endDate = document.getElementById("newFranchiseEndDate").value.trim();
+    const purpose = document.getElementById("purpose").value.trim();
+    const department = document.getElementById("department").value.trim();
+    const amount = parseFloat(document.getElementById("amount").value.trim());
+    const receivedBy = document.getElementById("receivedBy").value.trim();
+    const startDate = document.getElementById("startDate").value.trim();
+    const endDate = document.getElementById("endDate").value.trim();
+    const receivedOn = document.getElementById("receivedOn").value.trim();
 
     if (
-      !franchiseCode ||
-      !franchiseName ||
-      !issuedBy ||
-      !issuedTo ||
+      !purpose ||
+      !department ||
+      !amount ||
+      !receivedBy ||
       !startDate ||
-      !endDate
+      !endDate ||
+      !receivedOn
     ) {
       window.electronAPI.showToast("All fields required.", false);
       return;
     }
 
     const data = {
-      franchiseCode: franchiseCode,
-      franchiseName: franchiseName,
-      issuedBy: issuedBy,
-      issuedTo: issuedTo,
+      purpose: purpose,
+      department: department,
+      amount: amount,
+      receivedBy: receivedBy,
       startDate: startDate,
       endDate: endDate,
+      receivedOn: receivedOn,
     };
 
     try {
@@ -97,7 +98,7 @@ export async function initFetchFranchise(searchQuery = "") {
     tableBody.innerHTML = "";
 
     const filteredItems = items.filter((item) => {
-      const itemCodeMatch = item.franchiseName
+      const itemCodeMatch = item.department
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
         
@@ -108,7 +109,7 @@ export async function initFetchFranchise(searchQuery = "") {
       pulledTable.classList.remove("table-hover");
       tableBody.innerHTML = `
                 <tr>
-                <td colspan="9" class="text-center text-muted pt-3"><h6>No Records found</h6></td>
+                <td colspan="10" class="text-center text-muted pt-3"><h6>No Records found</h6></td>
                 </tr>
             `;
       return;
@@ -123,12 +124,28 @@ export async function initFetchFranchise(searchQuery = "") {
           year: "numeric",
           month: "2-digit",
           day: "2-digit",
+        }
+      );
+      const formattedStartDate = new Date(item.startDate).toLocaleString(
+        undefined,
+        {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }
+      );
+      const formattedReceivedOn = new Date(item.receivedOn).toLocaleString(
+        undefined,
+        {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
           hour: "numeric",
           minute: "2-digit",
           hour12: true,
         }
       );
-      const formattedStartDate = new Date(item.startDate).toLocaleString(
+      const formattedReleasedOn = new Date(item.releasedOn).toLocaleString(
         undefined,
         {
           year: "numeric",
@@ -142,21 +159,22 @@ export async function initFetchFranchise(searchQuery = "") {
 
       row.innerHTML = `
                 <td>${index + 1}</td>
-                <td>${item.franchiseCode}</td>
-                <td>${item.franchiseName}</td>
-                <td>${item.issuedBy}</td>
-                <td>${item.issuedTo}</td>
-                <td>${formattedStartDate}</td>
-                <td>${formattedEndDate}</td>
+                <td>${item.purpose}</td>
+                <td>${item.department}</td>
+                <td>${item.amount}</td>
+                <td>${item.receivedBy}</td>
+                <td>${formattedReceivedOn}</td>
+                <td>${formattedStartDate} - ${formattedEndDate}</td>
+                <td>${item.releasedOn ? formattedReleasedOn : "-- --"}</td>
+                <td class="${item.status === "released" ? "edit-icon" : "dlt-icon"}">${item.status === 'released' ? 'Released' : 'Pending'}</td>
                 <td class="pb-0">
                     <i data-franchise-id="${
                       item.id
                     }" class="deleteFranchise dlt-icon icon-btn icon-sm material-icons" data-bs-toggle="tooltip"
                         data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Delete" style="margin-left:2px;">delete</i>
-                  
-                    <span data-bs-toggle="modal" data-bs-target="#editFranchiseModal">
-                    <i id="edit-${item.id}" data-franchise-id="${item.id}" class="editFranchise edit-icon icon-btn icon-sm material-icons edit-franchise" data-bs-toggle="tooltip"
-                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Edit">edit</i>
+            
+                    <i id="edit-${item.id}" data-franchise-id="${item.id}" class="approve edit-icon icon-btn icon-sm material-icons edit-franchise" data-bs-toggle="tooltip"
+                        data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Release">check</i>
                 </td>
             `;
       tableBody.appendChild(row);
@@ -242,58 +260,77 @@ export function initDeleteFranchise(search) {
     }
 }
 
-export function initEditFranchise() {
-  const editFranchiseForm = document.getElementById("editFranchiseForm");
-  const modal = new bootstrap.Modal(
-    document.getElementById("editFranchiseModal")
-  );
-
-  editFranchiseForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const id = parseInt(document.getElementById("editFranchiseId").value.trim());
-    const franchiseCode = parseInt(document.getElementById("editFranchiseCode").value.trim());
-    const franchiseName = document.getElementById("editFranchiseName").value.trim();
-    const issuedBy = document.getElementById("editFranchiseIssuedBy").value.trim();
-    const issuedTo = document.getElementById("editFranchiseIssuedTo").value.trim();
-    const startDate = document.getElementById("editFranchiseStartDate").value.trim();
-    const endDate = document.getElementById("editFranchiseEndDate").value.trim();
-
-    if (
-      !franchiseCode ||
-      !franchiseName ||
-      !issuedBy ||
-      !issuedTo ||
-      !startDate ||
-      !endDate
-    ) {
-      window.electronAPI.showToast("All fields required.", false);
-      return;
-    }
-
-    const data = {
-        id,
-      franchiseCode,
-      franchiseName,
-      issuedBy,
-      issuedTo,
-      startDate,
-      endDate,
-    };
-
-    try {
-      const response = await window.electronAPI.editFranchise(data);
-
-      if (response.success) {
-        window.electronAPI.showToast(response.message, true);
-        modal.hide();
-
-        initFetchFranchise();
-      } else {
-        window.electronAPI.showToast(response.message, false);
+export function initUpdateAllFranchiseStatus(modalId, tableName, status, search) {
+  const form = document.querySelector(`#${modalId} form`);
+    if (!form) return;
+  
+    // Remove existing submit listeners to prevent duplicates
+    form.removeEventListener("submit", form._submitHandler);
+  
+    // Define the submit handler
+    const submitHandler = async (e) => {
+      e.preventDefault();
+  
+      try {
+        const result = await window.electronAPI.updateAllStatus(
+          tableName,
+          status
+        );
+  
+        if (result.success) {
+          let modal = bootstrap.Modal.getInstance(
+            document.getElementById(`${modalId}`)
+          );
+  
+          if (!modal) {
+            modal = new bootstrap.Modal(document.getElementById(`${modalId}`));
+          }
+  
+          modal.hide();
+  
+          await initFetchFranchise(search);
+  
+          window.electronAPI.showToast(result.message, true);
+        } else {
+          window.electronAPI.showToast(result.message, false);
+        }
+      } catch (error) {
+        window.electronAPI.showToast(error.message, false);
       }
-    } catch (err) {
-      window.electronAPI.showToast(err.message, false);
-    }
-  });
+    };
+  
+    // Store the handler on the form element for future removal
+    form._submitHandler = submitHandler;
+  
+    // Add the submit event listener
+    form.addEventListener("submit", submitHandler);
+}
+
+export function initRejectApprove(search) {
+  const tableBody = document.getElementById("franchiseTableBody");
+
+  if (tableBody) {
+    tableBody.addEventListener("click", async (event) => {
+      const target = event.target;
+      if (target.classList.contains("approve")) {
+        event.preventDefault();
+        const id = target.dataset.franchiseId;
+
+        const res = await window.electronAPI.approveReject(parseInt(id), "released", "franchise")
+
+        if(res.success){
+          window.electronAPI.showToast(res.message, true)
+          initFetchFranchise(search)
+          const tooltip = bootstrap.Tooltip.getInstance(target);
+          if (tooltip) {
+            tooltip.hide();
+          }
+        } else {
+          window.electronAPI.showToast(res.message, false)
+          return;
+        }
+      }
+    });
+  } else {
+  }
 }

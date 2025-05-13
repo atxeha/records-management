@@ -87,23 +87,6 @@ export function updateAccountInfo() {
     })
 }
 
-export function toggleTheme() {
-    const theme = document.getElementById("themeBtn");
-    const body = document.body;
-
-    // Initialize theme from localStorage or default to light_mode
-    let currentTheme = localStorage.getItem("theme") || "light_mode";
-    body.classList.toggle("dark-theme", currentTheme === "dark_mode");
-    theme.textContent = currentTheme;
-
-    theme.addEventListener("click", () => {
-        currentTheme = theme.textContent === "dark_mode" ? "light_mode" : "dark_mode";
-        theme.textContent = currentTheme;
-        body.classList.toggle("dark-theme", currentTheme === "dark_mode");
-        localStorage.setItem("theme", currentTheme);
-    });
-}
-
 export function addStaff(){
     const form = document.getElementById("addStaffForm");
     const modal = new bootstrap.Modal(document.getElementById("addStaffModal"));
