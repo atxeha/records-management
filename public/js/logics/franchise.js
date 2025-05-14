@@ -7,16 +7,12 @@ export function initNewFranchise() {
     const department = document.getElementById("department").value.trim();
     const amount = parseFloat(document.getElementById("amount").value.trim());
     const receivedBy = document.getElementById("receivedBy").value.trim();
-    const startDate = document.getElementById("startDate").value.trim();
-    const endDate = document.getElementById("endDate").value.trim();
     const receivedOn = document.getElementById("receivedOn").value.trim();
     if (
       !purpose ||
       !department ||
       !amount ||
       !receivedBy ||
-      !startDate ||
-      !endDate ||
       !receivedOn
     ) {
       window.electronAPI.showToast("All fields required.", false);
@@ -27,8 +23,6 @@ export function initNewFranchise() {
       department: department,
       amount: amount,
       receivedBy: receivedBy,
-      startDate: startDate,
-      endDate: endDate,
       receivedOn: receivedOn,
     };
     try {
@@ -143,7 +137,6 @@ export async function initFetchFranchise(searchQuery = "") {
                 <td>${item.amount}</td>
                 <td>${item.receivedBy}</td>
                 <td>${formattedReceivedOn}</td>
-                <td>${formattedStartDate} - ${formattedEndDate}</td>
                 <td>${item.releasedOn ? formattedReleasedOn : "-- --"}</td>
                 <td class="${item.status === "released" ? "edit-icon" : "dlt-icon"}">${item.status === 'released' ? 'Released' : 'Pending'}</td>
                 <td class="pb-0">

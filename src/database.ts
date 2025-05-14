@@ -72,7 +72,6 @@ export async function createSchedule(
 }
 
 export async function newPurchaseRequest(
-  docTitle: string,
   receivedBy: string,
   receivedOn: string,
   purpose: string,
@@ -83,7 +82,6 @@ export async function newPurchaseRequest(
 
     const newPurchaseRequest = await prisma.purchaseRequest.create({
       data: {
-        docTitle,
         receivedBy,
         receivedOn: new Date(receivedOnIso),
         purpose,
@@ -124,7 +122,6 @@ export async function newPettyCash(
 }
 
 export async function newRis(
-  docTitle: string,
   receivedBy: string,
   receivedOn: string,
   purpose: string,
@@ -135,7 +132,6 @@ export async function newRis(
 
     const newPurchaseRequest = await prisma.requisitionIssueSlip.create({
       data: {
-        docTitle,
         receivedBy,
         receivedOn: new Date(receivedOnIso),
         purpose,
@@ -188,14 +184,10 @@ export async function newFranchise(
   department: string,
   amount: number,
   receivedBy: string,
-  startDate: string,
-  endDate: string,
   receivedOn: string
 ) {
   try {
     const isoReceivedOn = isoDate(receivedOn)
-    const isoStartDate = isoDate(startDate)
-    const isoEndDate = isoDate(endDate)
 
     const newVoucher = await prisma.franchise.create({
       data: {
@@ -203,8 +195,6 @@ export async function newFranchise(
         department,
         amount,
         receivedBy,
-        startDate: new Date(isoStartDate),
-        endDate: new Date(isoEndDate),
         receivedOn: new Date(isoReceivedOn),
       },
     });

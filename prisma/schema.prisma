@@ -25,7 +25,6 @@ model User {
 model PurchaseRequest {
   id         Int       @id @default(autoincrement())
   receivedBy String
-  docTitle   String
   department String
   purpose    String
   receivedOn DateTime
@@ -37,7 +36,6 @@ model PurchaseRequest {
 model RequisitionIssueSlip {
   id         Int       @id @default(autoincrement())
   receivedBy String
-  docTitle   String
   department String
   purpose    String
   receivedOn DateTime
@@ -74,8 +72,6 @@ model Franchise {
   amount        Float
   receivedBy    String
   receivedOn    DateTime
-  startDate DateTime
-  endDate DateTime
   releasedOn    DateTime?
   status     String    @default("pending")
   createdAt     DateTime  @default(now())

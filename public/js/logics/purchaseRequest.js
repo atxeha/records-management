@@ -3,14 +3,12 @@ export function initNewPurchaseRequest() {
     const modal = new bootstrap.Modal(document.getElementById("addPurchaseModal"))
     addPurchaseForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const docTitle = document.getElementById("docTitle").value.trim();
         const receivedBy = document.getElementById("receivedBy").value.trim();
         const receivedOn = document.getElementById("receivedOn").value.trim();
         const purpose = document.getElementById("purpose").value.trim();
         const department =document.getElementById("department").value.trim();
-      if (!docTitle || !receivedBy || !receivedOn || !purpose || !department){window.electronAPI.showToast("All fields required.", false); return;}
+      if (!receivedBy || !receivedOn || !purpose || !department){window.electronAPI.showToast("All fields required.", false); return;}
         const data = {
-            docTitle: docTitle,
             receivedBy: receivedBy,
             receivedOn: receivedOn,
             purpose: purpose,
@@ -82,7 +80,6 @@ export async function initFetchPurchaseRequest(searchQuery = "") {
           })
         row.innerHTML = `
                 <td>${index + 1}</td>
-                <td>${item.docTitle}</td>
                 <td>${item.purpose}</td>
                 <td>${item.department}</td>
                 <td>${item.receivedBy}</td>

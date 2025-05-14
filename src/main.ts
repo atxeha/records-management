@@ -15,6 +15,7 @@ import {
   autoAccountCreate
 } from "./database";
 import bcrypt from 'bcrypt';
+import { nativeTheme } from "electron";
 
 let mainWindow: BrowserWindow | null;
 app.whenReady().then(async() => {
@@ -30,8 +31,8 @@ app.whenReady().then(async() => {
   });
 
   await mainWindow.loadFile(path.join(app.getAppPath(), "public", "login.html"));
-  // mainWindow.maximize();
-
+  mainWindow.maximize();
+  nativeTheme.themeSource = "light";
   autoAccountCreate()
 
   Menu.setApplicationMenu(menu);
@@ -252,7 +253,6 @@ ipcMain.handle("delete-schedule", async (event, id) => {
 ipcMain.handle("new-purchase-request", async (event, data) => {
   try{
     const result = await newPurchaseRequest(
-      data.docTitle,
       data.receivedBy,
       data.receivedOn,
       data.purpose,
@@ -409,7 +409,6 @@ ipcMain.handle("delete-pc", async (event, id) => {
 ipcMain.handle("new-ris", async (event, data) => {
   try {
     const result = await newRis(
-      data.docTitle,
       data.receivedBy,
       data.receivedOn,
       data.purpose,
@@ -632,8 +631,6 @@ ipcMain.handle("new-franchise", async (event, data) => {
       data.department,
       data.amount,
       data.receivedBy,
-      data.startDate,
-      data.endDate,
       data.receivedOn
     );
     if (result.success === false) {
